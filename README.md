@@ -1,2 +1,2 @@
 # huonglinh
-simple windows form application via Microsoft access database
+simple winform application via Microsoft access database
