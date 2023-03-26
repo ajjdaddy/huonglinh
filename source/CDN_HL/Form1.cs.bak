@@ -1,0 +1,1843 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace CDN_HL
+{
+    public partial class Form1 : Form
+    {
+        public string _ImgFolderPath = "";
+        public string _ImgFolderDonePath = "";
+        public string _ImgFolderArchivePath = "";
+        static int _ixSelectLength = 0;             //mousedown event (hold index selected length) on txtImgFilename Click
+        static int _iClickCount = 0;                //keep track of number clicks on txtImgFilename
+
+        const string _strVietAlpha_A = "aàảãáạăằẳẵắặâầẩẫấậ";         //[0]
+        const string _strVietAlpha_D = "dđ";                         //[1]
+        const string _strVietAlpha_E = "eèẻẽéẹêềểễếệ";               //[2]
+        const string _strVietAlpha_I = "iìỉĩíị";                     //[3]
+        const string _strVietAlpha_O = "oòỏõóọôồổỗốộơờởỡớợ";         //[4]
+        const string _strVietAlpha_U = "uùủũúụưừửữứự";               //[5]
+        const string _strVietAlpha_Y = "yỳỷỹýỵ";                     //[6]
+        enum Days { Sun, Mon, Tue, Wed, Thu, Fri, Sat };
+
+        public Form1()
+        {
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //// 1. Can't Debug - Error:
+            //// Module is optimized and the debugger option 'Just My Code' is enabled.
+            //// How to fix this issue:
+            //// https://docs.microsoft.com/en-us/visualstudio/debugger/just-my-code?view=vs-2019
+            //// To enable or disable Just My Code in Visual Studio, 
+            ////    under Tools > Options (or Debug > Options) > Debugging > General, select or deselect Enable Just My Code.
+            ////
+            //// 2. Can't open Ctrl + Shift + F (Find in File)
+            //// How to fix this isue:
+            //// a. Go To Window
+            //// b. Reset Window Layout
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            try
+            {
+                //this.Font = new Font("Microsoft Sans Serif", 12);
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                string strErr = e.Message;
+            }
+        }
+
+        #region Run ONCE
+        // RUN THIS APPLICATION ONLY ONCE TO: change the DB from the old format [Ho,Dem,Ten] to the new format [HoTen] AND extract filenumber from filename
+        // trying to parse Filenumber from the filename and Convert_VN_To_Eng for Fullname
+        // 1. Open RemovableDisk:\CDN\LinhTu\DB\linhtu.mdb
+		// 2. Select table: tblHuongLinh and Export data to tblHL.xlsx
+		// 3. Open tblHL.xlsx file and add these columns: HoTen, Fullname, FileNumber, InsertDate, UpdateDate
+		// 4. In tblHL.xlsx file, combines [Ho,Dem,Ten] to [HoTen] uses this format: [=A2&" "&B2&" "&C2]
+		// 5. Delete [Ho,Dem,Ten] columns in tblHL.xlsx file
+		// 6. Must rename the excel tab to [tblHL] and save the file
+		// 7. in Access, import Data from excel file >> tblHL.xlsx and SAVE AS >> DN_HL.accdb
+        // 8. In this application MUST: add these columns to the gridview: Fullname,FileNumber,InsertDate,UpdateDate
+        // 9. And RUN THIS APPLICATION ONLY ONCE!!
+        // 10. DO NOT USE THIS APPLICATION EVER AGAIN. 
+        private void ParseFilenumberAndConvert_VN_TO_ENG()
+        {
+            if (dataGridView.Rows.Count > 1)
+            {
+                foreach (DataGridViewRow dr in dataGridView.Rows)
+                {
+                    string strTempFilenumber = dr.Cells["FileName"].Value.ToString();
+                    string[] astrFilenumber = strTempFilenumber.Split(' ');
+                    if (astrFilenumber.Count() > 1)
+                        dr.Cells["FileNumber"].Value = astrFilenumber[0];
+
+                    string strEnglishHoTen = Convert_VN_To_Eng(dr.Cells["HoTen"].Value.ToString().Trim());
+                    //string strEnglishPhapDanh = Convert_VN_To_Eng(dr.Cells["PhapDanh"].Value.ToString().Trim());
+
+                    ////set Fullname + PD if available by remove Vietnamese accent for searching purpose only
+                    //if (strEnglishHoTen.Length > 0 && strEnglishPhapDanh.Length > 0)
+                    //    dr.Cells["Fullname"].Value = strEnglishHoTen + " PD " + strEnglishPhapDanh;
+                    //else if (strEnglishHoTen.Length > 0)
+                    //    dr.Cells["Fullname"].Value = strEnglishHoTen;
+                    //else if (strEnglishPhapDanh.Length > 0)
+                    //    dr.Cells["Fullname"].Value = "PD " + strEnglishPhapDanh;
+
+                    dr.Cells["Fullname"].Value = strEnglishHoTen;
+                    dr.Cells["InsertDate"].Value = DateTime.Now.ToString("G");  // In order for these columns to work in this section
+                    dr.Cells["UpdateDate"].Value = DateTime.Now.ToString("G");  // Must add these columns to the DataGridViewRow, for NOW, remove them
+                }
+
+                tblHLBindingSource.EndEdit();
+                tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
+            }
+        
+        }
+
+        #endregion Run ONCE
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            ckExactMatch.Checked = false;
+            lblErrMsg.Text = "";
+
+            //Add References: Assemblies >> System.Configuration
+            _ImgFolderPath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderPath");
+            _ImgFolderDonePath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderDonePath");
+            _ImgFolderArchivePath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderArchivePath");
+
+            // TODO: This line of code loads data into the 'dN_HLDataSet.tblHL' table. You can move, or remove it, as needed.
+            this.tblHLTableAdapter.Fill(this.dN_HLDataSet.tblHL);
+
+            tabSearch.Select();
+
+            dataGridView.Focus();
+            DisplayImage();
+
+            txtSearch.Focus();
+
+            ////Run this function only ONCE when change the DB format from the old to the new
+            //ParseFilenumberAndConvert_VN_TO_ENG();
+        }
+
+        #region - Search Tab Section
+        private void DisplayImage()
+        {
+            
+            txtLocation.BackColor = System.Drawing.Color.Yellow;         //Background
+
+            if (txtFilename.Text.Trim().Length > 0)
+            {
+                lblErrNotFound.Text = "";
+                lblErrMsg.Text = "";
+                //DataGridViewRow dr = dataGridView.Rows[0];
+                //dr.Selected = true;
+                //dataGridView.Rows[0].Cells[0]. = true;
+                //dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                //DataGridViewRow dr = dataGridView.CurrentRow;
+
+                string strImgFileNameDonePath = _ImgFolderDonePath + txtFilename.Text;
+
+                if (File.Exists(strImgFileNameDonePath))
+                {
+                    Bitmap bitImageFile = new Bitmap(strImgFileNameDonePath);
+                    picBoxHL.SizeMode = PictureBoxSizeMode.StretchImage;    //in order to have any image "resize" to fit a picturebox, you must set this  
+                    picBoxHL.Width = 440;   // 300;   // 580;
+                    picBoxHL.Height = 450;  // 260;   // 500;
+                    picBoxHL.Image = (Image)bitImageFile;
+                    this.txtLocation.ForeColor = System.Drawing.Color.Red;
+                }
+                else
+                {
+                    picBoxHL.Image = null;  //Hinh Not found.
+                    lblErrMsg.Text = "Hinh Not Found.";
+                }
+            }
+            else
+            {
+                picBoxHL.Image = null;
+            }
+        }
+
+
+        /// <summary>
+        /// When HL Name or PhapDanh has changed, must change ImageFileName as well to reflex the HL Name and or PhapDanh in image filename
+        /// ex:(from: 1 Ngo Dung Pd Nhat Doan 1919-2002.jpg  >>>  1 Ngô Dung Pd Nhật Đoan 1919-2002.jpg 
+        /// </summary>
+        /// <returns></returns>
+        private string ReFormatImageFileName()
+        {
+            string strNewFileName = string.Format("{0}.jpg", txtFileNumber.Text);   //54.2.jpg
+
+            if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3} {4}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtSinh.Text.Trim().Replace("/", ".").Replace("-", "."), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtSinh.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim());
+            else if (txtHoTen.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtSinh.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim());
+
+            return strNewFileName;
+        }
+
+        private string ReFormatImageFileNameForInsertFilename()
+        {
+            string strNewFileName = string.Format("{0}.jpg", txtFileNumber.Text);   //54.2.jpg
+
+            if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3} {4}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtSinh.Text.Trim().Replace("/",".").Replace("-", "."), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtSinh.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim(), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtPhapDanh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} Pd {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtPhapDanh.Text.Trim());
+            else if (txtHoTen.Text.Trim().Length > 0 && txtSinh.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtSinh.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0 && txtTu.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1} {2}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim(), txtTu.Text.Trim().Replace("/", ".").Replace("-", "."));
+            else if (txtHoTen.Text.Trim().Length > 0)
+                strNewFileName = string.Format("{0} {1}.jpg", txtFileNumber.Text, txtHoTen.Text.Trim());
+
+            return strNewFileName;
+        }
+
+        /// <summary>
+        /// Remove Vietnamese accent out of Name and Phap Danh
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static String Convert_VN_To_Eng(String str)
+        {
+            str = str.Replace("ầ", "a").Replace("ấ", "a").Replace("ậ", "a").Replace("ẩ", "a").Replace("ẫ", "a").Replace("ằ", "a").Replace("ắ", "a").Replace("ặ", "a").Replace("ẳ", "a").Replace("ẵ", "a").Replace("â", "a").Replace("ă", "a").Replace("ả", "a").Replace("ã", "a").Replace("ạ", "a").Replace("á", "a").Replace("à", "a");
+            str = str.Replace("ề", "e").Replace("ế", "e").Replace("ệ", "e").Replace("ể", "e").Replace("ễ", "e").Replace("ẽ", "e").Replace("ê", "e").Replace("ẹ", "e").Replace("ẻ", "e").Replace("è", "e").Replace("é", "e");
+            str = str.Replace("ì", "i").Replace("í", "i").Replace("ị", "i").Replace("ỉ", "i").Replace("ĩ", "i");
+            str = str.Replace("ồ", "o").Replace("ố", "o").Replace("ộ", "o").Replace("ổ", "o").Replace("ỗ", "o").Replace("ơ", "o").Replace("ờ", "o").Replace("ớ", "o").Replace("ợ", "o").Replace("ở", "o").Replace("ỡ", "o").Replace("ô", "o").Replace("ọ", "o").Replace("ỏ", "o").Replace("õ", "o").Replace("ò", "o").Replace("ó", "o");
+            str = str.Replace("ừ", "u").Replace("ứ", "u").Replace("ự", "u").Replace("ử", "u").Replace("ữ", "u").Replace("ư", "u").Replace("ụ", "u").Replace("ủ", "u").Replace("ũ", "u").Replace("ù", "u").Replace("ú", "u");
+            str = str.Replace("ỳ", "y").Replace("ý", "y").Replace("ỵ", "y").Replace("ỷ", "y").Replace("ỹ", "y");
+            str = str.Replace("đ", "d");
+
+            str = str.Replace("Ầ", "A").Replace("Ấ", "A").Replace("Ậ", "A").Replace("Ẩ", "A").Replace("Ẫ", "A").Replace("Ằ", "A").Replace("Ắ", "A").Replace("Ặ", "A").Replace("Ẳ", "A").Replace("Ẵ", "A").Replace("Â", "A").Replace("Ă", "A").Replace("Ả", "A").Replace("Ã", "A").Replace("Ạ", "A").Replace("Á", "A").Replace("À", "A");
+            str = str.Replace("Ề", "E").Replace("Ế", "E").Replace("Ệ", "E").Replace("Ể", "E").Replace("Ễ", "E").Replace("Ẽ", "E").Replace("Ê", "E").Replace("Ẹ", "E").Replace("Ẻ", "E").Replace("È", "E").Replace("É", "E");
+            str = str.Replace("Ì", "I").Replace("Í", "I").Replace("Ị", "I").Replace("Ỉ", "I").Replace("Ĩ", "I");
+            str = str.Replace("Ồ", "O").Replace("Ố", "O").Replace("Ộ", "O").Replace("Ổ", "O").Replace("Ỗ", "O").Replace("Ơ", "O").Replace("Ờ", "O").Replace("Ớ", "O").Replace("Ợ", "O").Replace("Ở", "O").Replace("Ỡ", "O").Replace("Ô", "O").Replace("Ọ", "O").Replace("Ỏ", "O").Replace("Õ", "O").Replace("Ò", "O").Replace("Ó", "O");
+            str = str.Replace("Ừ", "U").Replace("Ứ", "U").Replace("Ự", "U").Replace("Ử", "U").Replace("Ữ", "U").Replace("Ư", "U").Replace("Ụ", "U").Replace("Ủ", "U").Replace("Ũ", "U").Replace("Ù", "U").Replace("Ú", "U");
+            str = str.Replace("Ỳ", "Y").Replace("Ý", "Y").Replace("Ỵ", "Y").Replace("Ỷ", "Y").Replace("Ỹ", "Y");
+            str = str.Replace("Đ", "D");
+
+            //Clean all the left over again
+            str = str.Replace("Á", "A").Replace("Ả", "A").Replace("À", "A");
+            str = str.Replace("È", "E").Replace("É", "E").Replace("Ẻ", "E");
+            str = str.Replace("Í", "I").Replace("Ì", "I").Replace("Ỉ", "I").Replace("Ị", "I");
+            str = str.Replace("Ò", "O").Replace("Ó", "O").Replace("Ỏ", "O");
+            str = str.Replace("Ù", "U").Replace("Ú", "U").Replace("Ủ", "U");
+            str = str.Replace("Ỳ", "Y").Replace("Ý", "Y").Replace("Ỷ", "Y");
+
+            str = str.Replace("á", "a").Replace("ả", "a").Replace("à", "a");
+            str = str.Replace("è", "e").Replace("ẻ", "e").Replace("é", "e");
+            str = str.Replace("í", "i").Replace("ị", "i");
+            str = str.Replace("ỏ", "o").Replace("ò", "o").Replace("ó", "o");
+            str = str.Replace("ú", "u").Replace("ủ", "u").Replace("ù", "u");
+            str = str.Replace("ỷ", "y");
+
+            //remove special char
+            str = str.Replace("D", "D");
+            str = str.Replace("̣", "");
+            str = str.Replace("̃", "");
+
+            return str;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Save();
+        }
+
+        private void dataGridView_Click(object sender, EventArgs e)
+        {
+            DisplayImage();
+        }
+
+        private void dataGridView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            DisplayImage();
+        }
+
+        /// <summary>
+        /// Delete HL record if user press on "Delete" button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (dataGridView.SelectedRows.Count > 0)
+                {
+                    DialogResult result = MessageBox.Show("Do you want to delete this HL", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Yes)
+                    {
+
+                        dataGridView.Rows.RemoveAt(dataGridView.SelectedRows[0].Index);
+
+                        tblHLBindingSource.EndEdit();
+                        tblHLTableAdapter.Update(dN_HLDataSet.tblHL);
+
+                        tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
+                        dataGridView.Focus();
+                        DisplayImage();
+                        txtSearch.Text = "Deleted";
+                    }
+                    else
+                    {
+                        txtSearch.Text = "NOT deleted";
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select the entire row '>' to delete HL.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                DisplayImage();
+            }
+        }
+
+        private void dataGridView_KeyUp(object sender, KeyEventArgs e)
+        {
+            DisplayImage();
+        }
+
+        private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DisplayImage();
+        }
+
+        private void dataGridView_MouseDown(object sender, MouseEventArgs e)
+        {
+            DisplayImage();
+        }
+
+        /// <summary>
+        /// Do Search when user hit "Enter" key in Search textBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+		private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Search();
+            }
+        }
+        private void txtSearch_MouseEnter(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            lblErrMsg.Text = "";
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Home) //(e.KeyCode == Keys.Back)
+            {
+                txtSearch.Text = "";
+                txtFileNumbSearch.Text = "";
+                lblErrMsg.Text = "";
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        /// <summary>
+        /// clear Search HL picBoxHL
+        /// </summary>
+        private void ClearSearchPicBox()
+        {
+            //release Picturebox's image in order for the File.Move() to work!
+            if (picBoxHL.Image != null)
+            {
+                picBoxHL.Image.Dispose();
+                picBoxHL.Image = null;
+            }
+        }
+
+        private void Save()
+        {
+            try
+            {   //1 Ngô Dung Pd Nhật Đoan 1919-2002.jpg
+                lblErrMsg.Text = "";
+                string strOrigFileName = txtFilename.Text.Trim();
+
+                txtFilename.Text = ReFormatImageFileName();         //set new image FileName
+                string strEnglishHoTen = Convert_VN_To_Eng(txtHoTen.Text.Trim());
+                string strEnglishPhapDanh = Convert_VN_To_Eng(txtPhapDanh.Text.Trim());
+
+                ////set Fullname + PD if available by remove Vietnamese accent for searching purpose only
+                //if (strEnglishHoTen.Length > 0 && strEnglishPhapDanh.Length > 0)
+                //    txtFullname.Text = strEnglishHoTen + " PD " + strEnglishPhapDanh;
+                //else if (strEnglishHoTen.Length > 0)
+                //    txtFullname.Text = strEnglishHoTen;
+                //else if (strEnglishPhapDanh.Length > 0)
+                //    txtFullname.Text = "PD " + strEnglishPhapDanh;
+
+                txtFullname.Text = strEnglishHoTen;
+
+                txtUpdateDate.Text = DateTime.Now.ToString("G");
+
+                ////////RENAME the imagefilename in imgFolderDonePath before save image filename in HL_DB
+                //////if (txtFilenameOrig.Text != txtFilename.Text.Trim())
+                //////{
+                //////    ClearSearchPicBox();
+                //////    Util.FileSavAs(_ImgFolderDonePath, _ImgFolderDonePath, txtFilenameOrig.Text, txtFilename.Text.Trim());
+                //////    DisplayImage();
+                //////}
+
+                tblHLBindingSource.EndEdit();
+                tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
+
+                if (!txtLocation.Text.Equals(lblHidViTri.Text))
+                {
+                    txtLocation.ForeColor = System.Drawing.Color.Yellow;        //Text
+                    txtLocation.BackColor = System.Drawing.Color.Purple;        //Background
+                    lblHidViTri.Text = txtLocation.Text;
+                }
+                lblErrMsg.Text = "Saved!!";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblErrMsg.Text = ex.Message;
+                tblHLBindingSource.ResetBindings(false);
+            }
+        }
+
+        private bool SearchWordAsIs(string strSearch)
+        {
+            bool bDataFound = false;
+            string strRowFilter = string.Empty;
+
+            strSearch = strSearch.Trim().Replace("%')", "");              //"Hunz"
+            char[] aSearch = strSearch.ToCharArray();                     //('H','u','n','z')
+
+            for (int y = aSearch.Length - 1; y > 0; --y)
+            {
+                if (!bDataFound)
+                {
+                    strSearch = "";
+                    for (int z = 0; z < y; z++)
+                        strSearch += aSearch[z];                            //"Hun"
+
+                    strRowFilter = "(Fullname like '%" + strSearch + "%')";      //"(Fullname like '%Hun%')"
+
+                    if (strRowFilter.Length > 0 && !bDataFound)
+                    {
+                        dN_HLDataSet.tblHL.CaseSensitive = false;  //search (upper/lower) cases
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            //"txtSearch" == (%Hun%) and data found in ["Fullname"], Bind Data Source and return results
+                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            dataGridView.DataSource = tblHLBindingSource;
+                            bDataFound = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                    break;
+            }
+
+            return bDataFound;
+        }
+        private bool SearchStringAsIs(string[] astrSearch)
+        {
+            bool bDataFound = false;
+
+            for (int i = astrSearch.Length - 1; i >= 0; --i)
+            {
+                if (!bDataFound)
+                {
+                    string strNewSearch = "";
+                    string strRowFilter = "";
+                    string strSearch = " " + astrSearch[i] + "%')";      //"Hung%')"
+
+                    for (int x = 0; x < i; x++)
+                        strNewSearch += " " + astrSearch[x];                            //" Diep The"
+
+                    strRowFilter = "(Fullname like '" + strNewSearch.TrimStart() + strSearch;      //"(Fullname like 'Diep The Hung%')"
+
+                    if (strRowFilter.Length > 0 && !bDataFound)
+                    {
+                        dN_HLDataSet.tblHL.CaseSensitive = false;  //search (upper/lower) cases
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            //"txtSearch" == (Diep The Hung%) and data found in ["Fullname"], Bind Data Source and return results
+                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            dataGridView.DataSource = tblHLBindingSource;
+                            bDataFound = true;
+                            break;
+                        }
+                        else
+                        {
+                            strSearch = strSearch.Trim().Replace("%')", "");              //"Hunz"
+                            char[] aSearch = strSearch.Trim().ToCharArray();                     //('H','u','n','z')
+
+                            for (int y = aSearch.Length - 1; y > 0; --y)
+                            {
+                                if (!bDataFound)
+                                {
+                                    strSearch = "";
+                                    for (int z = 0; z < y; z++)
+                                        strSearch += aSearch[z];                            //"Hun"
+
+                                    strRowFilter = "(Fullname like '" + strNewSearch.TrimStart() + " " + strSearch + "%')";      //"(Fullname like 'Diep The Hun%')"
+
+                                    if (strRowFilter.Length > 0 && !bDataFound)
+                                    {
+                                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                                        {
+                                            //"txtSearch" == (Diep The Hun%) and data found in ["Fullname"], Bind Data Source and return results
+                                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                                            dataGridView.DataSource = tblHLBindingSource;
+
+                                            bDataFound = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+                else
+                    break;
+            }
+
+            return bDataFound;
+        }
+
+        private bool SearchStringLike(string[] astrSearch)
+        {
+            bool bDataFound = false;
+
+            for (int i = astrSearch.Length - 1; i >= 0; --i)
+            {
+                if (!bDataFound)
+                {
+                    string strNewSearch = "";
+                    string strRowFilter = "";
+                    string strSearch = " " + astrSearch[i];
+
+                    for (int x = 0; x < i; x++)
+                        strNewSearch += " " + astrSearch[x];                            //" Diep The"
+
+                    //strRowFilter = "(Fullname like '" + strNewSearch.TrimStart() + strSearch;      //"(Fullname like 'Diep The Hung%')"
+                    strRowFilter = "Fullname like '" + strNewSearch.TrimStart() + "%' OR Fullname like '" + strSearch + "%'";      //"(Fullname like 'Diep The Hung%')"
+
+                    if (strRowFilter.Length > 0 && !bDataFound)
+                    {
+                        dN_HLDataSet.tblHL.CaseSensitive = false;  //search (upper/lower) cases
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 10)
+                        {
+                            strRowFilter = "Fullname like '" + strNewSearch.TrimStart() + "%'";
+
+                            dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;               //filter 1st time
+
+                            dN_HLDataSet.tblHL.AcceptChanges();
+
+                            //1. copy the 1st filter result to tbSearchResult1
+                            //2. then use this table to filter the sencond time
+                            DataTable tbSearchResult1 = dN_HLDataSet.tblHL.DefaultView.ToTable("tblResult1", false, "ID", "HoTen", "Fullname", "PhapDanh", "SinhNgay_DL", "MatNgay_DL", "MatNgay_AL", "FileNumber", "FileName", "ViTriHinh", "ViTriCot", "InsertDate", "UpdateDate");
+
+                            if (tbSearchResult1.Rows.Count > 0)
+                            {
+                                string strTemp = tbSearchResult1.Rows[0]["Fullname"].ToString();
+
+                                strRowFilter = "Fullname like '%" + strSearch + "%'";
+
+                                DataView dvSearchResult2 = tbSearchResult1.DefaultView;
+                                dvSearchResult2.RowFilter = strRowFilter;                                //filter 2nd time
+
+                                if (dvSearchResult2.Table.Rows.Count > 0)
+                                {
+                                    dvSearchResult2.Sort = "Fullname ASC";
+                                    tblHLBindingSource.DataSource = dvSearchResult2;
+                                    dataGridView.DataSource = tblHLBindingSource;
+                                    bDataFound = true;
+                                    break;
+                                }
+                            }
+                            ////////"txtSearch" == (Diep The Hung%) and data found in ["Fullname"], Bind Data Source and return results
+                            //////tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            //////dataGridView.DataSource = tblHLBindingSource;
+                            //////bDataFound = true;
+                            //////break;
+                        }
+                        else if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            dataGridView.DataSource = tblHLBindingSource;
+                            bDataFound = true;
+                            break;
+                        }
+                        else
+                        {
+                            strSearch = strSearch.Trim().Replace("%')", "");              //"Hunz"
+                            char[] aSearch = strSearch.ToCharArray();                     //('H','u','n','z')
+
+                            for (int y = aSearch.Length - 1; y > 0; --y)
+                            {
+                                if (!bDataFound)
+                                {
+                                    strSearch = "";
+                                    for (int z = 0; z < y; z++)
+                                        strSearch += aSearch[z];                            //"Hun"
+
+                                    strRowFilter = "(Fullname like '" + strNewSearch.TrimStart() + " " + strSearch + "%')";      //"(Fullname like 'Diep The Hun%')"
+
+                                    if (strRowFilter.Length > 0 && !bDataFound)
+                                    {
+                                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                                        {
+                                            //"txtSearch" == (Diep The Hun%) and data found in ["Fullname"], Bind Data Source and return results
+                                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                                            dataGridView.DataSource = tblHLBindingSource;
+                                            bDataFound = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+                else
+                    break;
+            }
+
+            return bDataFound;
+        }
+
+        /// <summary>
+        /// 1. Search by last item in the astrSearchName
+        /// Data found, then filter the result by the rest of the astrSearchName
+        /// Data NOT found, 2. Search by last item in the astrSearchName with 1 less char. repeat until result found
+        /// </summary>
+        /// <param name="astrSearchName"></param>
+        /// <returns></returns>
+        private bool SearchNameArray(string[] astrSearchName)
+        {
+            bool bDataFound = false;
+            //int ix = astrSearchName.Length - 1;
+            dN_HLDataSet.tblHL.CaseSensitive = false;                   //search (upper/lower) cases
+
+            for (int ix = astrSearchName.Length - 1; ix >= 0; --ix)
+            {
+                if (!bDataFound)
+                {
+                    string strFirstIxName = "";
+                    string strRowFilter = "";
+                    string strLastIxName = astrSearchName[ix];                      //Fullname:    nguyen hoang phuong
+                                                                                    //search name: nguyen phuong
+                    for (int iy = 0; iy < ix; iy++)                                 //astrSearchName:   [0]nguyen
+                        strFirstIxName += " " + astrSearchName[iy];                 //                  [1]phuong
+
+                    strRowFilter = "Fullname like '%" + strLastIxName + "%'";       //set filter = strLastIxSearch;  Fullname like '%phuong%'
+
+                    if (strRowFilter.Length > 0 && !bDataFound)
+                    {
+                        //dN_HLDataSet.tblHL.CaseSensitive = false;                   //search (upper/lower) cases
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;    //filter: 1st time by LastIxSearch
+
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            dN_HLDataSet.tblHL.AcceptChanges();
+
+                            //1. copy the 1st filter result to tbSearchResult1
+                            //2. then use this table to filter the sencond time
+                            DataTable tbSearchResult1 = dN_HLDataSet.tblHL.DefaultView.ToTable("tblResult1", false, "ID", "HoTen", "Fullname", "PhapDanh", "SinhNgay_DL", "MatNgay_DL", "MatNgay_AL", "FileNumber", "FileName", "ViTriHinh", "ViTriCot", "InsertDate", "UpdateDate");
+
+                            if (tbSearchResult1.Rows.Count > 0)
+                            {
+                                string strTemp = tbSearchResult1.Rows[0]["Fullname"].ToString();
+
+                                strRowFilter = "Fullname like '" + strFirstIxName.Trim() + "%'";     //set filter = strFirstIxSearch
+
+                                DataView dvSearchResult2 = tbSearchResult1.DefaultView;
+                                dvSearchResult2.RowFilter = strRowFilter;                                //filter 2nd time from tbSearchResult1
+
+                                if (dvSearchResult2.Count > 0)
+                                    bDataFound = true;
+
+                                dvSearchResult2.Sort = "Fullname ASC";
+                                tblHLBindingSource.DataSource = dvSearchResult2;
+                                dataGridView.DataSource = tblHLBindingSource;
+
+                            }
+                        }
+                        else
+                        {
+                            strLastIxName = strLastIxName.Trim().Replace("%')", "");        //"phuonz"
+                            char[] aSearch = strLastIxName.ToCharArray();                   //('p','h','u','o','n','z')
+
+                            for (int y = aSearch.Length - 1; y > 0; --y)
+                            {
+                                if (!bDataFound)
+                                {
+                                    string strSearch = "";
+                                    for (int z = 0; z < y; z++)
+                                        strSearch += aSearch[z];                            //"phuon"
+
+                                    //strRowFilter = "(Fullname like '" + strFirstIxName.Trim() + " " + strSearch + "%')";      //"(Fullname like 'Diep The Hun%')"
+                                    strRowFilter = "Fullname like '%" + strSearch + "%'";       //set filter = strLastIxSearch;  Fullname like '%phuon%'
+
+                                    if (strRowFilter.Length > 0 && !bDataFound)
+                                    {
+                                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;    //filter: 1st time by LastIxSearch
+                                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                                        {
+                                            dN_HLDataSet.tblHL.AcceptChanges();
+
+                                            //1. copy the 1st filter result to tbSearchResult1
+                                            //2. then use this table to filter the sencond time
+                                            DataTable tbSearchResult1 = dN_HLDataSet.tblHL.DefaultView.ToTable("tblResult1", false, "ID", "HoTen", "Fullname", "PhapDanh", "SinhNgay_DL", "MatNgay_DL", "MatNgay_AL", "FileNumber", "FileName", "ViTriHinh", "ViTriCot", "InsertDate", "UpdateDate");
+
+                                            if (tbSearchResult1.Rows.Count > 0)
+                                            {
+                                                strRowFilter = "Fullname like '" + strFirstIxName.Trim() + "%'";     //set filter = strFirstIxSearch
+
+                                                DataView dvSearchResult2 = tbSearchResult1.DefaultView;
+                                                dvSearchResult2.RowFilter = strRowFilter;                                //filter 2nd time from tbSearchResult1
+
+                                                if (dvSearchResult2.Count > 0)
+                                                {
+                                                    //if (dvSearchResult2.Count > 2)
+                                                    //{
+                                                        bDataFound = true;
+
+                                                        dvSearchResult2.Sort = "Fullname ASC";
+                                                        tblHLBindingSource.DataSource = dvSearchResult2;
+                                                        dataGridView.DataSource = tblHLBindingSource;
+                                                    //}
+                                                    //else
+                                                    //{
+                                                    //    DataView dvSearchResult3 = tbSearchResult1.DefaultView;
+                                                    //    DataView dataview1 = tbSearchResult1.DefaultView;
+                                                    //    DataView dataview2 = tbSearchResult1.DefaultView;
+
+                                                    //    dataview1.Table.Merge(dataview2.Table);
+                                                    //}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+                else
+                    break;
+            }
+            return bDataFound;
+        }
+
+        private void Search()
+        {
+            try
+            {
+                lblErrMsg.Text = "";
+                string strRowFilter = "Fullname like '%'";
+                dN_HLDataSet.tblHL.CaseSensitive = false;
+
+                if (string.IsNullOrEmpty(txtSearch.Text.Trim()) && string.IsNullOrEmpty(txtFileNumbSearch.Text.Trim()))
+                {
+                    //===================================================================================================================
+                    //A. Search fields are empty. - Search "FileName like '%'"
+                    //===================================================================================================================
+                    
+                    dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                    dN_HLDataSet.tblHL.DefaultView.Sort = "Fullname ASC";
+                    tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+
+                    dataGridView.DataSource = tblHLBindingSource;
+                    dataGridView.Focus();
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(txtFileNumbSearch.Text.Trim()))
+                    {
+                        //===================================================================================================================
+                        //B. Search field: FileNumber is not empty. - Search "FileNumber like '1917%'
+                        //      if (ckExactMatch.Checked)
+                        //          Search "FileNumber = '1917'"
+                        //===================================================================================================================
+                        strRowFilter = "FileNumber like '" + txtFileNumbSearch.Text.Trim() + "%'";
+
+                        if (ckExactMatch.Checked)
+                            strRowFilter = "FileNumber = '" + txtFileNumbSearch.Text.Trim() + "'";
+
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "FileNumber ASC";
+                        tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+
+                        dataGridView.DataSource = tblHLBindingSource;
+                        dataGridView.Focus();
+                    }
+                    else
+                    {
+                        //===================================================================================================================
+                        //C. Search field: txtSearch is not empty. [txtSearch.Text == 1917 || txtSearch.Text == Nguyen Phuong]
+                        //      1. Search "FileNumber like '" + txtSearch.Text.Trim() + "%'"
+                        //          if (ckExactMatch.Checked)
+                        //              Search "FileNumber = '" + txtSearch.Text.Trim() + "'"
+                        //===================================================================================================================
+                        strRowFilter = "FileNumber like '" + txtSearch.Text.Trim() + "%'";
+
+                        if (ckExactMatch.Checked)
+                            strRowFilter = "FileNumber = '" + txtSearch.Text.Trim() + "'";
+
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "FileNumber ASC";
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            dataGridView.DataSource = tblHLBindingSource;
+                        }
+                        else
+                        {
+                            //===================================================================================================================
+                            //C. Search field: txtSearch is not empty. [txtSearch.Text == 1917 || txtSearch.Text == Nguyen Phuong]
+                            //      2. Search by the Fullname
+                            //          i. Convert the search text from VN to EN
+                            //          ii. Split the txtSearch.Text.Trim() into an array
+                            //          iii. If count == 1 then SearchWordAsIs() otherwise
+                            //          iv.  SearchNameArray()
+                            //===================================================================================================================
+
+                            bool bDataFound = false;
+                            string strSearchEnglish = Convert_VN_To_Eng(txtSearch.Text.Trim());     //i.
+
+                            string[] astrSearch = strSearchEnglish.Split(' ');                      //ii.
+
+                            if (astrSearch.Length == 1)
+                            {
+                                bDataFound = SearchWordAsIs(astrSearch[0]);
+                            }
+                            else
+                            {
+                                if (!SearchNameArray(astrSearch))
+                                {
+                                    lblErrNotFound.Text = "No record found.";
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+
+                DisplayImage();     //last call for DisplayImage() Search
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tblHLBindingSource.ResetBindings(false);
+            }
+        }
+        private bool SearchNameArrayOriginal(string[] astrSearchName)
+        {
+            bool bDataFound = false;
+            int ix = astrSearchName.Length - 1;
+
+            if (!bDataFound)
+            {
+                string strFirstIxName = "";
+                string strRowFilter = "";
+                string strLastIxName = astrSearchName[ix];
+                string strSearch = " " + astrSearchName[ix];                    //Fullname:    nguyen hoang phuong
+                                                                                //search name: nguyen phuong
+                for (int iy = 0; iy < ix; iy++)                                 //astrSearchName:   [0]nguyen
+                    strFirstIxName += " " + astrSearchName[iy];                 //                  [1]phuong
+
+                strRowFilter = "Fullname like '%" + strLastIxName + "%'";       //set filter = strLastIxSearch;  Fullname like '%phuong%'
+
+                if (strRowFilter.Length > 0 && !bDataFound)
+                {
+                    dN_HLDataSet.tblHL.CaseSensitive = false;                   //search (upper/lower) cases
+                    dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;    //filter: 1st time by LastIxSearch
+
+                    if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                    {
+                        dN_HLDataSet.tblHL.AcceptChanges();
+
+                        //1. copy the 1st filter result to tbSearchResult1
+                        //2. then use this table to filter the sencond time
+                        DataTable tbSearchResult1 = dN_HLDataSet.tblHL.DefaultView.ToTable("tblResult1", false, "ID", "HoTen", "Fullname", "PhapDanh", "SinhNgay_DL", "MatNgay_DL", "MatNgay_AL", "FileNumber", "FileName", "ViTriHinh", "ViTriCot", "InsertDate", "UpdateDate");
+
+                        if (tbSearchResult1.Rows.Count > 0)
+                        {
+                            string strTemp = tbSearchResult1.Rows[0]["Fullname"].ToString();
+
+                            strRowFilter = "Fullname like '" + strFirstIxName.Trim() + "%'";     //set filter = strFirstIxSearch
+
+                            DataView dvSearchResult2 = tbSearchResult1.DefaultView;
+                            dvSearchResult2.RowFilter = strRowFilter;                                //filter 2nd time from tbSearchResult1
+
+                            if (dvSearchResult2.Count > 0)
+                                bDataFound = true;
+
+                            dvSearchResult2.Sort = "Fullname ASC";
+                            tblHLBindingSource.DataSource = dvSearchResult2;
+                            dataGridView.DataSource = tblHLBindingSource;
+
+                        }
+                    }
+                    else
+                    {
+                        strSearch = strSearch.Trim().Replace("%')", "");              //"Hunz"
+                        char[] aSearch = strSearch.ToCharArray();                     //('H','u','n','z')
+
+                        for (int y = aSearch.Length - 1; y > 0; --y)
+                        {
+                            if (!bDataFound)
+                            {
+                                strSearch = "";
+                                for (int z = 0; z < y; z++)
+                                    strSearch += aSearch[z];                            //"Hun"
+
+                                strRowFilter = "(Fullname like '" + strFirstIxName.Trim() + " " + strSearch + "%')";      //"(Fullname like 'Diep The Hun%')"
+
+                                if (strRowFilter.Length > 0 && !bDataFound)
+                                {
+                                    dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                                    dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                                    if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                                    {
+                                        //"txtSearch" == (Diep The Hun%) and data found in ["Fullname"], Bind Data Source and return results
+                                        tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                                        dataGridView.DataSource = tblHLBindingSource;
+                                        bDataFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                                break;
+                        }
+                    }
+                }
+
+            }
+            return bDataFound;
+        }
+
+        private void SearchOriginal()
+        {
+            try
+            {
+                lblErrMsg.Text = "";
+                string strRowFilter = "FileName like '%'";
+                dN_HLDataSet.tblHL.CaseSensitive = false;
+                    
+                if (string.IsNullOrEmpty(txtSearch.Text.Trim()) && string.IsNullOrEmpty(txtFileNumbSearch.Text.Trim()))
+                {
+                    //DataTable dtHL = hL_DataSet.tblHL;
+                    ////dtHL.DefaultView.RowFilter = "";        //Remove all Filter
+                    //tblHLBindingSource.DataSource = hL_DataSet.tblHL.DefaultView;    //dtHL.DefaultView;
+
+                    //Search By No Filter
+                    //===================================================================================================================
+                    dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                    dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                    tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+
+                    dataGridView.DataSource = tblHLBindingSource;
+                    dataGridView.Focus();
+                }
+                else
+                {
+                    //strRowFilter = "FileName like '%" + txtSearch.Text.Trim() + "%'";
+                    //strRowFilter = "(FileName like '%" + txtSearch.Text.Trim() + "%') OR (Fullname like '%" + txtSearch.Text.Trim() + "%')";
+
+                    if (!string.IsNullOrEmpty(txtFileNumbSearch.Text.Trim()))
+                    {
+                        //===================================================================================================================
+                        //Search By: txtFileNumbSearch      
+                        //===================================================================================================================
+                        //1. Search by ["FileNumber"]          - FileNumber like '1917%'
+
+                        //strRowFilter = "(FileNumber like '%" + txtFileNumbSearch.Text.Trim() + "%')";     //08/03/2021 Changed search logic
+                        strRowFilter = "(FileNumber like '" + txtFileNumbSearch.Text.Trim() + "%')";
+
+                        if (ckExactMatch.Checked)
+                            strRowFilter = "(FileNumber = '" + txtFileNumbSearch.Text.Trim() + "')";
+
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "FileNumber ASC";
+                        tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+
+                        dataGridView.DataSource = tblHLBindingSource;
+                        dataGridView.Focus();
+                    }
+                    else
+                    {
+                        //08/03/2021 Changed search logic
+                        //strRowFilter = "(FileNumber like '%" + txtSearch.Text.Trim() + "%') OR (Fullname like '%" + txtSearch.Text.Trim() + "%')";
+
+                        //===================================================================================================================
+                        //Search By: txtSearch
+                        //===================================================================================================================
+                        //1. Search by ["FileNumber"]          - FileNumber like 'Diep The Hung%'
+                        strRowFilter = "(FileNumber like '" + txtSearch.Text.Trim() + "%')";
+
+                        if (ckExactMatch.Checked)
+                            strRowFilter = "(FileNumber = '" + txtSearch.Text.Trim() + "')";
+
+                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                        dN_HLDataSet.tblHL.DefaultView.Sort = "FileNumber ASC";
+                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                        {
+                            //"txtSearch" == (Diep The Hung) and data found in ["FileNumber"], Bind Data Source and return results
+                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                            dataGridView.DataSource = tblHLBindingSource;
+                        }
+                        else
+                        {
+                            //===================================================================================================================
+                            //2. Search by ["Fullname"]         - Fullname like 'Diep The Hung %'
+                            strRowFilter = "(Fullname like '" + txtSearch.Text.Trim() + " %')";
+
+                            dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                            dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+
+                            if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                            {
+                                //"txtSearch" == (Diep The Hung) and data found in ["Fullname"], Bind Data Source and return results
+                                tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                                dataGridView.DataSource = tblHLBindingSource;
+                            }
+                            else
+                            {
+                                string[] astrSearch = txtSearch.Text.Trim().Split(' ');
+
+                                if (ckExactMatch.Checked)
+                                {
+                                    //===================================================================================================================
+                                    //3. Search by ["Fullname"]         - Fullname like [0]%[1]%[2]
+
+                                    //Ex: Diep The Hung 
+                                    bool bDataFound = SearchStringAsIs(astrSearch);
+                                }
+                                else
+                                {
+                                    //===================================================================================================================
+                                    //4. Search by ["Fullname"]         - Fullname like 'Diep%The%Hung' 
+                                    strRowFilter = "(Fullname like '" + txtSearch.Text.Trim() + "%')";
+
+                                    if (astrSearch.Length == 1)
+                                    {
+                                        //===================================================================================================================
+                                        //A. Search by ["Fullname"]          - Search value has only One Word   - Fullname like '%Hung%'
+                                        strRowFilter = "(Fullname like '%" + txtSearch.Text.Trim() + "%')";
+                                        
+                                        dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+                                        dN_HLDataSet.tblHL.DefaultView.Sort = "HoTen ASC";
+                                        if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
+                                        {
+                                            //"txtSearch" == (Diep The Hung%) and data found in ["Fullname"], Bind Data Source and return results
+                                            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+                                            dataGridView.DataSource = tblHLBindingSource;
+                                        }
+                                        else
+                                        {
+                                            bool bDataFound = SearchWordAsIs(txtSearch.Text.Trim());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //Ex: Hung The Diep
+                                        bool bDataFound = SearchStringLike(astrSearch);
+
+                                        if (!bDataFound)
+                                        {
+                                            int i = astrSearch.Length;
+
+                                            string[] astrNewSearch = new string[i];
+
+                                            int iy = 0;
+                                            for (int ix = astrSearch.Length - 1; ix >= 0; --ix)
+                                            {
+                                                astrNewSearch[iy] = astrSearch[ix];
+                                                iy++;
+                                            }
+
+                                            //Ex: Diep The Hung
+                                            bDataFound = SearchStringLike(astrNewSearch);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                DisplayImage();     //last call for DisplayImage() Search
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tblHLBindingSource.ResetBindings(false);
+            }
+        }
+
+        /// <summary>
+        /// Save record when user hit "Enter" key in Location textBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+		private void txtLocation_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Location Entered and Save()
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+        private void txtFileNumbSearch_MouseClick(object sender, MouseEventArgs e)
+        {
+            txtFileNumbSearch.Text = "";
+            txtSearch.Text = "";
+        }
+
+        private void txtFileNumbSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Search();
+            }
+        }
+
+        private void txtSearch_MouseClick(object sender, MouseEventArgs e)
+        {
+            txtFileNumbSearch.Text = "";
+            txtSearch.Text = "";
+            lblErrMsg.Text = "";
+        }
+
+        private void txtFileNumbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Home) //if (e.KeyCode == Keys.Back)
+            {
+                txtSearch.Text = "";
+                txtFileNumbSearch.Text = "";
+                lblErrMsg.Text = "";
+            }
+        }
+
+        private void ckExactMatch_Click(object sender, EventArgs e)
+        {
+            Search();
+        }
+        private void txtLocation_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (txtLocation.Text.Trim().Length > 0)
+            {
+                txtLocation.ForeColor = System.Drawing.Color.Blue;
+                lblHidViTri.Text = txtLocation.Text.Trim();
+            }
+            else
+                lblHidViTri.Text = "";
+            lblErrMsg.Text = "";
+        }
+
+        private void txtLocation_TextChanged(object sender, EventArgs e)
+        {
+            txtLocation.ForeColor = System.Drawing.Color.Blue;
+            lblErrMsg.Text = "";
+        }
+        private void txtCotLoc_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (txtCotLoc.Text.Trim().Length > 0)
+            {
+                txtCotLoc.ForeColor = System.Drawing.Color.Blue;
+            }
+            lblErrMsg.Text = "";
+        }
+
+        /// <summary>
+        /// Save record when user hit "Enter" key in Cot Location textBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+		private void txtCotLoc_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Location Entered and Save()
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+
+        private void txtCotLoc_TextChanged(object sender, EventArgs e)
+        {
+            txtCotLoc.ForeColor = System.Drawing.Color.Blue;
+            lblErrMsg.Text = "";
+        }
+
+        #endregion - Search Tab Section
+
+        /********************************************* TAB CONTROLS SECTION **********************************************/
+
+        /// <summary>
+        /// TABS Events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0)         //Search Tab
+            {
+                txtSearch.Text = "";
+                txtFileNumbSearch.Text = "";
+                //Search();
+
+                this.tblHLTableAdapter.Fill(this.dN_HLDataSet.tblHL);
+
+                dataGridView.Focus();
+                DisplayImage();
+            }
+            else if (tabControl1.SelectedIndex == 1)    //Insert Tab
+            {
+                BindingHLImgListbox();
+            }
+        }
+
+        /// <summary>
+        /// When TabPage.Selected change, then change the Tab Header Font to Bold and Red
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //http://vbcity.com/blogs/xtab/archive/2014/09/14/windows-forms-how-to-bold-the-header-of-a-selected-tab.aspx
+            //The Windows Form
+            //Start by dragging a TabControl onto the Windows Form.
+            //Then in the "Properties" pane for the TabControl find the "DrawMode" property and change it to "OwnerDrawFixed:"
+
+            //http://vbcity.com/blogs/xtab/archive/2014/09/16/tabcontrol-how-to-change-color-and-size-of-the-selected-tab.aspx
+
+            //Identify which TabPage is currently selected
+            TabPage tabPageSelected = tabControl1.TabPages[e.Index];
+
+            //Get the area of the header of this TabPage
+            Rectangle headerRect = tabControl1.GetTabRect(e.Index);
+
+            //Create two Brushes to paint the Text
+            SolidBrush blackTextBrush = new SolidBrush(Color.Black);
+            SolidBrush redTextBrush = new SolidBrush(Color.Red);
+
+            //Set the Alignment of the Text
+            StringFormat strFmt = new StringFormat();
+            strFmt.Alignment = StringAlignment.Center;
+            strFmt.LineAlignment = StringAlignment.Center;
+
+            //Paint the Text using the appropriate Bold and Color setting
+            if (Convert.ToBoolean(e.State) && Convert.ToBoolean(DrawItemState.Selected))
+            {
+                Font boldFont = new Font(tabControl1.Font.Name, tabControl1.Font.Size, FontStyle.Bold);
+                e.Graphics.DrawString(tabPageSelected.Text, boldFont, redTextBrush, headerRect, strFmt);
+            }
+            else
+                e.Graphics.DrawString(tabPageSelected.Text, e.Font, blackTextBrush, headerRect, strFmt);
+
+            //Job is done: dispose of the brushes
+            blackTextBrush.Dispose();
+            redTextBrush.Dispose();
+
+        }
+
+        /****************************************** END TAB CONTROLS SECTION *********************************************/
+
+        #region - Notes Sections
+
+        //DateTime.Now.ToString("G") : 08/17/2000 16:32:32
+        // d :08/17/2000
+        // D :Thursday, August 17, 2000
+        // f :Thursday, August 17, 2000 16:32
+        // F :Thursday, August 17, 2000 16:32:32
+        // g :08/17/2000 16:32
+        // G :08/17/2000 16:32:32
+        // m :August 17
+        // r :Thu, 17 Aug 2000 23:32:32 GMT
+        // s :2000-08-17T16:32:32
+        // t :16:32
+        // T :16:32:32
+        // u :2000-08-17 23:32:32Z
+        // U :Thursday, August 17, 2000 23:32:32
+        // y :August, 2000
+        // dddd, MMMM dd yyyy :Thursday, August 17 2000
+        // ddd, MMM d "'"yy :Thu, Aug 17 '00
+        // dddd, MMMM dd :Thursday, August 17
+        // M/yy :8/00
+        // dd-MM-yy :17-08-00
+
+        /* To set Tab Order of controls on FORM */
+        // On the FORM Design, click the VIEW menu >> select Tab Order
+        // then Click the control
+        // https://docs.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-set-the-tab-order-on-windows-forms?view=netframeworkdesktop-4.8
+
+        /* Add a TabControl to a FORM */
+        // On the Design tab, in the Controls group, click the TabControl tool.
+        // This activates the tab-order selection mode on the form.
+        // Click the controls sequentially to establish the tab order you want.
+        // https://support.microsoft.com/en-us/office/create-a-tabbed-form-6869dee9-3ab7-4f3d-8e65-3a84183c9815#bm4
+
+        /* Add/Remove a TabControl.TabPage Control to a FORM */
+        // Select TabControl on a FORM
+        // Right click and select Add Tab or Remove Tab
+
+        /* Reorder TabPages on a FORM */
+        // 1. Right-click a tab, or right-click the blank area at the top of the tab control.
+        // 2. Click Page Order.
+        // 3. In the Page Order dialog box, select the page that you want to move.
+        // 4. Click Move Up or Move Down to place the page in the order you want.
+        // 5. Repeat steps 3 and 4 for any other pages that you want to move.
+
+        /* Move existing Form's controls to a tab page */
+        // Drag the Form's control on to the TabPage for it to bind to the TabPage 
+
+        /* tabcontrol resize with form */
+        //Use the Anchor property. Anchor the tab control to all 4 edges of the form.
+
+        #endregion - Notes Sections        
+
+        #region - Insert Tab Section
+
+        private void BindingHLImgListbox()
+        {
+
+            try
+            {
+                if (lstBoxHLImg.Items.Count > 0)
+                    lstBoxHLImg.Items.Clear();
+
+                //#1. get the new HL images list, then rename the files if necessary.
+                ArrayList aLstSourceFilename = Util.SearchFileName(_ImgFolderPath, "*.jpg");
+
+                foreach (string strOrigFilename in aLstSourceFilename)
+                {
+                    string strNewFileName = Util.RenameFile(strOrigFilename);
+
+                    if (!strNewFileName.Equals(strOrigFilename))
+                        Util.FileSavAs(_ImgFolderPath, _ImgFolderPath, strOrigFilename, strNewFileName);
+                }
+
+                //#2. get the list of HL images again after checking filename
+                ArrayList aLstHLImg = Util.SearchFileName(_ImgFolderPath, "*.jpg");
+
+                //DO NOT use lstBoxHLImg.DataSource = aLstHLImg;
+                //because you can't use lstBoxHLImg.Items.RemoveAt(ixSelected);
+                foreach (string strHL_Img in aLstHLImg)
+                {
+                    lstBoxHLImg.Items.Add(strHL_Img);          //MUST USE: lstBoxHLImg.Items.Add(strHL_Img) IN ORDER FOR: lstBoxHLImg.Items.RemoveAt(ixSelected);    TO WORK!!
+                }
+
+                if (aLstHLImg.Count > 0)
+                    lstBoxHLImg.SelectedIndex = 0;
+                else
+                    lstBoxHLImg.Items.Add("No HL Image Found.");
+
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.ToString();
+            }
+
+        }
+
+
+        /******************************************************************************************************************/
+        private void DisplayImageInsert()
+        {
+            lblErrorMsg.Text = "";
+
+            if (txtOrigImgFileName.Text.Trim().Length > 0)
+            {
+                //string strImgFileNameDonePath = _ImgFolderDonePath + txtOrigImgFileName.Text;
+                string strImgFileNamePath = _ImgFolderPath + txtOrigImgFileName.Text;
+
+                if (File.Exists(strImgFileNamePath))
+                {
+                    Bitmap bitImageFile = new Bitmap(strImgFileNamePath);
+
+                    if (picBoxHLInsert == null)
+                    {
+                        picBoxHLInsert = new PictureBox();
+                        picBoxHLInsert.Location = new Point(17, 230);
+                    }
+                    picBoxHLInsert.SizeMode = PictureBoxSizeMode.StretchImage;    //in order to have any image "resize" to fit a picturebox, you must set PictureBoxSizeMode.StretchImage 
+                    picBoxHLInsert.Width = 440;   // 300;   // 580;
+                    picBoxHLInsert.Height = 450;  // 260;   // 500;
+                    picBoxHLInsert.Image = (Image)bitImageFile;
+                    bitImageFile = null;
+                }
+                else
+                {
+                    picBoxHLInsert.Image = null;  //Hinh Not found.
+                    lblErrorMsg.Text = "HL Image Not Found.";
+                }
+            }
+            else
+            {
+                picBoxHLInsert.Image = null;
+            }
+        }
+
+        private void DisplayDupImage(string strDupImgFilename)
+        {
+            lblErrorMsg.Text = "";
+
+            if (strDupImgFilename != "")
+            {
+                txtDupImgFilename.Text = strDupImgFilename;
+                string strDupImgFileNamePath = _ImgFolderDonePath + strDupImgFilename;
+
+                if (File.Exists(strDupImgFileNamePath))
+                {
+                    Bitmap bitDupImageFile = new Bitmap(strDupImgFileNamePath);
+
+                    picBoxDupHLinh.SizeMode = PictureBoxSizeMode.StretchImage;    //in order to have any image "resize" to fit a picturebox, you must set PictureBoxSizeMode.StretchImage 
+                    picBoxDupHLinh.Width = 182;
+                    picBoxDupHLinh.Height = 185;
+                    picBoxDupHLinh.Image = (Image)bitDupImageFile;
+                    bitDupImageFile = null;
+                }
+                else
+                {
+                    picBoxDupHLinh.Image = null;  //Hinh Not found.
+                    lblErrorMsg.Text = "HL Image Not Found.";
+                }
+            }
+            else
+            {
+                picBoxDupHLinh.Image = null;
+            }
+        }
+
+        private string GetDupHL(string strNewImgFilename, string strNewHL_Fullname)
+        {
+            string strDupHL = "";
+            string strRowFilter = "";   //"(FileName like '%" + strNewImgFilename + "%') OR (Fullname like '%" + (strNewHL_Fullname != "Sen" ? strNewHL_Fullname: strNewImgFilename) + "%')";
+
+            if (strNewHL_Fullname.ToUpper() == "SEN" || strNewHL_Fullname.ToUpper() == "A DI DA PHAT" || strNewHL_Fullname.ToUpper() == "BAI VI CHU HOA" || strNewHL_Fullname.ToUpper() == "VO DANH")
+                strRowFilter = "(FileName like '%" + strNewImgFilename + "%') OR (Fullname like '%" + strNewImgFilename + "%')";
+            else
+                strRowFilter = "(FileName like '%" + strNewImgFilename + "%')";  // OR (Fullname like '%" + strNewHL_Fullname + "%')";
+
+            dN_HLDataSet.tblHL.CaseSensitive = false;  //search (upper/lower) cases
+
+            dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;
+
+            DataView dataView = dN_HLDataSet.tblHL.DefaultView;
+
+            if (dataView.Count > 0)
+            {
+                strDupHL = dataView[0]["FileName"].ToString();
+            }
+
+            return strDupHL;
+        }
+
+        /// <summary>
+        /// clear Insert HL picBox
+        /// </summary>
+        private void ClearInsertPicBox()
+        {
+            //release Picturebox's image in order for the File.Move() to work!
+            if (picBoxHLInsert.Image != null)
+            {
+                picBoxHLInsert.Image.Dispose();
+                picBoxHLInsert.Image = null;
+            }
+        }
+        private void ClearDupPicBox()
+        {
+            //release Picturebox's Duplicate image in order for the File.Move() to work!
+            if (picBoxDupHLinh.Image != null)
+            {
+                txtDupImgFilename.Text = "";
+                picBoxDupHLinh.Image.Dispose();
+                picBoxDupHLinh.Image = null;
+            }
+        }
+
+        private void txtImgFilename_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (_iClickCount <= 3)
+            {
+                //MouseDown     - occurs when a mouse button is pressed
+                //MouseClick    - occurs when a mouse is pressed and released
+
+                _ixSelectLength = txtImgFilename.SelectionStart;
+
+                string strFullFileName = txtImgFilename.Text;
+                string strPhapDanh = "";
+
+                switch (_iClickCount)
+                {
+                    case 0: //Filenumber
+                        txtFNumb.Text = strFullFileName.Substring(0, _ixSelectLength).Trim();
+                        txtImgFilename.Text = strFullFileName.Substring(_ixSelectLength).Trim();
+                        if (txtImgFilename.Text == "")
+                            txtHTen.Text = "Sen";  //54.3.jpg (Sen) must set txtHTen.Text = "Sen"
+                        break;
+                    case 1: //HoTen
+                        txtHTen.Text = strFullFileName.Substring(0, _ixSelectLength).Trim();
+                        txtImgFilename.Text = strFullFileName.Substring(_ixSelectLength).Trim();
+                        break;
+                    case 2: //Phap Danh or Sinh or Tu
+                        strPhapDanh = strFullFileName.Substring(0, _ixSelectLength).Trim();
+                        if (strPhapDanh.ToUpper().IndexOf("PD ") == 0)
+                            txtPDanh.Text = strPhapDanh.Substring(3);
+                        else
+                        {   //Sinh or Tu
+                            string[] aStr = strPhapDanh.Split(' ');
+                            if (aStr.Count() == 3)
+                            {
+                                txtSsi.Text = Util.GetENDateFmt(aStr[0]);
+                                txtTtu.Text = Util.GetENDateFmt(aStr[1]);
+                                txtTtuAL.Text = aStr[2];
+                            }
+                            else if (aStr.Count() == 2)
+                            {
+                                txtSsi.Text = Util.GetENDateFmt(aStr[0]);
+                                txtTtu.Text = Util.GetENDateFmt(aStr[1]);
+                            }
+                            else
+                                txtTtu.Text = Util.GetENDateFmt(aStr[0]);
+                        }
+                        txtImgFilename.Text = strFullFileName.Substring(_ixSelectLength).Trim();
+                        break;
+                    case 3: //Phap Danh or Sinh or Tu
+                        string strTemp = strFullFileName.Substring(0, _ixSelectLength).Trim();
+                        if (strTemp.ToUpper().IndexOf("PD ") == 0)
+                            txtPDanh.Text = strTemp.Substring(3);
+                        else
+                        {   //Sinh or Tu
+                            string[] aStr = strTemp.Split(' ');
+                            if (aStr.Count() == 3)
+                            {
+                                txtSsi.Text = Util.GetENDateFmt(aStr[0]);
+                                txtTtu.Text = Util.GetENDateFmt(aStr[1]);
+                                txtTtuAL.Text = aStr[2];
+                            }
+                            else if (aStr.Count() == 2)
+                            {
+                                txtSsi.Text = Util.GetENDateFmt(aStr[0]);
+                                txtTtu.Text = Util.GetENDateFmt(aStr[1]);
+                            }
+                            else
+                                txtTtuAL.Text = aStr[0];
+                        }
+                        txtImgFilename.Text = strFullFileName.Substring(_ixSelectLength).Trim();
+                        break;
+                }
+
+                _iClickCount++;
+            }
+        }
+
+
+        //private void ClearDupHLPicBox()
+        //{
+        //    //release Picturebox's Duplicate image in order for the File.Move() to work!
+        //    if (picBoxDupHLinh.Image != null)
+        //    {
+        //        txtDupImgFilename.Text = "";
+        //        picBoxDupHLinh.Image.Dispose();
+        //        picBoxDupHLinh.Image = null;
+        //    }
+        //}
+        private void lstBoxHLImg_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _ixSelectLength = 0;    //reset when SelectedIndexChanged
+                _iClickCount = 0;       //reset when SelectedIndexChanged
+                ClearInsertPicBox();
+
+                txtViTri.Text = "";
+                txtFNumb.Text = "";
+                txtHTen.Text = "";
+                txtPDanh.Text = "";
+                txtSsi.Text = "";
+                txtTtu.Text = "";
+                txtTtuAL.Text = "";
+                txtHLFullName.Text = "";
+                txtDtUpdate.Text = "";
+                btnImgSave.Visible = true;
+
+                if (lstBoxHLImg.SelectedIndex >= 0)
+                {
+                    txtOrigImgFileName.Text = lstBoxHLImg.SelectedItem.ToString();
+                    txtImgFilename.Text = lstBoxHLImg.SelectedItem.ToString().Replace(".jpg", "");
+                    txtImgFilename.Enabled = true;
+
+                    DisplayImageInsert();            //first call for DisplayImageInsert()
+
+                    //////if (txtImgFilename.Text == "9999z EndOfFile")
+                    //////{
+                    //////    txtOrigImgFileName.Text = "";
+                    //////    txtImgFilename.Text = "No HL image found!";
+                    //////    txtImgFilename.Enabled = false;
+                    //////    btnImgSave.Visible = false;
+                    //////}
+                    //////else
+                    //////{
+                    //////    txtImgFilename.Text = "No HL image found!";
+                    //////    txtImgFilename.Enabled = false;
+                    //////    btnImgSave.Visible = false;
+                    //////}
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                lblErrorMsg.Text = ex.ToString();
+            }
+
+        }
+
+        //private void Display_HLName_Image()
+        //{
+        //    //Not use
+
+        //    //dataGridView.ClearSelection();
+        //    //dataGridView.CurrentCell = dataGridView.Rows[0].Cells[0];
+        //    //dataGridView.CurrentCell.Selected = true;
+
+        //    txtOrigImgFileName.Text = lstBoxHLImg.SelectedItem.ToString();
+        //    txtImgFilename.Text = lstBoxHLImg.SelectedItem.ToString().Replace(".jpg", "");
+
+        //    DisplayImageInsert();
+
+        //}
+
+        /// <summary>
+        /// When txtHTen.Text = ""; must set txtHTen.Text = "Sen"
+        /// txtFNumb.Text + txtHTen.Text + txtPDanh.Text + txtSiTu.Text. 
+        /// When HL Name or PhapDanh changed, must change ImageFileName as well to reflex the HL Name and or PhapDanh 
+        /// ex:(from: 1 Ngo Dung Pd Nhat Doan 1919-2002.jpg  >>>  1 Ngô Dung Pd Nhật Đoan 1919-2002.jpg 
+        /// </summary>
+        /// <returns></returns>
+        private string ReFormatInsertImageFileName()
+        {
+            string strNewImgFileName = string.Format("{0}.jpg", txtFNumb.Text);   //54.2.jpg
+
+            if (txtHTen.Text.Trim().Length > 0 && txtPDanh.Text.Trim().Length > 0 && txtSsi.Text.Trim().Length > 0 && txtTtu.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtPDanh.Text.Trim(), txtSsi.Text.Trim(), txtTtu.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0 && txtPDanh.Text.Trim().Length > 0 && txtSsi.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtPDanh.Text.Trim(), txtSsi.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0 && txtPDanh.Text.Trim().Length > 0 && txtTtu.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} Pd {2} {3}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtPDanh.Text.Trim(), txtTtu.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0 && txtPDanh.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} Pd {2}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtPDanh.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0 && txtSsi.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} {2}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtSsi.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0 && txtTtu.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1} {2}.jpg", txtFNumb.Text, txtHTen.Text.Trim(), txtTtu.Text.Trim());
+            else if (txtHTen.Text.Trim().Length > 0)
+                strNewImgFileName = string.Format("{0} {1}.jpg", txtFNumb.Text, txtHTen.Text.Trim());
+            else if (txtHTen.Text.Trim().Length <= 0)
+            {
+                txtHTen.Text = "Sen";
+                strNewImgFileName = string.Format("{0} {1}.jpg", txtFNumb.Text, txtHTen.Text.Trim());
+            }
+            return strNewImgFileName;
+        }
+        private void btnImgSave_Click(object sender, EventArgs e)
+        {
+            if (txtHTen.Text.Trim() != "")
+            {
+                try
+                {
+                    string strOrigImgFileName = txtOrigImgFileName.Text.Trim();
+                    string strNewImgFileName = ReFormatInsertImageFileName();               //set new image FileName
+
+                    string strEnglishHoTen = Convert_VN_To_Eng(txtHTen.Text.Trim());        //must remove Vietnamese accent from HoTen
+                    string strEnglishPhapDanh = Convert_VN_To_Eng(txtPDanh.Text.Trim());    //must remove Vietnamese accent from PhapDanh
+
+                    //Format HL's Fullname for searching purpose only
+                    if (strEnglishHoTen.Length > 0 && strEnglishPhapDanh.Length > 0)
+                        txtHLFullName.Text = strEnglishHoTen + " PD " + strEnglishPhapDanh;
+                    else if (strEnglishHoTen.Length > 0)
+                        txtHLFullName.Text = strEnglishHoTen;
+                    else if (strEnglishPhapDanh.Length > 0)
+                        txtHLFullName.Text = "PD " + strEnglishPhapDanh;
+
+
+                    txtOrigImgFileName.Text = strNewImgFileName;            //rename the image filename
+
+                    string strDupHLImgage = GetDupHL(txtOrigImgFileName.Text, txtHLFullName.Text);
+
+                    if (strDupHLImgage == "")
+                    {
+                        //Insert New HL into DB
+                        tblHLTableAdapter.Insert(txtHTen.Text, txtPDanh.Text, txtHLFullName.Text.Trim(), txtTtuAL.Text, txtSsi.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtTtu.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtFNumb.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtOrigImgFileName.Text, txtViTri.Text, txtViTriCot.Text.Trim(), DateTime.Now, null);
+
+                        tblHLBindingSource.EndEdit();
+                        tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB table
+
+                        //release Image filename from HL ListBox in order for the File.Move() to work!
+                        lstBoxHLImg.Items.RemoveAt(lstBoxHLImg.SelectedIndex);
+
+                        //release Picturebox's image in order for the File.Move() to work!
+                        ClearInsertPicBox();
+
+                        //Rename the imagefilename in imgFolderPath and then MOVE it to imgFolderDonePath after save HL data and image filename in HL_DB
+                        if (!strOrigImgFileName.Equals(strNewImgFileName))
+                            Util.FileSavAsAndMove(_ImgFolderPath, _ImgFolderDonePath, strOrigImgFileName, strNewImgFileName);
+                        else
+                            Util.MoveFile(_ImgFolderPath, _ImgFolderDonePath, strNewImgFileName);
+
+                        if (lstBoxHLImg.Items.Count >= 1)
+                            lstBoxHLImg.SelectedIndex = 0;     //refresh HL image and move to the next HL data
+                        else
+                            lstBoxHLImg.SelectedIndex = -1;
+                    }
+                    else
+                    {
+                        DisplayDupImage(strDupHLImgage);
+
+                        if (MessageBox.Show("Duplicate Huong Linh Found.\r\n\r\n" + strDupHLImgage + "\r\n\r\nDo you want to Archive this HL?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            //release Image filename from HL ListBox in order for the File.Move() to work!
+                            lstBoxHLImg.Items.RemoveAt(lstBoxHLImg.SelectedIndex);
+
+                            //release Picturebox's image in order for the File.Move() to work!
+                            ClearInsertPicBox();
+
+                            //release Picturebox's Duplicate image in order for the File.Move() to work!
+                            ClearDupPicBox();
+
+                            if (strOrigImgFileName != strNewImgFileName)
+                                Util.FileSavAsAndMove(_ImgFolderPath, _ImgFolderArchivePath, strOrigImgFileName, strNewImgFileName);
+                            else
+                                Util.MoveFile(_ImgFolderPath, _ImgFolderArchivePath, strNewImgFileName);
+
+                            if (lstBoxHLImg.Items.Count >= 1)
+                                lstBoxHLImg.SelectedIndex = 0;     //refresh HL image and move to the next HL data
+                            else
+                                lstBoxHLImg.SelectedIndex = -1;
+                        }
+                        else
+                        {
+                            //clear Duplicate image
+                            ClearDupPicBox();
+                        }
+                    }
+                }
+                catch (System.Data.OleDb.OleDbException ex) //(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tblHLBindingSource.CancelEdit();            //roll back
+                    tblHLBindingSource.ResetBindings(false);
+                }
+            }
+            else
+            {
+                lblErrorMsg.Text = "Please select Filenumber, HoTen, ... before click SAVE!";
+            }
+        }
+
+        #endregion - Insert Tab Section
+
+        private void txtHoTen_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+        private void txtPhapDanh_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+        private void txtSinh_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+        private void txtTu_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+
+        private void txtTuAL_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)   //Enter key press
+            {
+                Save();
+            }
+        }
+    }
+}
