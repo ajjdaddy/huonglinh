@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CDN_HL
@@ -93,7 +93,7 @@ namespace CDN_HL
                     //else 
                     if (strEnglishHoTen.Length > 0)
                         dr["Fullname"] = strEnglishHoTen;
-                    
+
                     if (strEnglishPhapDanh.Length > 0)
                         dr["FullPhapDanh"] = strEnglishPhapDanh;
 
@@ -113,15 +113,21 @@ namespace CDN_HL
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!VerifyAndSetupDataSourceAndWorkingFolders())
+            {
+                // failed to verify or setup all settings
+                MessageBox.Show("Unable to set up Huong Linh access database. Shutting down CDN_HL application!",
+                    @"Invalid CDN_HL Database Setting");
+                Environment.Exit(1);
+            }
+
             //Add References: Assemblies >> System.Configuration
-            _ImgFolderPath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderPath");
-            _ImgFolderDonePath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderDonePath");
-            _ImgFolderArchivePath = System.Configuration.ConfigurationManager.AppSettings.Get("ImgFolderArchivePath");
+            _ImgFolderPath = ConfigurationManager.AppSettings.Get("ImgFolderPath");
+            _ImgFolderDonePath = ConfigurationManager.AppSettings.Get("ImgFolderDonePath");
+            _ImgFolderArchivePath = ConfigurationManager.AppSettings.Get("ImgFolderArchivePath");
 
             Location = new Point(20, 20);   //Starts the Form at this location
-
             tabSearch.Select(); //Active the tab control and select the tabSearch
-
             RefreshSearchTab();
 
             //--------------------------------------------------------------------------------------
@@ -154,13 +160,27 @@ namespace CDN_HL
             dN_HLDataSet.tblHL.DefaultView.RowFilter = "";
             dN_HLDataSet.tblHL.DefaultView.Sort = "";
             dN_HLDataSet.tblHL.AcceptChanges();
-            
-            this.tblHLTableAdapter.Fill(this.dN_HLDataSet.tblHL);
+
+            try
+            {
+                this.tblHLTableAdapter.Fill(this.dN_HLDataSet.tblHL);
+            }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show($"Unable to access the CDN_HL database! Install the Office.AccessDB.Redistribution.32bit.exe or" +
+                    $" Rebuild the solution in x86 platform!", "Exit Application");
+                Environment.Exit(1);
+            }
+            catch
+            {
+                // Auto restart the application to enforce the updated application settings
+                Application.Restart();
+            }
 
             tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
             tblHLBindingSource.Position = 0;
             datasGridViewBinding(tblHLBindingSource);
-            
+
             DisplayImage();
 
             //txtsSearch.Focus();
@@ -183,7 +203,7 @@ namespace CDN_HL
                 //use lblsOrigFilename.Text for Image Filename
                 strImgFileNamePath = _ImgFolderDonePath + lblsOrigFilename.Text.Trim();
             }
-            
+
             if (strImgFileNamePath != "")
             {
                 if (File.Exists(strImgFileNamePath))
@@ -192,12 +212,12 @@ namespace CDN_HL
                     Bitmap bitImageFileCopy = new Bitmap((Image)bitImageFileOrig);
 
                     picsBoxHL.SizeMode = PictureBoxSizeMode.StretchImage;    //in order to have any image "resize" to fit a picturebox, you must set this  
-                    picsBoxHL.Width = 440;   // 300;   // 580;
-                    picsBoxHL.Height = 450;  // 260;   // 500;
+                    picsBoxHL.Width = 170; // 440;   // 300;   // 580;
+                    picsBoxHL.Height = 200; //450;  // 260;   // 500;
                     picsBoxHL.Image = (Image)bitImageFileCopy;
                     piciBoxHL.Refresh();
                     picsBoxHL.Tag = txtsHoTen.Text;
-                    
+
                     bitImageFileOrig.Dispose(); //release the Original image file to allow this file to be deleted in this program
                     //bitImageFileCopy.Dispose();   //DO NOT >> SET bitImageFileCopy.Dispose(); << IT WILL CAUSE THE APPLICATION STOP RUNNING!!
 
@@ -296,12 +316,12 @@ namespace CDN_HL
 
                         tblHLTableAdapter.Update(dN_HLDataSet.tblHL);   //update the DB
                         dN_HLDataSet.tblHL.AcceptChanges();             //update the DataSet
-                        
+
                         tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
                         datasGridView.Focus();
 
                         DisplayImage();                                 //display the current selected item in datasGridView
-                        
+
                         txtsSearch.Text = "Successfully deleted!";
                         txtsSearch.ForeColor = System.Drawing.Color.Red;          //Text 
                         txtsSearch.BackColor = System.Drawing.Color.Yellow;       //Background
@@ -387,10 +407,10 @@ namespace CDN_HL
         {
             if (lblsOrigViTriHinh.Text.Trim() != txtsViTriHinh.Text.Trim())
                 txtsViTriHinh.BackColor = System.Drawing.Color.Gainsboro;        //Background
-            
+
             if (lblsOrigViTriCot.Text.Trim() != txtsViTriCot.Text.Trim())
                 txtsViTriCot.BackColor = System.Drawing.Color.Gainsboro;
-            
+
             if (lblsOrigHoTen.Text.Trim() != txtsHoTen.Text.Trim())
                 txtsHoTen.BackColor = System.Drawing.Color.Gainsboro;
 
@@ -460,7 +480,7 @@ namespace CDN_HL
             try
             {   //1 Ngô Dung Pd Nhật Đoan 1919-2002.jpg
                 lblsErrorMsg.Text = "";
-                
+
                 string strEnglishHoTen = Convert_VN_To_Eng(txtsHoTen.Text.Trim());
                 string strEnglishPhapDanh = Convert_VN_To_Eng(txtsPhapDanh.Text.Trim());
 
@@ -497,7 +517,7 @@ namespace CDN_HL
                 datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
                 datasGridView.Focus();
 
-                
+
                 lblsErrorMsg.Text = "Saved!! !!!!";
             }
             catch (Exception ex)
@@ -858,7 +878,7 @@ namespace CDN_HL
                     {
                         //1st - filter the Search by last item in the astrSearchName
                         dN_HLDataSet.tblHL.DefaultView.RowFilter = strRowFilter;    //Fullname like '% phuong%'
-                        
+
                         if (dN_HLDataSet.tblHL.DefaultView.Count > 0)
                         {
                             //This table has all the data with "Fullname like '% phuong%"
@@ -1110,7 +1130,7 @@ namespace CDN_HL
         private bool SearchPhapDanhArray(string[] astrSearchName)
         {
             bool bDataFound = false;
-            
+
             dN_HLDataSet.tblHL.CaseSensitive = false;                   //search (upper/lower) cases
 
             for (int ix = astrSearchName.Length - 1; ix >= 0; --ix)
@@ -1659,7 +1679,7 @@ namespace CDN_HL
                     lstiBoxHLImg.Items.Clear();
 
                 //#1. get the list of All HL image files
-                ArrayList aLstHLImg = Util.SearchFileName(_ImgFolderPath, "*.jpg");
+                ArrayList aLstHLImg = Util.SearchFileName(_ImgFolderPath, "*.jpg|*.png");
 
                 //DO NOT use lstBoxHLImg.DataSource = aLstHLImg;
                 //because you can't use lstBoxHLImg.Items.RemoveAt(ixSelected);
@@ -1667,7 +1687,7 @@ namespace CDN_HL
                 {
                     lstiBoxHLImg.Items.Add(strHL_Img);          //MUST ADD EACH IMG to the Items list: lstBoxHLImg.Items.Add(strHL_Img) IN ORDER FOR: lstBoxHLImg.Items.RemoveAt(ixSelected);    TO WORK!!
                 }
-                
+
                 if (lstiBoxHLImg.Items.Count > 0)
                     lstiBoxHLImg.SelectedIndex = 0;             //trigger lstiBoxHLImg_SelectedIndexChanged
                 else
@@ -1738,8 +1758,8 @@ namespace CDN_HL
                         piciBoxHL.Location = new Point(17, 230);
                     }
                     piciBoxHL.SizeMode = PictureBoxSizeMode.StretchImage;    //in order to have any image "resize" to fit a picturebox, you must set PictureBoxSizeMode.StretchImage 
-                    piciBoxHL.Width = 440;   // 300;   // 580;
-                    piciBoxHL.Height = 450;  // 260;   // 500;
+                    piciBoxHL.Width = 300; // 440;   // 300;   // 580;
+                    piciBoxHL.Height = 360; // 450;  // 260;   // 500;
                     piciBoxHL.Image = (Image)bitImageFile;
                     piciBoxHL.Refresh();
                     bitImageFile = null; //to release the image file and allow this image file to be deleted 
@@ -1763,7 +1783,7 @@ namespace CDN_HL
             //if (strNewHL_Fullname.ToUpper() == "HOA SEN" || strNewHL_Fullname.ToUpper() == "A DI DA PHAT" || strNewHL_Fullname.ToUpper() == "BAI VI CHU HOA" || strNewHL_Fullname.ToUpper() == "VO DANH")
             //    strRowFilter = "(FileName like '%" + strNewImgFilename + "%') OR (Fullname like '%" + strNewImgFilename + "%')";
             //else
-                
+
             strRowFilter = "(HinhFileNamePath like '%" + strNewImgFilename + "%') OR (Fullname like '%" + strNewHL_Fullname + "%')";
 
             dN_HLDataSet.tblHL.CaseSensitive = false;  //search (upper/lower) cases
@@ -2405,9 +2425,24 @@ namespace CDN_HL
 
                 //Rename the imagefilename in imgFolderPath and then MOVE it to imgFolderDonePath after save HL data and image filename in HL_DB
                 if (!strOrigImgFileName.Equals(strNewImgFileName))
+                {
+                    //if (Util.ResizeImageAndSave($"{_ImgFolderPath}{strOrigImgFileName}", $"{_ImgFolderDonePath}{strNewImgFileName}", 200) == false)
+                    //    MessageBox.Show($"Unable to resize and save image from '{_ImgFolderPath}{strOrigImgFileName}' to '{_ImgFolderDonePath}{strNewImgFileName}'. " +
+                    //        $"'{_ImgFolderDonePath}{strNewImgFileName}' may have already existed.");
+                    //File.Delete($"{_ImgFolderPath}{strOrigImgFileName}");
                     Util.FileSaveAsAndMove(_ImgFolderPath, _ImgFolderDonePath, strOrigImgFileName, strNewImgFileName);
+                }
                 else
+                {
+                    //if (Util.ResizeImageAndSave($"{_ImgFolderPath}{strNewImgFileName}", $"{_ImgFolderDonePath}{strNewImgFileName}", 200) == false)
+                    //    MessageBox.Show($"Unable to resize and save image from '{_ImgFolderPath}{strNewImgFileName}' to '{_ImgFolderDonePath}{strNewImgFileName}'. " +
+                    //        $"'{_ImgFolderDonePath}{strNewImgFileName}' may have already existed.");
+                    //ClearInsertPicBox();
+                    ////release Image filename from HL ListBox in order for the File.Move() to work!
+                    //lstiBoxHLImg.Items.RemoveAt(lstiBoxHLImg.SelectedIndex);
+                    //File.Delete($"{_ImgFolderPath}{strOrigImgFileName}");
                     Util.MoveFile(_ImgFolderPath, _ImgFolderDonePath, strNewImgFileName);
+                }
             }
             catch (Exception e)
             {
@@ -2425,10 +2460,10 @@ namespace CDN_HL
 
                     if (strEnglishHoTen.Length > 0)
                         lbliFullname.Text = strEnglishHoTen;
-                    
+
                     if (strEnglishPhapDanh.Length > 0)
                         lbliFullPhapDanh.Text = strEnglishPhapDanh;
-                    
+
                     string strDupHLImgage = GetDupHL(txtiFilename.Text, lbliFullname.Text);
 
                     if (strDupHLImgage == "")
@@ -2976,6 +3011,319 @@ namespace CDN_HL
         //}
 
         #endregion =========================== functions NOT USE in this project
+
+        #region ===================== new methods
+        private void btnLoadLogFile_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = ConfigurationManager.AppSettings.Get("ErrLogPath");
+                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Multiselect = false;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    lblLogFileName.Text = openFileDialog.FileName;
+                    var fileStream = openFileDialog.OpenFile();
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        txtLogFileText.Text = reader.ReadToEnd();
+                    }
+                }
+            }
+        }
+
+        private void btnClearLogFile_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = ConfigurationManager.AppSettings.Get("ErrLogPath");
+                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Multiselect = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    foreach(var fileName in openFileDialog.FileNames)
+                    {
+                        File.Delete(fileName);
+                        using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write))
+                        {
+                            StreamWriter sw = new StreamWriter(fs);
+                            sw.WriteLine(DateTime.Now + " Clear all!");
+                            sw.Flush();
+                            fs.Close();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnSelectInsertFile_Click(object sender, EventArgs e)
+        {
+            var fileList = new string[0];
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = _ImgFolderPath;
+                openFileDialog.Filter = "Images (*.JPG;*.JPEG;*.PNG)|*.JPG;*.JPEG;*.PNG|" +
+                    "All files (*.*)|*.*";
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Multiselect = true;
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    return; //No file to load
+                fileList = openFileDialog.FileNames;
+            }
+
+            // Resize all selected images
+            foreach (string strImgFileName in fileList)
+            {
+                if (Util.ResizeImageAndSave(strImgFileName, $"{_ImgFolderPath}{Path.GetFileName(strImgFileName)}") == false)
+                    MessageBox.Show($"Unable to resize and save image! '{strImgFileName}' may have already existed.");
+            }
+
+            BindingImgInsertTab();
+        }
+
+        /// <summary>
+        /// Use datasource of the connection string to re-initialize folders
+        /// if have not existed
+        /// </summary>
+        /// <returns></returns>
+        private bool VerifyAndSetupDataSourceAndWorkingFolders()
+        {
+            var strNewConnectionString = string.Empty;
+            var strACCDBFileName = string.Empty;
+            var strImgFolderPath = string.Empty;
+            var strImgDoneFolderPath = string.Empty;
+            var strImgArchiveFolderPath = string.Empty;
+            string strErrorFolder;
+
+            var updateConnectionStringInAppSetting = false;
+            var updateAndCreateImageFolder = false;
+            var updateAndCreateDoneImageFolder = false;
+            var updateAndCreateArchiveImageFolder = false;
+
+            // find error log folder, configure if not existed
+            if (!Directory.Exists(ConfigurationManager.AppSettings.Get("ErrLogPath")))
+            {
+                // Setup error folder and error file to log data
+                strErrorFolder = GetAFolderLocation(@"ERROR FOLDER");
+                if (string.IsNullOrWhiteSpace(strErrorFolder))
+                    return false;
+                strErrorFolder += @"\";
+            }
+            else
+                strErrorFolder = ConfigurationManager.AppSettings.Get("ErrLogPath");
+
+            var errorLogFile = ConfigurationManager.AppSettings.Get("ErrLogFile");    
+            Directory.CreateDirectory(strErrorFolder);
+            if (string.IsNullOrEmpty(errorLogFile))
+                errorLogFile = @"ErrLog.txt";
+
+            Util.LogAMessage($"{strErrorFolder}{errorLogFile}", "CDN_HL application restarts...");
+            Util.LogAMessage($"{strErrorFolder}Log.txt", "CDN_HL application restarts...");
+
+            AddUpdateAppSettings(@"ErrLogPath", strErrorFolder);
+            AddUpdateAppSettings(@"ErrLogFile", errorLogFile);
+
+            // find data source folder and configure it if not existed
+            foreach (string part in Properties.Settings.Default.DN_HLConnectionString.Split(';'))
+            {
+                if (part.Trim().StartsWith("Data Source="))
+                {
+                    strNewConnectionString = $"{strNewConnectionString}Data Source=";
+                    strACCDBFileName = part.Replace("Data Source=", "");
+                    break;
+                }
+                strNewConnectionString = $"{strNewConnectionString}{part};";
+            }
+            var fileExisted = File.Exists(strACCDBFileName);
+            if (!fileExisted)
+            {
+                Util.LogAMessage($"{strErrorFolder}Log.txt", "accdb data source in connection string does not existed.");
+                strACCDBFileName = GetACCDBFileLocation();
+                if (string.IsNullOrWhiteSpace(strACCDBFileName))
+                {
+                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup new accdb data source.");
+                    return false;
+                }
+
+                strNewConnectionString = $"{strNewConnectionString}{strACCDBFileName};";
+                updateConnectionStringInAppSetting = true;
+                Util.LogAMessage($"{strErrorFolder}Log.txt", "Updated accdb data source.");
+            }
+
+            // find image, image done, archive folders, configure if not existed
+            if (!Directory.Exists(ConfigurationManager.AppSettings.Get("ImgFolderPath")))
+            {
+                strImgFolderPath = GetAFolderLocation(@"IMAGE FOLDER");
+                if (string.IsNullOrWhiteSpace(strImgFolderPath))
+                {
+                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE FOLDER.");
+                    return false;
+                }
+                updateAndCreateImageFolder = true;
+
+                strImgDoneFolderPath = GetAFolderLocation(@"IMAGE DONE FOLDER");
+                if (string.IsNullOrWhiteSpace(strImgDoneFolderPath))
+                {
+                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE DONE FOLDER.");
+                    return false;
+                }
+                updateAndCreateDoneImageFolder = true;
+
+                strImgArchiveFolderPath = GetAFolderLocation(@"IMAGE ARCHIVE FOLDER");
+                if (string.IsNullOrWhiteSpace(strImgArchiveFolderPath))
+                {
+                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE ARCHIVE FOLDER.");
+                    return false;
+                }
+                updateAndCreateArchiveImageFolder = true;
+            }
+
+            // Time to update app.setting or create all nessessary folders
+            if (updateConnectionStringInAppSetting)
+                UpdateConnectionString(strNewConnectionString);
+
+            if (updateAndCreateImageFolder)
+            {
+                Directory.CreateDirectory(strImgFolderPath);
+                AddUpdateAppSettings(@"ImgFolderPath", $"{strImgFolderPath}\\");
+            }
+
+            if (updateAndCreateDoneImageFolder)
+            {
+                Directory.CreateDirectory(strImgDoneFolderPath);
+                AddUpdateAppSettings(@"ImgFolderDonePath", $"{strImgDoneFolderPath}\\");
+            }
+
+            if (updateAndCreateArchiveImageFolder)
+            {
+                Directory.CreateDirectory(strImgArchiveFolderPath);
+                AddUpdateAppSettings(@"ImgFolderArchivePath", $"{strImgArchiveFolderPath}\\");
+                Directory.CreateDirectory($"{strImgArchiveFolderPath}2");
+                AddUpdateAppSettings(@"ImgFolderArchivePath2", $"{strImgArchiveFolderPath}2\\");
+                Directory.CreateDirectory($"{strImgArchiveFolderPath}3");
+                AddUpdateAppSettings(@"ImgFolderArchivePath3", $"{strImgArchiveFolderPath}3\\");
+                Directory.CreateDirectory($"{strImgArchiveFolderPath}4");
+                AddUpdateAppSettings(@"ImgFolderArchivePath4", $"{strImgArchiveFolderPath}4\\");
+            }
+
+            Util.LogAMessage($"{strErrorFolder}Log.txt", "Verification/setting up/updating Appsetting completed.");
+            return true;
+        }
+
+        /// <summary>
+        /// Get access database file
+        /// </summary>
+        /// <returns></returns>
+        private string GetACCDBFileLocation()
+        {
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = @"C:\\";
+                openFileDialog.Filter = "ACCDB files (*.accdb)|*.accdb";
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Multiselect = false;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    return openFileDialog.FileName;
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Get a folder location
+        /// </summary>
+        /// <param name="folderType">string indicates what type of folder to be browsed</param>
+        /// <returns>A folder path</returns>
+        private string GetAFolderLocation(string folderType)
+        {
+            using (var folderBrowserDialog = new FolderBrowserDialog())
+            {
+                folderBrowserDialog.Description = $"Where {folderType} should be?";
+                folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                    return folderBrowserDialog.SelectedPath;
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Add or update AppSettings
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="value">Value</param>
+        private void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = ((AppSettingsSection)configFile.GetSection("appSettings")).Settings;
+                if (settings[key] == null)
+                    settings.Add(key, value);
+                else
+                    settings[key].Value = value;
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error writing app settings");
+            }
+        }
+
+        /// <summary>
+        /// Update the connection string
+        /// </summary>
+        /// <param name="newConnectionString"></param>
+        private void UpdateConnectionString(string newConnectionString)
+        {
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+            if (connectionStringsSection != null)
+            {
+                connectionStringsSection.ConnectionStrings["CDN_HL.Properties.Settings.DN_HLConnectionString"].ConnectionString = newConnectionString;
+                config.Save();
+                ConfigurationManager.RefreshSection("connectionStrings");
+            }
+        }
+
+        private int rowIndex = 0;
+        private void datasGridView_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                datasGridView.Rows[e.RowIndex].Selected = true;
+                rowIndex = e.RowIndex;
+                datasGridView.CurrentCell = datasGridView.Rows[e.RowIndex].Cells[1];
+                dataGridMenuStrip.Show(datasGridView, e.Location);
+                dataGridMenuStrip.Show(Cursor.Position);
+            }
+        }
+
+        private void dataGridMenuStrip_Click(object sender, EventArgs e)
+        {
+            if (!datasGridView.Rows[rowIndex].IsNewRow)
+            {
+                var result = MessageBox.Show(@"Are you sure to delete this HL?", @"Deleting HL", MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
+                {
+                    datasGridView.Rows.RemoveAt(rowIndex);
+                    tblHLBindingSource.EndEdit();
+                    tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
+                    dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
+                    datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
+                    datasGridView.Focus();
+                }
+            }
+        }
+        #endregion =================== new methods
 
     }
 }

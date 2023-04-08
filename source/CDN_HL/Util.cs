@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CDN_HL
 {
@@ -117,16 +118,21 @@ namespace CDN_HL
         {
             ArrayList aLstImgFileName = new ArrayList();
 
+            var strSearchList = strImgFileNameSearch.Split('|');
+
             if (IsDirExist(strImgFilePath))
             {
-                string[] arrStrScanImgFileNameList = Directory.GetFiles(strImgFilePath, strImgFileNameSearch);
-                if (arrStrScanImgFileNameList.Length > 0)
+                foreach (var strToSearch in strSearchList)
                 {
-                    foreach (string strImgFileName in arrStrScanImgFileNameList)
-                        aLstImgFileName.Add(strImgFileName.TrimStart('\\').Replace(strImgFilePath, ""));
+                    string[] arrStrScanImgFileNameList = Directory.GetFiles(strImgFilePath, strToSearch);
+                    if (arrStrScanImgFileNameList.Length > 0)
+                    {
+                        foreach (string strImgFileName in arrStrScanImgFileNameList)
+                            aLstImgFileName.Add(strImgFileName.TrimStart('\\').Replace(strImgFilePath, ""));
+                    }
+                    else
+                        aLstImgFileName.Add("File Not Found.");
                 }
-                else
-                    aLstImgFileName.Add("File Not Found.");
             }
             else
                 aLstImgFileName.Add("File Path Not Found.");
@@ -210,7 +216,7 @@ namespace CDN_HL
                         {
                             //the FileName existed in the Destination folder path, [then we don't need to move the file]
                             //Just delete the Source File so it won't be in the img folder
-                            File.Delete(strSourceFileName); 
+                            File.Delete(strSourceFileName);
                         }
                     }
                     catch (Exception ex)
@@ -376,6 +382,7 @@ namespace CDN_HL
                     try
                     {
                         if (!System.IO.File.Exists(strDestFileName))
+                            
                             File.Move(strSourceFileName, strDestinFileNameMove);    //file move and save as
                         else
                         {
@@ -676,7 +683,7 @@ namespace CDN_HL
                 }
                 catch (Exception e)
                 {
-                    bValid = false; 
+                    bValid = false;
                     string strExcpt = e.ToString();
                     ErrLog(strExcpt);
                 }
@@ -794,5 +801,104 @@ namespace CDN_HL
 
             return bValue;
         }
+
+        #region Resize and convert images
+
+        /// <summary>
+        /// Resize an image based on the provided image size 
+        /// and save the image as the provided destFileName
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        /// <param name="imageSizeLength"></param>
+        /// <returns>True if succedded; Otherwise, False.</returns>
+        public static bool ResizeImageAndSave(string sourceFileName, string destFileName, int imageSizeLength = 400)
+        {
+            // File already existed; No modification or nothing to do
+            if (File.Exists(destFileName))
+                return false;
+
+            var resizedImg = ResizeImage(new Bitmap(Image.FromFile(sourceFileName)), new Size(imageSizeLength, imageSizeLength));
+            if (resizedImg == null)
+                return false;
+
+            var result = ConvertBitmapImageToJPGAndSave(resizedImg, destFileName);
+            resizedImg.Dispose();
+            return result;
+        }
+
+        /// <summary>
+        /// Resize an image based on the provide size
+        /// </summary>
+        /// <param name="imgToResize">An image to resize</param>
+        /// <param name="size">The size of the image</param>
+        /// <returns>A bitmap of a new resized image</returns>
+        private static Bitmap ResizeImage(Image imgToResize, Size size)
+        {
+            int sourceWidth = imgToResize.Width;
+            int sourceHeight = imgToResize.Height;
+            float nPercentW = size.Width / (float)sourceWidth;
+            float nPercentH = size.Height / (float)sourceHeight;
+            float nPercent;
+            if (nPercentH < nPercentW)
+                nPercent = nPercentH;
+            else
+                nPercent = nPercentW;
+
+            int destWidth = (int)(sourceWidth * nPercent);
+            int destHeight = (int)(sourceHeight * nPercent);
+            Bitmap imgBitmap = new Bitmap(destWidth, destHeight);
+            Graphics graphics = Graphics.FromImage(imgBitmap);
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+            graphics.Dispose();
+            return imgBitmap;
+        }
+
+        /// <summary>
+        /// Convert an bitmap image and save as .JPG using the provided new ImageFileName
+        /// </summary>
+        /// <param name="imgBitmap"The image bitmap></param>
+        /// <param name="newImageFileName">The new image file name</param>
+        /// <returns>True if succeeded; Otherwise, False.</returns>
+        private static bool ConvertBitmapImageToJPGAndSave(Bitmap imgBitmap, string newImageFileName)
+        {
+            ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+            var myEncoder = Encoder.Quality;
+            var myEncoderParameters = new EncoderParameters(1);
+
+            // Save the bitmap as a JPG file with 100% quality level compression.
+            var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+            myEncoderParameters.Param[0] = myEncoderParameter;
+
+            if (File.Exists(newImageFileName))
+                return false; // File already existed; There will be no image coversion.
+
+            imgBitmap.Save(newImageFileName, jpgEncoder,
+                myEncoderParameters);
+            imgBitmap.Dispose();
+            return true;
+        }
+
+        /// <summary>
+        /// Get an image encoder based on the provided image format
+        /// </summary>
+        /// <param name="format">The image format</param>
+        /// <returns>The image encoder info</returns>
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+                if (codec.FormatID == format.Guid)
+                    return codec;
+            return null;
+        }
+
+        public static void LogAMessage(string fileName, string message)
+        {
+            using (StreamWriter sw = File.AppendText(fileName))
+                sw.WriteLine($"{DateTime.Now}: {message}");
+        }
+        #endregion new methods
     }
 }
