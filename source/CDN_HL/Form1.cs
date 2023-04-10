@@ -517,16 +517,13 @@ namespace CDN_HL
                 datasGridView.Refresh();
                 datasGridView.Focus();
 
-                //tblHLBindingSource.EndEdit();
-                //dN_HLDataSet.tblHL.AcceptChanges();             //update the DataSet
-                //tblHLTableAdapter.Update(dN_HLDataSet.tblHL);   //update the DB
-                //tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
-                //datasGridView.Focus();
                 lblsErrorMsg.Text = "Saved!! !!!!";
+                Util.LogAMessage(_logFile, $"Updated '{_ImgFolderDonePath}{lblsOrigFilename.Text}'");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.LogAMessage(_errorFile, $"Failed to update '{_ImgFolderDonePath}{lblsOrigFilename.Text}'. Exception: '{ex.Message}'");
                 tblHLBindingSource.ResetBindings(false);
             }
         }
@@ -2410,11 +2407,10 @@ namespace CDN_HL
         }
         private void Insert_HL()
         {
+            string strOrigImgFileName = lbliOrigFilename.Text.Trim();
+            string strNewImgFileName = txtiFilename.Text.Trim();
             try
             {
-                string strOrigImgFileName = lbliOrigFilename.Text.Trim();
-                string strNewImgFileName = txtiFilename.Text.Trim();
-
                 //Insert New HL into DB
                 tblHLTableAdapter.Insert(txtiHoTen.Text, txtiPhapDanh.Text, txtiSinh.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiTu.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiViTriHinh.Text, txtiViTriCot.Text.Trim(), txtiFilename.Text, txtiNote.Text.Trim(), txtiFileNumber.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), lbliFullname.Text.Trim(), txtiTuAL.Text, DateTime.Now.ToString("G"), null, lbliFullPhapDanh.Text.Trim(), null);
 
@@ -2432,9 +2428,12 @@ namespace CDN_HL
                     Util.FileSaveAsAndMove(_ImgFolderPath, _ImgFolderDonePath, strOrigImgFileName, strNewImgFileName);
                 else
                     Util.MoveFile(_ImgFolderPath, _ImgFolderDonePath, strNewImgFileName);
+
+                Util.LogAMessage(_logFile, $"Inserted '{_ImgFolderDonePath}{strOrigImgFileName}'");
             }
             catch (Exception e)
             {
+                Util.LogAMessage(_errorFile, $"Failed to add '{_ImgFolderDonePath}{strOrigImgFileName}'. Exception: '{e.Message}'");
                 throw new Exception(e.Message);
             }
         }
@@ -3318,7 +3317,6 @@ namespace CDN_HL
                         dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
                         tblHLBindingSource.EndEdit();
                         tblHLBindingSource.ResetBindings(true);
-                        //datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
                         datasGridView.Focus();
                         File.Delete($"{_ImgFolderDonePath}{hlFileName}");
                         Util.LogAMessage(_logFile, $"Deleted '{_ImgFolderDonePath}{hlFileName}'.");
@@ -3368,8 +3366,13 @@ namespace CDN_HL
 
         private void MigrateImages()
         {
+            var completedImagesCount = 0;
+            var failedImagesCount = 0;
+            var timer = new Stopwatch();
+            timer.Start();
             lstDestImages.Items.Clear();
             lblErrorMessage.Text = @"Ready...";
+
             var selectedItems = lstSourceImages.SelectedItems;
             for (int i = selectedItems.Count - 1; i >= 0; i--)
             {
@@ -3384,26 +3387,33 @@ namespace CDN_HL
                         lblErrorMessage.Text = @"Failed. See error log for details.";
                         Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                             Environment.NewLine + $"File may have already existed in the destination folder.");
+                        failedImagesCount++;
                         continue;
                     }
 
                     lstDestImages.Items.Add(selectedItems[i]);
                     lstSourceImages.Items.Remove(selectedItems[i]);
+                    completedImagesCount++;
                 }
                 catch (Exception ex)
                 {
                     lblErrorMessage.Text = @"Failed. See error log for details.";
                     Util.LogAMessage(_errorFile, $"Failed to resize '{_strSourceImagesFolder}{toDoItem}' to '{lblDestImageFolder.Text}{toDoItem}'." +
                         Environment.NewLine + $"Ex: {ex.Message}");
+                    failedImagesCount++;
                     continue;
                 }
             }
 
-            if (!lblErrorMessage.Text.Contains(@"Failed"))
-            {
-                Util.LogAMessage(_logFile, $"Resized image operation '{_strSourceImagesFolder}' to '{lblDestImageFolder.Text}' completed.");
-                lblErrorMessage.Text = @"Operation completed!!!";
-            }
+            timer.Stop();
+            Util.LogAMessage(_logFile, $"Resized image operation '{_strSourceImagesFolder}' to '{lblDestImageFolder.Text}' completed." +
+                Environment.NewLine + $"Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
+                $"Time: '{timer.Elapsed}'.");
+
+            lblErrorMessage.Text = $"Operation completed. " +
+                $"Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
+                $"Time: '{timer.Elapsed}'. " +
+                $"See log file for details!!!";
         }
 
         private void btnResize1_Click(object sender, EventArgs e)
@@ -3440,8 +3450,6 @@ namespace CDN_HL
             MigrateImages();
         }
 
-        #endregion =================== new methods
-
         private void SelectDestinationFolder()
         {
             var strDestImagesFolder = GetAFolderLocation(@"THE RESIZED IMAGES");
@@ -3474,5 +3482,7 @@ namespace CDN_HL
         {
             SelectDestinationFolder();
         }
+
+        #endregion =================== new methods
     }
 }
