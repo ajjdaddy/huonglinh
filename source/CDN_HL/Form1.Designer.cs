@@ -34,6 +34,8 @@ namespace CDN_HL
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabSearch = new System.Windows.Forms.TabPage();
             this.lblsFullPhapDanh = new System.Windows.Forms.Label();
+            this.tblHLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.dN_HLDataSet = new CDN_HL.DN_HLDataSet();
             this.lblsFullname = new System.Windows.Forms.Label();
             this.lblsOrigTuAl = new System.Windows.Forms.Label();
             this.lblsOrigTu = new System.Windows.Forms.Label();
@@ -70,6 +72,12 @@ namespace CDN_HL
             this.txtsViTriHinh = new System.Windows.Forms.TextBox();
             this.lblsHoTen = new System.Windows.Forms.Label();
             this.datasGridView = new System.Windows.Forms.DataGridView();
+            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hoTenDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.phapDanhDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.viTriHinhDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.viTriCotDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.matNgayDLDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HinhFileNamePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.txtsSearch = new System.Windows.Forms.TextBox();
@@ -114,25 +122,30 @@ namespace CDN_HL
             this.lstiBoxHLImg = new System.Windows.Forms.ListBox();
             this.tabDiagnostic = new System.Windows.Forms.TabPage();
             this.gboxLogFile = new System.Windows.Forms.GroupBox();
+            this.txtErrorFileText = new System.Windows.Forms.TextBox();
+            this.lblErrorFileName = new System.Windows.Forms.Label();
             this.txtLogFileText = new System.Windows.Forms.TextBox();
+            this.lblLogFileName = new System.Windows.Forms.Label();
             this.gboxLoadLogFile = new System.Windows.Forms.GroupBox();
             this.btnClearLogFile = new System.Windows.Forms.Button();
-            this.lblLogFileName = new System.Windows.Forms.Label();
             this.btnLoadLogFile = new System.Windows.Forms.Button();
+            this.tabMigration = new System.Windows.Forms.TabPage();
+            this.lblDestImageFolder = new System.Windows.Forms.Label();
+            this.lblErrorMessage = new System.Windows.Forms.Label();
+            this.btnResizeAll = new System.Windows.Forms.Button();
+            this.btnResize1 = new System.Windows.Forms.Button();
+            this.lstDestImages = new System.Windows.Forms.ListBox();
+            this.btnSourceFolder = new System.Windows.Forms.Button();
+            this.lstSourceImages = new System.Windows.Forms.ListBox();
             this.dataGridMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
-            this.tblHLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dN_HLDataSet = new CDN_HL.DN_HLDataSet();
-            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hoTenDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.phapDanhDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.viTriHinhDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.viTriCotDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.matNgayDLDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tblHLTableAdapter = new CDN_HL.DN_HLDataSetTableAdapters.tblHLTableAdapter();
             this.dNHLDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btnSelectDest = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dN_HLDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.datasGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picsBoxHL)).BeginInit();
             this.tabInsert.SuspendLayout();
@@ -141,9 +154,8 @@ namespace CDN_HL
             this.tabDiagnostic.SuspendLayout();
             this.gboxLogFile.SuspendLayout();
             this.gboxLoadLogFile.SuspendLayout();
+            this.tabMigration.SuspendLayout();
             this.dataGridMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dN_HLDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dNHLDataSetBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -152,6 +164,7 @@ namespace CDN_HL
             this.tabControl1.Controls.Add(this.tabSearch);
             this.tabControl1.Controls.Add(this.tabInsert);
             this.tabControl1.Controls.Add(this.tabDiagnostic);
+            this.tabControl1.Controls.Add(this.tabMigration);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -215,7 +228,7 @@ namespace CDN_HL
             this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
             this.tabSearch.Size = new System.Drawing.Size(986, 672);
             this.tabSearch.TabIndex = 0;
-            this.tabSearch.Text = "     Search     ";
+            this.tabSearch.Text = "     Search/Update     ";
             this.tabSearch.UseVisualStyleBackColor = true;
             // 
             // lblsFullPhapDanh
@@ -230,6 +243,16 @@ namespace CDN_HL
             this.lblsFullPhapDanh.Size = new System.Drawing.Size(121, 15);
             this.lblsFullPhapDanh.TabIndex = 36;
             this.lblsFullPhapDanh.Text = "lblsFullPhapDanh";
+            // 
+            // tblHLBindingSource
+            // 
+            this.tblHLBindingSource.DataMember = "tblHL";
+            this.tblHLBindingSource.DataSource = this.dN_HLDataSet;
+            // 
+            // dN_HLDataSet
+            // 
+            this.dN_HLDataSet.DataSetName = "DN_HLDataSet";
+            this.dN_HLDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // lblsFullname
             // 
@@ -686,6 +709,60 @@ namespace CDN_HL
             this.datasGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.datasGridView_KeyDown);
             this.datasGridView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.datasGridView_KeyPress);
             this.datasGridView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.datasGridView_KeyUp);
+            // 
+            // iDDataGridViewTextBoxColumn
+            // 
+            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
+            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
+            this.iDDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // hoTenDataGridViewTextBoxColumn
+            // 
+            this.hoTenDataGridViewTextBoxColumn.DataPropertyName = "HoTen";
+            this.hoTenDataGridViewTextBoxColumn.HeaderText = "HoTen";
+            this.hoTenDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.hoTenDataGridViewTextBoxColumn.Name = "hoTenDataGridViewTextBoxColumn";
+            this.hoTenDataGridViewTextBoxColumn.ReadOnly = true;
+            this.hoTenDataGridViewTextBoxColumn.Width = 300;
+            // 
+            // phapDanhDataGridViewTextBoxColumn
+            // 
+            this.phapDanhDataGridViewTextBoxColumn.DataPropertyName = "PhapDanh";
+            this.phapDanhDataGridViewTextBoxColumn.HeaderText = "PhapDanh";
+            this.phapDanhDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.phapDanhDataGridViewTextBoxColumn.Name = "phapDanhDataGridViewTextBoxColumn";
+            this.phapDanhDataGridViewTextBoxColumn.ReadOnly = true;
+            this.phapDanhDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // viTriHinhDataGridViewTextBoxColumn
+            // 
+            this.viTriHinhDataGridViewTextBoxColumn.DataPropertyName = "ViTriHinh";
+            this.viTriHinhDataGridViewTextBoxColumn.HeaderText = "ViTriHinh";
+            this.viTriHinhDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.viTriHinhDataGridViewTextBoxColumn.Name = "viTriHinhDataGridViewTextBoxColumn";
+            this.viTriHinhDataGridViewTextBoxColumn.ReadOnly = true;
+            this.viTriHinhDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // viTriCotDataGridViewTextBoxColumn
+            // 
+            this.viTriCotDataGridViewTextBoxColumn.DataPropertyName = "ViTriCot";
+            this.viTriCotDataGridViewTextBoxColumn.HeaderText = "ViTriCot";
+            this.viTriCotDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.viTriCotDataGridViewTextBoxColumn.Name = "viTriCotDataGridViewTextBoxColumn";
+            this.viTriCotDataGridViewTextBoxColumn.ReadOnly = true;
+            this.viTriCotDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // matNgayDLDataGridViewTextBoxColumn
+            // 
+            this.matNgayDLDataGridViewTextBoxColumn.DataPropertyName = "MatNgay_DL";
+            this.matNgayDLDataGridViewTextBoxColumn.HeaderText = "MatNgay_DL";
+            this.matNgayDLDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.matNgayDLDataGridViewTextBoxColumn.Name = "matNgayDLDataGridViewTextBoxColumn";
+            this.matNgayDLDataGridViewTextBoxColumn.ReadOnly = true;
+            this.matNgayDLDataGridViewTextBoxColumn.Width = 120;
             // 
             // Note
             // 
@@ -1164,12 +1241,15 @@ namespace CDN_HL
             this.tabDiagnostic.Padding = new System.Windows.Forms.Padding(3);
             this.tabDiagnostic.Size = new System.Drawing.Size(986, 672);
             this.tabDiagnostic.TabIndex = 2;
-            this.tabDiagnostic.Text = "     Diagnostic";
+            this.tabDiagnostic.Text = "     Diagnostic     ";
             this.tabDiagnostic.UseVisualStyleBackColor = true;
             // 
             // gboxLogFile
             // 
+            this.gboxLogFile.Controls.Add(this.txtErrorFileText);
+            this.gboxLogFile.Controls.Add(this.lblErrorFileName);
             this.gboxLogFile.Controls.Add(this.txtLogFileText);
+            this.gboxLogFile.Controls.Add(this.lblLogFileName);
             this.gboxLogFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gboxLogFile.Location = new System.Drawing.Point(3, 50);
             this.gboxLogFile.Name = "gboxLogFile";
@@ -1177,23 +1257,60 @@ namespace CDN_HL
             this.gboxLogFile.TabIndex = 1;
             this.gboxLogFile.TabStop = false;
             // 
+            // txtErrorFileText
+            // 
+            this.txtErrorFileText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtErrorFileText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtErrorFileText.Location = new System.Drawing.Point(3, 329);
+            this.txtErrorFileText.MaxLength = 64000;
+            this.txtErrorFileText.Multiline = true;
+            this.txtErrorFileText.Name = "txtErrorFileText";
+            this.txtErrorFileText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtErrorFileText.Size = new System.Drawing.Size(974, 284);
+            this.txtErrorFileText.TabIndex = 2;
+            this.txtErrorFileText.Text = "Log data....";
+            // 
+            // lblErrorFileName
+            // 
+            this.lblErrorFileName.AutoSize = true;
+            this.lblErrorFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblErrorFileName.Location = new System.Drawing.Point(6, 310);
+            this.lblErrorFileName.Name = "lblErrorFileName";
+            this.lblErrorFileName.Size = new System.Drawing.Size(60, 16);
+            this.lblErrorFileName.TabIndex = 3;
+            this.lblErrorFileName.Text = "Error.txt";
+            this.lblErrorFileName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // txtLogFileText
             // 
-            this.txtLogFileText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLogFileText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLogFileText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogFileText.Location = new System.Drawing.Point(3, 16);
+            this.txtLogFileText.Location = new System.Drawing.Point(3, 30);
             this.txtLogFileText.MaxLength = 64000;
             this.txtLogFileText.Multiline = true;
             this.txtLogFileText.Name = "txtLogFileText";
             this.txtLogFileText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLogFileText.Size = new System.Drawing.Size(974, 600);
+            this.txtLogFileText.Size = new System.Drawing.Size(974, 269);
             this.txtLogFileText.TabIndex = 0;
             this.txtLogFileText.Text = "Log data....";
+            // 
+            // lblLogFileName
+            // 
+            this.lblLogFileName.AutoSize = true;
+            this.lblLogFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLogFileName.Location = new System.Drawing.Point(6, 11);
+            this.lblLogFileName.Name = "lblLogFileName";
+            this.lblLogFileName.Size = new System.Drawing.Size(52, 16);
+            this.lblLogFileName.TabIndex = 1;
+            this.lblLogFileName.Text = "Log.txt";
+            this.lblLogFileName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // gboxLoadLogFile
             // 
             this.gboxLoadLogFile.Controls.Add(this.btnClearLogFile);
-            this.gboxLoadLogFile.Controls.Add(this.lblLogFileName);
             this.gboxLoadLogFile.Controls.Add(this.btnLoadLogFile);
             this.gboxLoadLogFile.Dock = System.Windows.Forms.DockStyle.Top;
             this.gboxLoadLogFile.Location = new System.Drawing.Point(3, 3);
@@ -1204,25 +1321,14 @@ namespace CDN_HL
             // 
             // btnClearLogFile
             // 
-            this.btnClearLogFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClearLogFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearLogFile.Location = new System.Drawing.Point(833, 12);
+            this.btnClearLogFile.Location = new System.Drawing.Point(135, 14);
             this.btnClearLogFile.Name = "btnClearLogFile";
             this.btnClearLogFile.Size = new System.Drawing.Size(141, 27);
             this.btnClearLogFile.TabIndex = 0;
-            this.btnClearLogFile.Text = "Clear Log File(s)";
+            this.btnClearLogFile.Text = "Clear Log Files";
             this.btnClearLogFile.UseVisualStyleBackColor = true;
             this.btnClearLogFile.Click += new System.EventHandler(this.btnClearLogFile_Click);
-            // 
-            // lblLogFileName
-            // 
-            this.lblLogFileName.AutoSize = true;
-            this.lblLogFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogFileName.Location = new System.Drawing.Point(139, 20);
-            this.lblLogFileName.Name = "lblLogFileName";
-            this.lblLogFileName.Size = new System.Drawing.Size(108, 16);
-            this.lblLogFileName.TabIndex = 1;
-            this.lblLogFileName.Text = "log file name...";
             // 
             // btnLoadLogFile
             // 
@@ -1231,9 +1337,106 @@ namespace CDN_HL
             this.btnLoadLogFile.Name = "btnLoadLogFile";
             this.btnLoadLogFile.Size = new System.Drawing.Size(126, 27);
             this.btnLoadLogFile.TabIndex = 2;
-            this.btnLoadLogFile.Text = "Load Log File";
+            this.btnLoadLogFile.Text = "Load Log Files";
             this.btnLoadLogFile.UseVisualStyleBackColor = true;
             this.btnLoadLogFile.Click += new System.EventHandler(this.btnLoadLogFile_Click);
+            // 
+            // tabMigration
+            // 
+            this.tabMigration.Controls.Add(this.btnSelectDest);
+            this.tabMigration.Controls.Add(this.lblDestImageFolder);
+            this.tabMigration.Controls.Add(this.lblErrorMessage);
+            this.tabMigration.Controls.Add(this.btnResizeAll);
+            this.tabMigration.Controls.Add(this.btnResize1);
+            this.tabMigration.Controls.Add(this.lstDestImages);
+            this.tabMigration.Controls.Add(this.btnSourceFolder);
+            this.tabMigration.Controls.Add(this.lstSourceImages);
+            this.tabMigration.Location = new System.Drawing.Point(4, 22);
+            this.tabMigration.Name = "tabMigration";
+            this.tabMigration.Size = new System.Drawing.Size(986, 672);
+            this.tabMigration.TabIndex = 3;
+            this.tabMigration.Text = "    Migration     ";
+            this.tabMigration.UseVisualStyleBackColor = true;
+            // 
+            // lblDestImageFolder
+            // 
+            this.lblDestImageFolder.AutoSize = true;
+            this.lblDestImageFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDestImageFolder.Location = new System.Drawing.Point(741, 13);
+            this.lblDestImageFolder.Name = "lblDestImageFolder";
+            this.lblDestImageFolder.Size = new System.Drawing.Size(27, 16);
+            this.lblDestImageFolder.TabIndex = 31;
+            this.lblDestImageFolder.Text = ".....";
+            this.lblDestImageFolder.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblErrorMessage
+            // 
+            this.lblErrorMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblErrorMessage.AutoSize = true;
+            this.lblErrorMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblErrorMessage.ForeColor = System.Drawing.Color.Red;
+            this.lblErrorMessage.Location = new System.Drawing.Point(7, 45);
+            this.lblErrorMessage.Name = "lblErrorMessage";
+            this.lblErrorMessage.Size = new System.Drawing.Size(346, 17);
+            this.lblErrorMessage.TabIndex = 30;
+            this.lblErrorMessage.Text = "Load source images / Select destination folder";
+            // 
+            // btnResizeAll
+            // 
+            this.btnResizeAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResizeAll.Location = new System.Drawing.Point(453, 251);
+            this.btnResizeAll.Name = "btnResizeAll";
+            this.btnResizeAll.Size = new System.Drawing.Size(70, 69);
+            this.btnResizeAll.TabIndex = 7;
+            this.btnResizeAll.Text = "Resize All Images";
+            this.btnResizeAll.UseVisualStyleBackColor = true;
+            this.btnResizeAll.Click += new System.EventHandler(this.btnResizeAll_Click);
+            // 
+            // btnResize1
+            // 
+            this.btnResize1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResize1.Location = new System.Drawing.Point(453, 159);
+            this.btnResize1.Name = "btnResize1";
+            this.btnResize1.Size = new System.Drawing.Size(70, 69);
+            this.btnResize1.TabIndex = 6;
+            this.btnResize1.Text = "Resize Select Images";
+            this.btnResize1.UseVisualStyleBackColor = true;
+            this.btnResize1.Click += new System.EventHandler(this.btnResize1_Click);
+            // 
+            // lstDestImages
+            // 
+            this.lstDestImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstDestImages.FormattingEnabled = true;
+            this.lstDestImages.Location = new System.Drawing.Point(549, 70);
+            this.lstDestImages.Name = "lstDestImages";
+            this.lstDestImages.ScrollAlwaysVisible = true;
+            this.lstDestImages.Size = new System.Drawing.Size(428, 589);
+            this.lstDestImages.TabIndex = 5;
+            // 
+            // btnSourceFolder
+            // 
+            this.btnSourceFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSourceFolder.Location = new System.Drawing.Point(3, 3);
+            this.btnSourceFolder.Name = "btnSourceFolder";
+            this.btnSourceFolder.Size = new System.Drawing.Size(174, 35);
+            this.btnSourceFolder.TabIndex = 2;
+            this.btnSourceFolder.Text = "Load Source Images";
+            this.btnSourceFolder.UseVisualStyleBackColor = true;
+            this.btnSourceFolder.Click += new System.EventHandler(this.btnSourceFolder_Click);
+            // 
+            // lstSourceImages
+            // 
+            this.lstSourceImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstSourceImages.FormattingEnabled = true;
+            this.lstSourceImages.Location = new System.Drawing.Point(4, 70);
+            this.lstSourceImages.Name = "lstSourceImages";
+            this.lstSourceImages.ScrollAlwaysVisible = true;
+            this.lstSourceImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lstSourceImages.Size = new System.Drawing.Size(428, 589);
+            this.lstSourceImages.TabIndex = 3;
             // 
             // dataGridMenuStrip
             // 
@@ -1249,70 +1452,6 @@ namespace CDN_HL
             this.toolStripMenuItemDelete.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuItemDelete.Text = "Delete HL";
             // 
-            // tblHLBindingSource
-            // 
-            this.tblHLBindingSource.DataMember = "tblHL";
-            this.tblHLBindingSource.DataSource = this.dN_HLDataSet;
-            // 
-            // dN_HLDataSet
-            // 
-            this.dN_HLDataSet.DataSetName = "DN_HLDataSet";
-            this.dN_HLDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // iDDataGridViewTextBoxColumn
-            // 
-            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
-            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
-            this.iDDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
-            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.iDDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // hoTenDataGridViewTextBoxColumn
-            // 
-            this.hoTenDataGridViewTextBoxColumn.DataPropertyName = "HoTen";
-            this.hoTenDataGridViewTextBoxColumn.HeaderText = "HoTen";
-            this.hoTenDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.hoTenDataGridViewTextBoxColumn.Name = "hoTenDataGridViewTextBoxColumn";
-            this.hoTenDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hoTenDataGridViewTextBoxColumn.Width = 300;
-            // 
-            // phapDanhDataGridViewTextBoxColumn
-            // 
-            this.phapDanhDataGridViewTextBoxColumn.DataPropertyName = "PhapDanh";
-            this.phapDanhDataGridViewTextBoxColumn.HeaderText = "PhapDanh";
-            this.phapDanhDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.phapDanhDataGridViewTextBoxColumn.Name = "phapDanhDataGridViewTextBoxColumn";
-            this.phapDanhDataGridViewTextBoxColumn.ReadOnly = true;
-            this.phapDanhDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // viTriHinhDataGridViewTextBoxColumn
-            // 
-            this.viTriHinhDataGridViewTextBoxColumn.DataPropertyName = "ViTriHinh";
-            this.viTriHinhDataGridViewTextBoxColumn.HeaderText = "ViTriHinh";
-            this.viTriHinhDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.viTriHinhDataGridViewTextBoxColumn.Name = "viTriHinhDataGridViewTextBoxColumn";
-            this.viTriHinhDataGridViewTextBoxColumn.ReadOnly = true;
-            this.viTriHinhDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // viTriCotDataGridViewTextBoxColumn
-            // 
-            this.viTriCotDataGridViewTextBoxColumn.DataPropertyName = "ViTriCot";
-            this.viTriCotDataGridViewTextBoxColumn.HeaderText = "ViTriCot";
-            this.viTriCotDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.viTriCotDataGridViewTextBoxColumn.Name = "viTriCotDataGridViewTextBoxColumn";
-            this.viTriCotDataGridViewTextBoxColumn.ReadOnly = true;
-            this.viTriCotDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // matNgayDLDataGridViewTextBoxColumn
-            // 
-            this.matNgayDLDataGridViewTextBoxColumn.DataPropertyName = "MatNgay_DL";
-            this.matNgayDLDataGridViewTextBoxColumn.HeaderText = "MatNgay_DL";
-            this.matNgayDLDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.matNgayDLDataGridViewTextBoxColumn.Name = "matNgayDLDataGridViewTextBoxColumn";
-            this.matNgayDLDataGridViewTextBoxColumn.ReadOnly = true;
-            this.matNgayDLDataGridViewTextBoxColumn.Width = 120;
-            // 
             // tblHLTableAdapter
             // 
             this.tblHLTableAdapter.ClearBeforeFill = true;
@@ -1321,6 +1460,17 @@ namespace CDN_HL
             // 
             this.dNHLDataSetBindingSource.DataSource = this.dN_HLDataSet;
             this.dNHLDataSetBindingSource.Position = 0;
+            // 
+            // btnSelectDest
+            // 
+            this.btnSelectDest.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelectDest.Location = new System.Drawing.Point(549, 5);
+            this.btnSelectDest.Name = "btnSelectDest";
+            this.btnSelectDest.Size = new System.Drawing.Size(176, 35);
+            this.btnSelectDest.TabIndex = 33;
+            this.btnSelectDest.Text = "Select Destination Folder";
+            this.btnSelectDest.UseVisualStyleBackColor = true;
+            this.btnSelectDest.Click += new System.EventHandler(this.btnSelectDest_Click);
             // 
             // Form1
             // 
@@ -1337,6 +1487,8 @@ namespace CDN_HL
             this.tabControl1.ResumeLayout(false);
             this.tabSearch.ResumeLayout(false);
             this.tabSearch.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dN_HLDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.datasGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picsBoxHL)).EndInit();
             this.tabInsert.ResumeLayout(false);
@@ -1347,10 +1499,9 @@ namespace CDN_HL
             this.gboxLogFile.ResumeLayout(false);
             this.gboxLogFile.PerformLayout();
             this.gboxLoadLogFile.ResumeLayout(false);
-            this.gboxLoadLogFile.PerformLayout();
+            this.tabMigration.ResumeLayout(false);
+            this.tabMigration.PerformLayout();
             this.dataGridMenuStrip.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dN_HLDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dNHLDataSetBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -1458,6 +1609,17 @@ namespace CDN_HL
         private System.Windows.Forms.Button btnClearLogFile;
         private System.Windows.Forms.ContextMenuStrip dataGridMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelete;
+        private System.Windows.Forms.TextBox txtErrorFileText;
+        private System.Windows.Forms.Label lblErrorFileName;
+        private System.Windows.Forms.TabPage tabMigration;
+        private System.Windows.Forms.ListBox lstDestImages;
+        private System.Windows.Forms.Button btnSourceFolder;
+        private System.Windows.Forms.ListBox lstSourceImages;
+        private System.Windows.Forms.Button btnResizeAll;
+        private System.Windows.Forms.Button btnResize1;
+        private System.Windows.Forms.Label lblDestImageFolder;
+        private System.Windows.Forms.Label lblErrorMessage;
+        private System.Windows.Forms.Button btnSelectDest;
     }
 }
 

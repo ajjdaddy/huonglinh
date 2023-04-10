@@ -1,22 +1,25 @@
-﻿using System;
+﻿using CDN_HL.DN_HLDataSetTableAdapters;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CDN_HL
 {
     public partial class Form1 : Form
     {
-        public string _ImgFolderPath = "";
-        public string _ImgFolderDonePath = "";
-        public string _ImgFolderArchivePath = "";
+        public string _ImgFolderPath = string.Empty;
+        public string _ImgFolderDonePath = string.Empty;
+        public string _ImgFolderArchivePath = string.Empty;
+        public string _logFile = string.Empty;
+        public string _errorFile = string.Empty;
         static int _ixSelectLength = 0;             //mousedown event (hold index selected length) on txtImgFilename Click
         static int _iClickCount = 0;                //keep track of number clicks on txtImgFilename
 
@@ -125,6 +128,8 @@ namespace CDN_HL
             _ImgFolderPath = ConfigurationManager.AppSettings.Get("ImgFolderPath");
             _ImgFolderDonePath = ConfigurationManager.AppSettings.Get("ImgFolderDonePath");
             _ImgFolderArchivePath = ConfigurationManager.AppSettings.Get("ImgFolderArchivePath");
+            _logFile = $"{ConfigurationManager.AppSettings.Get("ErrLogPath")}Log.txt";
+            _errorFile = $"{ConfigurationManager.AppSettings.Get("ErrLogPath")}{ConfigurationManager.AppSettings.Get("ErrLogFile")}";
 
             Location = new Point(20, 20);   //Starts the Form at this location
             tabSearch.Select(); //Active the tab control and select the tabSearch
@@ -154,16 +159,14 @@ namespace CDN_HL
         private void RefreshSearchTab()
         {
             ClearAllSearchFields();
-
             ResetBackGroundColorForAllFieldsOnSearchTab();
-
             dN_HLDataSet.tblHL.DefaultView.RowFilter = "";
             dN_HLDataSet.tblHL.DefaultView.Sort = "";
-            dN_HLDataSet.tblHL.AcceptChanges();
 
+            dN_HLDataSet.tblHL.AcceptChanges();
             try
             {
-                this.tblHLTableAdapter.Fill(this.dN_HLDataSet.tblHL);
+                tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
             }
             catch (InvalidOperationException)
             {
@@ -180,10 +183,7 @@ namespace CDN_HL
             tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
             tblHLBindingSource.Position = 0;
             datasGridViewBinding(tblHLBindingSource);
-
             DisplayImage();
-
-            //txtsSearch.Focus();
         }
         private void btnsRefresh_Click(object sender, EventArgs e)
         {
@@ -510,14 +510,18 @@ namespace CDN_HL
                 ChangeSearchTabFieldsBackGroundColor();
 
                 tblHLBindingSource.EndEdit();                       //the lblsOrigHoTen.Text.Trim() IS ALWAYS == txtsHoTen.Text.Trim()
-
-                tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
                 dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
-
+                tblHLTableAdapter.Update(dN_HLDataSet.tblHL);       //Update the HL_DB
+                tblHLBindingSource.ResetBindings(true);
                 datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
+                datasGridView.Refresh();
                 datasGridView.Focus();
 
-
+                //tblHLBindingSource.EndEdit();
+                //dN_HLDataSet.tblHL.AcceptChanges();             //update the DataSet
+                //tblHLTableAdapter.Update(dN_HLDataSet.tblHL);   //update the DB
+                //tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
+                //datasGridView.Focus();
                 lblsErrorMsg.Text = "Saved!! !!!!";
             }
             catch (Exception ex)
@@ -2425,24 +2429,9 @@ namespace CDN_HL
 
                 //Rename the imagefilename in imgFolderPath and then MOVE it to imgFolderDonePath after save HL data and image filename in HL_DB
                 if (!strOrigImgFileName.Equals(strNewImgFileName))
-                {
-                    //if (Util.ResizeImageAndSave($"{_ImgFolderPath}{strOrigImgFileName}", $"{_ImgFolderDonePath}{strNewImgFileName}", 200) == false)
-                    //    MessageBox.Show($"Unable to resize and save image from '{_ImgFolderPath}{strOrigImgFileName}' to '{_ImgFolderDonePath}{strNewImgFileName}'. " +
-                    //        $"'{_ImgFolderDonePath}{strNewImgFileName}' may have already existed.");
-                    //File.Delete($"{_ImgFolderPath}{strOrigImgFileName}");
                     Util.FileSaveAsAndMove(_ImgFolderPath, _ImgFolderDonePath, strOrigImgFileName, strNewImgFileName);
-                }
                 else
-                {
-                    //if (Util.ResizeImageAndSave($"{_ImgFolderPath}{strNewImgFileName}", $"{_ImgFolderDonePath}{strNewImgFileName}", 200) == false)
-                    //    MessageBox.Show($"Unable to resize and save image from '{_ImgFolderPath}{strNewImgFileName}' to '{_ImgFolderDonePath}{strNewImgFileName}'. " +
-                    //        $"'{_ImgFolderDonePath}{strNewImgFileName}' may have already existed.");
-                    //ClearInsertPicBox();
-                    ////release Image filename from HL ListBox in order for the File.Move() to work!
-                    //lstiBoxHLImg.Items.RemoveAt(lstiBoxHLImg.SelectedIndex);
-                    //File.Delete($"{_ImgFolderPath}{strOrigImgFileName}");
                     Util.MoveFile(_ImgFolderPath, _ImgFolderDonePath, strNewImgFileName);
-                }
             }
             catch (Exception e)
             {
@@ -3015,51 +3004,38 @@ namespace CDN_HL
         #region ===================== new methods
         private void btnLoadLogFile_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = ConfigurationManager.AppSettings.Get("ErrLogPath");
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                openFileDialog.Multiselect = false;
+            LoadLogFiles();
+        }
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    lblLogFileName.Text = openFileDialog.FileName;
-                    var fileStream = openFileDialog.OpenFile();
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
-                        txtLogFileText.Text = reader.ReadToEnd();
-                    }
-                }
-            }
+        private void LoadLogFiles()
+        {
+            using (StreamReader reader = new StreamReader(_logFile))
+                txtLogFileText.Text = reader.ReadToEnd();
+            using (StreamReader reader = new StreamReader(_errorFile))
+                txtErrorFileText.Text = reader.ReadToEnd();
         }
 
         private void btnClearLogFile_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            File.Delete(_logFile);
+            using (FileStream fs = new FileStream(_logFile, FileMode.Append, FileAccess.Write))
             {
-                openFileDialog.InitialDirectory = ConfigurationManager.AppSettings.Get("ErrLogPath");
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                openFileDialog.Multiselect = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    foreach(var fileName in openFileDialog.FileNames)
-                    {
-                        File.Delete(fileName);
-                        using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write))
-                        {
-                            StreamWriter sw = new StreamWriter(fs);
-                            sw.WriteLine(DateTime.Now + " Clear all!");
-                            sw.Flush();
-                            fs.Close();
-                        }
-                    }
-                }
+                StreamWriter sw = new StreamWriter(fs);
+                sw.WriteLine(DateTime.Now + " Clear all!");
+                sw.Flush();
+                fs.Close();
             }
+
+            File.Delete(_errorFile);
+            using (FileStream fs = new FileStream(_errorFile, FileMode.Append, FileAccess.Write))
+            {
+                StreamWriter sw = new StreamWriter(fs);
+                sw.WriteLine(DateTime.Now + " Clear all!");
+                sw.Flush();
+                fs.Close();
+            }
+
+            LoadLogFiles();
         }
 
         private void btnSelectInsertFile_Click(object sender, EventArgs e)
@@ -3068,8 +3044,7 @@ namespace CDN_HL
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = _ImgFolderPath;
-                openFileDialog.Filter = "Images (*.JPG;*.JPEG;*.PNG)|*.JPG;*.JPEG;*.PNG|" +
-                    "All files (*.*)|*.*";
+                openFileDialog.Filter = "Images (*.JPG;*.JPEG;*.PNG)|*.JPG;*.JPEG;*.PNG";
                 openFileDialog.RestoreDirectory = true;
                 openFileDialog.Multiselect = true;
 
@@ -3081,8 +3056,25 @@ namespace CDN_HL
             // Resize all selected images
             foreach (string strImgFileName in fileList)
             {
-                if (Util.ResizeImageAndSave(strImgFileName, $"{_ImgFolderPath}{Path.GetFileName(strImgFileName)}") == false)
-                    MessageBox.Show($"Unable to resize and save image! '{strImgFileName}' may have already existed.");
+                var destImgFileName = $"{_ImgFolderPath}{Path.GetFileName(strImgFileName)}";
+                try
+                {
+                    if (Util.ResizeImageAndSave(strImgFileName, destImgFileName) == false)
+                    {
+                        MessageBox.Show($"Unable to resize and save an image '{strImgFileName}'. See ErrLog.txt for details.");
+                        Util.LogAMessage(_errorFile, $"Failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
+                            Environment.NewLine + $"'{strImgFileName}' may have already existed.");
+                        continue;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Util.LogAMessage(_errorFile, $"Failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
+                        Environment.NewLine + $"'{strImgFileName}' may have already existed." +
+                        Environment.NewLine + $"Exception: '{ex.Message}'.");
+                    continue;
+                }
+                Util.LogAMessage(_logFile, $"Resized '{strImgFileName}' to '{destImgFileName}'.");
             }
 
             BindingImgInsertTab();
@@ -3092,7 +3084,7 @@ namespace CDN_HL
         /// Use datasource of the connection string to re-initialize folders
         /// if have not existed
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True, if verified or updated the application settings; Otherwise, False.</returns>
         private bool VerifyAndSetupDataSourceAndWorkingFolders()
         {
             var strNewConnectionString = string.Empty;
@@ -3119,16 +3111,18 @@ namespace CDN_HL
             else
                 strErrorFolder = ConfigurationManager.AppSettings.Get("ErrLogPath");
 
-            var errorLogFile = ConfigurationManager.AppSettings.Get("ErrLogFile");    
             Directory.CreateDirectory(strErrorFolder);
+            var errorLogFile = ConfigurationManager.AppSettings.Get("ErrLogFile");    
             if (string.IsNullOrEmpty(errorLogFile))
                 errorLogFile = @"ErrLog.txt";
 
-            Util.LogAMessage($"{strErrorFolder}{errorLogFile}", "CDN_HL application restarts...");
-            Util.LogAMessage($"{strErrorFolder}Log.txt", "CDN_HL application restarts...");
-
             AddUpdateAppSettings(@"ErrLogPath", strErrorFolder);
             AddUpdateAppSettings(@"ErrLogFile", errorLogFile);
+
+            _logFile = $"{ConfigurationManager.AppSettings.Get("ErrLogPath")}Log.txt";
+            _errorFile = $"{ConfigurationManager.AppSettings.Get("ErrLogPath")}{ConfigurationManager.AppSettings.Get("ErrLogFile")}";
+            Util.LogAMessage(_errorFile, "CDN_HL application restarts...");
+            Util.LogAMessage(_logFile, "CDN_HL application restarts...");
 
             // find data source folder and configure it if not existed
             foreach (string part in Properties.Settings.Default.DN_HLConnectionString.Split(';'))
@@ -3144,17 +3138,17 @@ namespace CDN_HL
             var fileExisted = File.Exists(strACCDBFileName);
             if (!fileExisted)
             {
-                Util.LogAMessage($"{strErrorFolder}Log.txt", "accdb data source in connection string does not existed.");
+                Util.LogAMessage(_logFile, "accdb data source in connection string does not existed.");
                 strACCDBFileName = GetACCDBFileLocation();
                 if (string.IsNullOrWhiteSpace(strACCDBFileName))
                 {
-                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup new accdb data source.");
+                    Util.LogAMessage(_logFile, "User terminated. Unable to setup new accdb data source.");
                     return false;
                 }
 
                 strNewConnectionString = $"{strNewConnectionString}{strACCDBFileName};";
                 updateConnectionStringInAppSetting = true;
-                Util.LogAMessage($"{strErrorFolder}Log.txt", "Updated accdb data source.");
+                Util.LogAMessage(_logFile, "Updated accdb data source.");
             }
 
             // find image, image done, archive folders, configure if not existed
@@ -3163,7 +3157,7 @@ namespace CDN_HL
                 strImgFolderPath = GetAFolderLocation(@"IMAGE FOLDER");
                 if (string.IsNullOrWhiteSpace(strImgFolderPath))
                 {
-                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE FOLDER.");
+                    Util.LogAMessage(_logFile, "User terminated. Unable to setup IMAGE FOLDER.");
                     return false;
                 }
                 updateAndCreateImageFolder = true;
@@ -3171,7 +3165,7 @@ namespace CDN_HL
                 strImgDoneFolderPath = GetAFolderLocation(@"IMAGE DONE FOLDER");
                 if (string.IsNullOrWhiteSpace(strImgDoneFolderPath))
                 {
-                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE DONE FOLDER.");
+                    Util.LogAMessage(_logFile, "User terminated. Unable to setup IMAGE DONE FOLDER.");
                     return false;
                 }
                 updateAndCreateDoneImageFolder = true;
@@ -3179,7 +3173,7 @@ namespace CDN_HL
                 strImgArchiveFolderPath = GetAFolderLocation(@"IMAGE ARCHIVE FOLDER");
                 if (string.IsNullOrWhiteSpace(strImgArchiveFolderPath))
                 {
-                    Util.LogAMessage($"{strErrorFolder}Log.txt", "User terminated. Unable to setup IMAGE ARCHIVE FOLDER.");
+                    Util.LogAMessage(_logFile, "User terminated. Unable to setup IMAGE ARCHIVE FOLDER.");
                     return false;
                 }
                 updateAndCreateArchiveImageFolder = true;
@@ -3213,7 +3207,7 @@ namespace CDN_HL
                 AddUpdateAppSettings(@"ImgFolderArchivePath4", $"{strImgArchiveFolderPath}4\\");
             }
 
-            Util.LogAMessage($"{strErrorFolder}Log.txt", "Verification/setting up/updating Appsetting completed.");
+            Util.LogAMessage(_logFile, "Verification/setting up/updating application settings completed.");
             return true;
         }
 
@@ -3225,6 +3219,7 @@ namespace CDN_HL
         {
             using (var openFileDialog = new OpenFileDialog())
             {
+                openFileDialog.Title = @"Select Database File";
                 openFileDialog.InitialDirectory = @"C:\\";
                 openFileDialog.Filter = "ACCDB files (*.accdb)|*.accdb";
                 openFileDialog.RestoreDirectory = true;
@@ -3274,7 +3269,7 @@ namespace CDN_HL
             }
             catch (ConfigurationErrorsException)
             {
-                Console.WriteLine("Error writing app settings");
+                Util.LogAMessage(_errorFile, $"Failed to update the application setting for Key: '{key}', Value: '{value}'.");
             }
         }
 
@@ -3309,21 +3304,175 @@ namespace CDN_HL
 
         private void dataGridMenuStrip_Click(object sender, EventArgs e)
         {
-            if (!datasGridView.Rows[rowIndex].IsNewRow)
+            var hlFileName = string.Empty;
+            try
             {
-                var result = MessageBox.Show(@"Are you sure to delete this HL?", @"Deleting HL", MessageBoxButtons.OKCancel);
-                if (result == DialogResult.OK)
+                if (!datasGridView.Rows[rowIndex].IsNewRow)
                 {
-                    datasGridView.Rows.RemoveAt(rowIndex);
-                    tblHLBindingSource.EndEdit();
-                    tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
-                    dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
-                    datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
-                    datasGridView.Focus();
+                    var result = MessageBox.Show(@"Are you sure to delete this HL?", @"Deleting HL", MessageBoxButtons.OKCancel);
+                    if (result == DialogResult.OK)
+                    {
+                        hlFileName = datasGridView.SelectedRows[0].Cells["HinhFileNamePath"].Value.ToString();
+                        datasGridView.Rows.RemoveAt(rowIndex);
+                        tblHLTableAdapter.Update(dN_HLDataSet.tblHL);  //Update the HL_DB
+                        dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
+                        tblHLBindingSource.EndEdit();
+                        tblHLBindingSource.ResetBindings(true);
+                        //datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
+                        datasGridView.Focus();
+                        File.Delete($"{_ImgFolderDonePath}{hlFileName}");
+                        Util.LogAMessage(_logFile, $"Deleted '{_ImgFolderDonePath}{hlFileName}'.");
+
+                        DisplayImage();                                 //display the current selected item in datasGridView
+                        txtsSearch.Text = "Successfully deleted!";
+                        txtsSearch.ForeColor = Color.Red;          //Text 
+                        txtsSearch.BackColor = Color.Yellow;       //Background
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Util.LogAMessage(_errorFile, $"Failed to delete '{_ImgFolderDonePath}{hlFileName}'. Exception: '{ex.Message}'");
+            }
         }
+
+        private string _strSourceImagesFolder = string.Empty;
+        private void btnSourceFolder_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _strSourceImagesFolder = GetAFolderLocation(@"THE SOURCE IMAGES");
+                if (string.IsNullOrWhiteSpace(_strSourceImagesFolder))
+                    return;
+
+                if (lstSourceImages.Items.Count > 0)
+                    lstSourceImages.Items.Clear();
+
+                foreach (var strImageName in Util.SearchFileName(_strSourceImagesFolder, "*.jpg|*.png"))
+                    lstSourceImages.Items.Add(strImageName);
+
+                if (lstSourceImages.Items.Count > 0)
+                    lstSourceImages.SelectedIndex = 0;
+                else
+                    lblErrorMessage.Text = @"No .jpg or .png image in destination folder. Please reload source images.";
+            }
+            catch (Exception ex)
+            {
+                lblErrorMessage.Text = $"Unable to load source image files. Ex: {ex.Message}";
+            }
+
+            SelectDestinationFolder();
+            if (!lblErrorMessage.Text.Contains(@"Warning"))
+                lblErrorMessage.Text = @"Ready...";
+        }
+
+        private void MigrateImages()
+        {
+            lstDestImages.Items.Clear();
+            lblErrorMessage.Text = @"Ready...";
+            var selectedItems = lstSourceImages.SelectedItems;
+            for (int i = selectedItems.Count - 1; i >= 0; i--)
+            {
+                var toDoItem = selectedItems[i].ToString();
+                try
+                {
+                    var sourceFile = $"{_strSourceImagesFolder}{toDoItem}";
+                    var destFile = $"{lblDestImageFolder.Text}{toDoItem}";
+                    var result = Util.ResizeImageAndSave(sourceFile, destFile);
+                    if (result == false)
+                    {
+                        lblErrorMessage.Text = @"Failed. See error log for details.";
+                        Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
+                            Environment.NewLine + $"File may have already existed in the destination folder.");
+                        continue;
+                    }
+
+                    lstDestImages.Items.Add(selectedItems[i]);
+                    lstSourceImages.Items.Remove(selectedItems[i]);
+                }
+                catch (Exception ex)
+                {
+                    lblErrorMessage.Text = @"Failed. See error log for details.";
+                    Util.LogAMessage(_errorFile, $"Failed to resize '{_strSourceImagesFolder}{toDoItem}' to '{lblDestImageFolder.Text}{toDoItem}'." +
+                        Environment.NewLine + $"Ex: {ex.Message}");
+                    continue;
+                }
+            }
+
+            if (!lblErrorMessage.Text.Contains(@"Failed"))
+            {
+                Util.LogAMessage(_logFile, $"Resized image operation '{_strSourceImagesFolder}' to '{lblDestImageFolder.Text}' completed.");
+                lblErrorMessage.Text = @"Operation completed!!!";
+            }
+        }
+
+        private void btnResize1_Click(object sender, EventArgs e)
+        {
+            var doNotStart = false;
+            if (lstSourceImages.Items.Count < 1 || lstSourceImages.SelectedIndex == -1)
+            {
+                lblErrorMessage.Text = @"No source file | file(s) selected";
+                doNotStart = true;
+            }
+            if (lblDestImageFolder.Text == @".....")
+            { 
+                lblErrorMessage.Text += @" | Select destination folder";
+                doNotStart = true;
+            }
+
+            if (doNotStart)
+                return;
+
+            MigrateImages();
+        }
+
+        private void btnResizeAll_Click(object sender, EventArgs e)
+        {
+            if (lstSourceImages.Items.Count < 1 ||  lblDestImageFolder.Text == @".....")
+            {
+                lblErrorMessage.Text = @"No source file destination has not configured.";
+                return;
+            }
+
+            for (int i = 0; i < lstSourceImages.Items.Count; i++)
+                lstSourceImages.SetSelected(i, true);
+
+            MigrateImages();
+        }
+
         #endregion =================== new methods
 
+        private void SelectDestinationFolder()
+        {
+            var strDestImagesFolder = GetAFolderLocation(@"THE RESIZED IMAGES");
+            if (string.IsNullOrWhiteSpace(strDestImagesFolder))
+            {
+                lblErrorMessage.Text = @"Select destination folder";
+                return;
+            }
+
+            lblDestImageFolder.Text = $"{strDestImagesFolder}";
+
+            try
+            {
+                if (lstDestImages.Items.Count > 0)
+                    lstDestImages.Items.Clear();
+
+                foreach (var strImageName in Util.SearchFileName(strDestImagesFolder, "*.jpg|*.png"))
+                    lstDestImages.Items.Add(strImageName);
+
+                if (lstDestImages.Items.Count > 0)
+                    lblErrorMessage.Text = @"Warning: there are existing images in the destination folder.";
+            }
+            catch (Exception ex)
+            {
+                lblErrorMessage.Text = $"Unable to load the destination image files. Ex: {ex.Message}";
+            }
+        }
+
+        private void btnSelectDest_Click(object sender, EventArgs e)
+        {
+            SelectDestinationFolder();
+        }
     }
 }

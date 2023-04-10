@@ -814,17 +814,24 @@ namespace CDN_HL
         /// <returns>True if succedded; Otherwise, False.</returns>
         public static bool ResizeImageAndSave(string sourceFileName, string destFileName, int imageSizeLength = 400)
         {
-            // File already existed; No modification or nothing to do
-            if (File.Exists(destFileName))
-                return false;
+            try
+            {
+                // File already existed; No modification or nothing to do
+                if (File.Exists(destFileName))
+                    return false;
 
-            var resizedImg = ResizeImage(new Bitmap(Image.FromFile(sourceFileName)), new Size(imageSizeLength, imageSizeLength));
-            if (resizedImg == null)
-                return false;
+                var resizedImg = ResizeImage(new Bitmap(Image.FromFile(sourceFileName)), new Size(imageSizeLength, imageSizeLength));
+                if (resizedImg == null)
+                    return false;
 
-            var result = ConvertBitmapImageToJPGAndSave(resizedImg, destFileName);
-            resizedImg.Dispose();
-            return result;
+                var result = ConvertBitmapImageToJPGAndSave(resizedImg, destFileName);
+                resizedImg.Dispose();
+                return result;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -835,24 +842,31 @@ namespace CDN_HL
         /// <returns>A bitmap of a new resized image</returns>
         private static Bitmap ResizeImage(Image imgToResize, Size size)
         {
-            int sourceWidth = imgToResize.Width;
-            int sourceHeight = imgToResize.Height;
-            float nPercentW = size.Width / (float)sourceWidth;
-            float nPercentH = size.Height / (float)sourceHeight;
-            float nPercent;
-            if (nPercentH < nPercentW)
-                nPercent = nPercentH;
-            else
-                nPercent = nPercentW;
+            try
+            {
+                int sourceWidth = imgToResize.Width;
+                int sourceHeight = imgToResize.Height;
+                float nPercentW = size.Width / (float)sourceWidth;
+                float nPercentH = size.Height / (float)sourceHeight;
+                float nPercent;
+                if (nPercentH < nPercentW)
+                    nPercent = nPercentH;
+                else
+                    nPercent = nPercentW;
 
-            int destWidth = (int)(sourceWidth * nPercent);
-            int destHeight = (int)(sourceHeight * nPercent);
-            Bitmap imgBitmap = new Bitmap(destWidth, destHeight);
-            Graphics graphics = Graphics.FromImage(imgBitmap);
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
-            graphics.Dispose();
-            return imgBitmap;
+                int destWidth = (int)(sourceWidth * nPercent);
+                int destHeight = (int)(sourceHeight * nPercent);
+                Bitmap imgBitmap = new Bitmap(destWidth, destHeight);
+                Graphics graphics = Graphics.FromImage(imgBitmap);
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+                graphics.Dispose();
+                return imgBitmap;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -863,21 +877,28 @@ namespace CDN_HL
         /// <returns>True if succeeded; Otherwise, False.</returns>
         private static bool ConvertBitmapImageToJPGAndSave(Bitmap imgBitmap, string newImageFileName)
         {
-            ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-            var myEncoder = Encoder.Quality;
-            var myEncoderParameters = new EncoderParameters(1);
+            try
+            {
+                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                var myEncoder = Encoder.Quality;
+                var myEncoderParameters = new EncoderParameters(1);
 
-            // Save the bitmap as a JPG file with 100% quality level compression.
-            var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
-            myEncoderParameters.Param[0] = myEncoderParameter;
+                // Save the bitmap as a JPG file with 100% quality level compression.
+                var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
 
-            if (File.Exists(newImageFileName))
-                return false; // File already existed; There will be no image coversion.
+                if (File.Exists(newImageFileName))
+                    return false; // File already existed; There will be no image coversion.
 
-            imgBitmap.Save(newImageFileName, jpgEncoder,
-                myEncoderParameters);
-            imgBitmap.Dispose();
-            return true;
+                imgBitmap.Save(newImageFileName, jpgEncoder,
+                    myEncoderParameters);
+                imgBitmap.Dispose();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -887,11 +908,18 @@ namespace CDN_HL
         /// <returns>The image encoder info</returns>
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (ImageCodecInfo codec in codecs)
-                if (codec.FormatID == format.Guid)
-                    return codec;
-            return null;
+            try
+            {
+                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+                foreach (ImageCodecInfo codec in codecs)
+                    if (codec.FormatID == format.Guid)
+                        return codec;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public static void LogAMessage(string fileName, string message)
