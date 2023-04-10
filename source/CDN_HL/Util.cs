@@ -925,7 +925,7 @@ namespace CDN_HL
         public static void LogAMessage(string fileName, string message)
         {
             using (StreamWriter sw = File.AppendText(fileName))
-                sw.WriteLine($"{DateTime.Now}: {message}");
+                sw.WriteLine($"{Environment.MachineName}|{DateTime.Now}: {message}");
         }
         #endregion new methods
     }

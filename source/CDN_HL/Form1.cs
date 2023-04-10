@@ -78,7 +78,6 @@ namespace CDN_HL
         {
             if (datasGridView.Rows.Count > 1)
             {
-
                 //foreach (DataGridViewRow dr in dataGridView.Rows)
                 foreach (DataRow dr in dN_HLDataSet.tblHL.Rows)
                 {
@@ -106,8 +105,7 @@ namespace CDN_HL
                     //dr["UpdateDate"] = DateTime.Now.ToString("G");  // Must add these columns to the DataGridViewRow, for NOW, remove them
                 }
 
-                tblHLBindingSource.EndEdit();
-                tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB
+                ReloadHLData();
             }
 
         }
@@ -133,7 +131,7 @@ namespace CDN_HL
 
             Location = new Point(20, 20);   //Starts the Form at this location
             tabSearch.Select(); //Active the tab control and select the tabSearch
-            RefreshSearchTab();
+            RefreshSearchTab(true); //Call with onStartUp = true
 
             //--------------------------------------------------------------------------------------
             //- 
@@ -156,31 +154,13 @@ namespace CDN_HL
         /// <summary>
         /// 1. ClearAllSearchFields() - 2. Fill the dN_HLDataSet.tblHL - 3. Bind the datasGridView - then Populate the HL fields: Ten, ViTriHinh, ViTriCot, etc...
         /// </summary>
-        private void RefreshSearchTab()
+        private void RefreshSearchTab(bool onStartUp = false)
         {
             ClearAllSearchFields();
             ResetBackGroundColorForAllFieldsOnSearchTab();
             dN_HLDataSet.tblHL.DefaultView.RowFilter = "";
             dN_HLDataSet.tblHL.DefaultView.Sort = "";
-
-            dN_HLDataSet.tblHL.AcceptChanges();
-            try
-            {
-                tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
-            }
-            catch (InvalidOperationException)
-            {
-                MessageBox.Show($"Unable to access the CDN_HL database! Install the Office.AccessDB.Redistribution.32bit.exe or" +
-                    $" Rebuild the solution in x86 platform!", "Exit Application");
-                Environment.Exit(1);
-            }
-            catch
-            {
-                // Auto restart the application to enforce the updated application settings
-                Application.Restart();
-            }
-
-            tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+            ReloadHLData(onStartUp);
             tblHLBindingSource.Position = 0;
             datasGridViewBinding(tblHLBindingSource);
             DisplayImage();
@@ -312,14 +292,8 @@ namespace CDN_HL
                         if (arrDataRow.Length > 0)
                             arrDataRow[0].Delete();                     //Remove this record from the dN_HLDataSet.tblHL
 
-                        tblHLBindingSource.EndEdit();
-
-                        tblHLTableAdapter.Update(dN_HLDataSet.tblHL);   //update the DB
-                        dN_HLDataSet.tblHL.AcceptChanges();             //update the DataSet
-
-                        tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
+                        ReloadHLData();
                         datasGridView.Focus();
-
                         DisplayImage();                                 //display the current selected item in datasGridView
 
                         txtsSearch.Text = "Successfully deleted!";
@@ -508,11 +482,7 @@ namespace CDN_HL
                 }
 
                 ChangeSearchTabFieldsBackGroundColor();
-
-                tblHLBindingSource.EndEdit();                       //the lblsOrigHoTen.Text.Trim() IS ALWAYS == txtsHoTen.Text.Trim()
-                dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
-                tblHLTableAdapter.Update(dN_HLDataSet.tblHL);       //Update the HL_DB
-                tblHLBindingSource.ResetBindings(true);
+                ReloadHLData();
                 datasGridView.DataSource = tblHLBindingSource;      //Refresh datasGridView with the new Filename if changed
                 datasGridView.Refresh();
                 datasGridView.Focus();
@@ -2405,6 +2375,7 @@ namespace CDN_HL
                 _iClickCount++;
             }
         }
+
         private void Insert_HL()
         {
             string strOrigImgFileName = lbliOrigFilename.Text.Trim();
@@ -2414,8 +2385,7 @@ namespace CDN_HL
                 //Insert New HL into DB
                 tblHLTableAdapter.Insert(txtiHoTen.Text, txtiPhapDanh.Text, txtiSinh.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiTu.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiViTriHinh.Text, txtiViTriCot.Text.Trim(), txtiFilename.Text, txtiNote.Text.Trim(), txtiFileNumber.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), lbliFullname.Text.Trim(), txtiTuAL.Text, DateTime.Now.ToString("G"), null, lbliFullPhapDanh.Text.Trim(), null);
 
-                tblHLBindingSource.EndEdit();
-                tblHLTableAdapter.Update(this.dN_HLDataSet.tblHL);  //Update the HL_DB table
+                ReloadHLData();
 
                 //release Image filename from HL ListBox in order for the File.Move() to work!
                 lstiBoxHLImg.Items.RemoveAt(lstiBoxHLImg.SelectedIndex);
@@ -3001,6 +2971,49 @@ namespace CDN_HL
         #endregion =========================== functions NOT USE in this project
 
         #region ===================== new methods
+
+        private void ReloadHLData(bool onStartUp = false)
+        {
+            try
+            {
+                tblHLBindingSource.EndEdit();
+                tblHLTableAdapter.Update(dN_HLDataSet.tblHL);  //Update the HL_DB table
+                dN_HLDataSet.tblHL.AcceptChanges();
+                if (onStartUp)
+                {
+                    // Enforce ONLY when call from RefreshSearchTab
+                    try
+                    {
+                        tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        MessageBox.Show($"Unable to access the CDN_HL database! Install the Office.AccessDB.Redistribution.32bit.exe or" +
+                            $" Rebuild the solution in x86 platform!", "Exit Application");
+                        Environment.Exit(1);
+                    }
+                    catch
+                    {
+                        Application.Restart();  // Auto restart the application to enforce the updated application settings
+                    }
+                }
+                else
+                {
+                    tblHLTableAdapter.Fill(dN_HLDataSet.tblHL);
+                }
+                tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
+            }
+            catch
+            {
+                var msg = $"Unable to reload/update/refresh database. " +
+                    Environment.NewLine + $"Possibly data record has been updated on a different machine!!!" +
+                    Environment.NewLine + $"Making sure your HL's failed update info is saved for the re-update after the application is restarted!!!";
+                Util.LogAMessage(_errorFile, msg);
+                MessageBox.Show(msg, "Restart Application");
+                Application.Restart();  // Auto restart the application to enforce database reload
+            }
+        }
+
         private void btnLoadLogFile_Click(object sender, EventArgs e)
         {
             LoadLogFiles();
@@ -3313,15 +3326,12 @@ namespace CDN_HL
                     {
                         hlFileName = datasGridView.SelectedRows[0].Cells["HinhFileNamePath"].Value.ToString();
                         datasGridView.Rows.RemoveAt(rowIndex);
-                        tblHLTableAdapter.Update(dN_HLDataSet.tblHL);  //Update the HL_DB
-                        dN_HLDataSet.tblHL.AcceptChanges();                 //Update the DataSet
-                        tblHLBindingSource.EndEdit();
-                        tblHLBindingSource.ResetBindings(true);
+                        ReloadHLData();
                         datasGridView.Focus();
                         File.Delete($"{_ImgFolderDonePath}{hlFileName}");
                         Util.LogAMessage(_logFile, $"Deleted '{_ImgFolderDonePath}{hlFileName}'.");
 
-                        DisplayImage();                                 //display the current selected item in datasGridView
+                        DisplayImage(); //display the current selected item in datasGridView
                         txtsSearch.Text = "Successfully deleted!";
                         txtsSearch.ForeColor = Color.Red;          //Text 
                         txtsSearch.BackColor = Color.Yellow;       //Background
