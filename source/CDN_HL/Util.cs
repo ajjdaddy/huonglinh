@@ -814,22 +814,36 @@ namespace CDN_HL
         /// <returns>True if succedded; Otherwise, False.</returns>
         public static bool ResizeImageAndSave(string sourceFileName, string destFileName, int imageSizeLength = 400)
         {
+            Bitmap tmpSourceImageBitmap = null;
+            Bitmap resizedImg = null;
             try
             {
                 // File already existed; No modification or nothing to do
                 if (File.Exists(destFileName))
                     return false;
 
-                var resizedImg = ResizeImage(new Bitmap(Image.FromFile(sourceFileName)), new Size(imageSizeLength, imageSizeLength));
-                if (resizedImg == null)
-                    return false;
-
-                var result = ConvertBitmapImageToJPGAndSave(resizedImg, destFileName);
-                resizedImg.Dispose();
-                return result;
+                using (var bmp1Temp = new Bitmap(Image.FromFile(sourceFileName)))
+                {
+                    tmpSourceImageBitmap = new Bitmap(bmp1Temp);
+                    using (var bmp2Temp = ResizeImage(tmpSourceImageBitmap, new Size(imageSizeLength, imageSizeLength)))
+                    {
+                        resizedImg = new Bitmap(bmp2Temp);
+                        if (resizedImg == null)
+                        {
+                            tmpSourceImageBitmap?.Dispose();
+                            return false;
+                        }
+                        var result = ConvertBitmapImageToJPGAndSave(resizedImg, destFileName);
+                        tmpSourceImageBitmap?.Dispose();
+                        resizedImg?.Dispose();
+                        return result;
+                    }
+                }
             }
             catch(Exception ex)
             {
+                tmpSourceImageBitmap?.Dispose();
+                resizedImg?.Dispose();
                 throw ex;
             }
         }
@@ -856,11 +870,16 @@ namespace CDN_HL
 
                 int destWidth = (int)(sourceWidth * nPercent);
                 int destHeight = (int)(sourceHeight * nPercent);
-                Bitmap imgBitmap = new Bitmap(destWidth, destHeight);
-                Graphics graphics = Graphics.FromImage(imgBitmap);
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
-                graphics.Dispose();
+
+                Bitmap imgBitmap;
+                using (var bmp1Temp = new Bitmap(destWidth, destHeight))
+                {
+                    imgBitmap = new Bitmap(bmp1Temp);
+                    Graphics graphics = Graphics.FromImage(imgBitmap);
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+                    graphics.Dispose();
+                }
                 return imgBitmap;
             }
             catch (Exception ex)
@@ -872,27 +891,30 @@ namespace CDN_HL
         /// <summary>
         /// Convert an bitmap image and save as .JPG using the provided new ImageFileName
         /// </summary>
-        /// <param name="imgBitmap"The image bitmap></param>
+        /// <param name="imgBitmap">The image bitmap</param>
         /// <param name="newImageFileName">The new image file name</param>
         /// <returns>True if succeeded; Otherwise, False.</returns>
         private static bool ConvertBitmapImageToJPGAndSave(Bitmap imgBitmap, string newImageFileName)
         {
             try
             {
-                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-                var myEncoder = Encoder.Quality;
-                var myEncoderParameters = new EncoderParameters(1);
+                using(var tmpBmp = new Bitmap(imgBitmap))
+                {
+                    Bitmap bitmap = new Bitmap(tmpBmp);
+                    ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                    var myEncoder = Encoder.Quality;
+                    var myEncoderParameters = new EncoderParameters(1);
 
-                // Save the bitmap as a JPG file with 100% quality level compression.
-                var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
-                myEncoderParameters.Param[0] = myEncoderParameter;
+                    // Save the bitmap as a JPG file with 100% quality level compression.
+                    var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+                    myEncoderParameters.Param[0] = myEncoderParameter;
 
-                if (File.Exists(newImageFileName))
-                    return false; // File already existed; There will be no image coversion.
+                    if (File.Exists(newImageFileName))
+                        return false; // File already existed; There will be no image conversion.
 
-                imgBitmap.Save(newImageFileName, jpgEncoder,
-                    myEncoderParameters);
-                imgBitmap.Dispose();
+                    bitmap.Save(newImageFileName, jpgEncoder,
+                        myEncoderParameters);
+                }
                 return true;
             }
             catch (Exception ex)

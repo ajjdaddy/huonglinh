@@ -3345,31 +3345,50 @@ namespace CDN_HL
         }
 
         private string _strSourceImagesFolder = string.Empty;
+        private string _strDestImagesFolder = string.Empty;
+        private string _strFailedImagesFolder = string.Empty;
         private void btnSourceFolder_Click(object sender, EventArgs e)
         {
             try
             {
                 _strSourceImagesFolder = GetAFolderLocation(@"THE SOURCE IMAGES");
                 if (string.IsNullOrWhiteSpace(_strSourceImagesFolder))
+                {
+                    lblErrorMessage.Text = @"No source image folder selected. Nothing to do!";
                     return;
+                }
 
-                if (lstSourceImages.Items.Count > 0)
-                    lstSourceImages.Items.Clear();
-
-                foreach (var strImageName in Util.SearchFileName(_strSourceImagesFolder, "*.jpg|*.png"))
+                lstSourceImages.Items.Clear();
+                foreach (var strImageName in SearchResizeFileName(_strSourceImagesFolder, "*.jpg|*.png"))
                     lstSourceImages.Items.Add(strImageName);
 
-                if (lstSourceImages.Items.Count > 0)
-                    lstSourceImages.SelectedIndex = 0;
-                else
-                    lblErrorMessage.Text = @"No .jpg or .png image in destination folder. Please reload source images.";
+                if (lstSourceImages.Items.Count < 1)
+                {
+                    lblErrorMessage.Text = @"No .jpg or .png image in the selected source image folder. Nothing to do!";
+                    return;
+                }
+
+                lstSourceImages.SelectedIndex = 0;
+                _strSourceImagesFolder += $"\\";
+                _strDestImagesFolder = $"{_strSourceImagesFolder}Resized\\";
+                _strFailedImagesFolder = $"{_strSourceImagesFolder}Failed\\";
+                Directory.CreateDirectory(_strDestImagesFolder);
+                Directory.CreateDirectory(_strFailedImagesFolder);
+
+                // Load destination existing files
+                lstDestImages.Items.Clear();
+                foreach (var strImageName in SearchResizeFileName(_strDestImagesFolder, "*.jpg|*.png"))
+                    lstDestImages.Items.Add(strImageName);
+
+                if (lstDestImages.Items.Count > 0)
+                    lblErrorMessage.Text = @"Warning: There are existing images in the destination folder.";
             }
             catch (Exception ex)
             {
-                lblErrorMessage.Text = $"Unable to load source image files. Ex: {ex.Message}";
+                lblErrorMessage.Text = $"Unable to load source/destination image files. Ex: {ex.Message}";
+                return;
             }
 
-            SelectDestinationFolder();
             if (!lblErrorMessage.Text.Contains(@"Warning"))
                 lblErrorMessage.Text = @"Ready...";
         }
@@ -3378,79 +3397,78 @@ namespace CDN_HL
         {
             var completedImagesCount = 0;
             var failedImagesCount = 0;
+            var totalImages = lstSourceImages.SelectedItems.Count;
+
+            lstDestImages.Items.Clear();
+            lblErrorMessage.Text = @"Resizing image(s).....";
+
             var timer = new Stopwatch();
             timer.Start();
-            lstDestImages.Items.Clear();
-            lblErrorMessage.Text = @"Ready...";
-
             var selectedItems = lstSourceImages.SelectedItems;
             for (int i = selectedItems.Count - 1; i >= 0; i--)
             {
-                var toDoItem = selectedItems[i].ToString();
+                string toDoItem = selectedItems[i].ToString();
+                var sourceFile = $"{_strSourceImagesFolder}{toDoItem}";
+                var destFile = $"{_strDestImagesFolder}{toDoItem}";
+                var failedFile = $"{_strFailedImagesFolder}{toDoItem}";
                 try
                 {
-                    var sourceFile = $"{_strSourceImagesFolder}{toDoItem}";
-                    var destFile = $"{lblDestImageFolder.Text}{toDoItem}";
                     var result = Util.ResizeImageAndSave(sourceFile, destFile);
                     if (result == false)
                     {
                         lblErrorMessage.Text = @"Failed. See error log for details.";
                         Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                             Environment.NewLine + $"File may have already existed in the destination folder.");
+                        File.Copy(sourceFile, failedFile);
                         failedImagesCount++;
                         continue;
                     }
 
-                    lstDestImages.Items.Add(selectedItems[i]);
+                    lstDestImages.Items.Add(toDoItem);
                     lstSourceImages.Items.Remove(selectedItems[i]);
                     completedImagesCount++;
                 }
                 catch (Exception ex)
                 {
                     lblErrorMessage.Text = @"Failed. See error log for details.";
-                    Util.LogAMessage(_errorFile, $"Failed to resize '{_strSourceImagesFolder}{toDoItem}' to '{lblDestImageFolder.Text}{toDoItem}'." +
+                    Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                         Environment.NewLine + $"Ex: {ex.Message}");
+                    File.Copy(sourceFile, failedFile);
                     failedImagesCount++;
                     continue;
                 }
             }
 
             timer.Stop();
-            Util.LogAMessage(_logFile, $"Resized image operation '{_strSourceImagesFolder}' to '{lblDestImageFolder.Text}' completed." +
-                Environment.NewLine + $"Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
+            Util.LogAMessage(_logFile, $"Resized image operation '{_strSourceImagesFolder}' to '{_strDestImagesFolder}' completed." +
+                Environment.NewLine + $"Total: '{totalImages}', Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
                 $"Time: '{timer.Elapsed}'.");
 
             lblErrorMessage.Text = $"Operation completed. " +
-                $"Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
+                $"Total: '{totalImages}', Resized: '{completedImagesCount}', Failed: '{failedImagesCount}', " +
                 $"Time: '{timer.Elapsed}'. " +
                 $"See log file for details!!!";
         }
 
         private void btnResize1_Click(object sender, EventArgs e)
         {
-            var doNotStart = false;
-            if (lstSourceImages.Items.Count < 1 || lstSourceImages.SelectedIndex == -1)
+            if (lstSourceImages.Items.Count < 1 || lstSourceImages.SelectedIndex < 0)
             {
-                lblErrorMessage.Text = @"No source file | file(s) selected";
-                doNotStart = true;
-            }
-            if (lblDestImageFolder.Text == @".....")
-            { 
-                lblErrorMessage.Text += @" | Select destination folder";
-                doNotStart = true;
-            }
-
-            if (doNotStart)
+                lblErrorMessage.Text = @"No source file(s) selected";
                 return;
+            }
 
             MigrateImages();
+            lstSourceImages.SelectedItems.Clear();
+            if (lstSourceImages.Items.Count > 0)
+                lstSourceImages.SelectedIndex = 0;
         }
 
         private void btnResizeAll_Click(object sender, EventArgs e)
         {
-            if (lstSourceImages.Items.Count < 1 ||  lblDestImageFolder.Text == @".....")
+            if (lstSourceImages.Items.Count < 1)
             {
-                lblErrorMessage.Text = @"No source file destination has not configured.";
+                lblErrorMessage.Text = @"No source image files. Nothing to do!";
                 return;
             }
 
@@ -3458,39 +3476,37 @@ namespace CDN_HL
                 lstSourceImages.SetSelected(i, true);
 
             MigrateImages();
+            lstSourceImages.SelectedItems.Clear();
+            if (lstSourceImages.Items.Count > 0)
+                lstSourceImages.SelectedIndex = 0;
         }
 
-        private void SelectDestinationFolder()
+        /// <summary>
+        /// return an arrayList of all file names found by (strImgFileExtSearch) in the directory
+        /// </summary>
+        /// <param name="strImgFilePath"></param>
+        /// <param name="strImgFileExtSearch"></param>
+        /// <returns>An arrayList of all file names found by (strImgFileExtSearch) in the directory</returns>
+        public static ArrayList SearchResizeFileName(string strImgFilePath, string strImgFileExtSearch)
         {
-            var strDestImagesFolder = GetAFolderLocation(@"THE RESIZED IMAGES");
-            if (string.IsNullOrWhiteSpace(strDestImagesFolder))
+            ArrayList imageFileToResizeAList = new ArrayList();
+
+            var strExtSearchList = strImgFileExtSearch.Split('|');
+
+            if (Directory.Exists(strImgFilePath))
             {
-                lblErrorMessage.Text = @"Select destination folder";
-                return;
+                foreach (var extToSearch in strExtSearchList)
+                {
+                    string[] fileList = Directory.GetFiles(strImgFilePath, extToSearch);
+                    if (fileList.Length > 0)
+                    {
+                        foreach (var strImgFileName in fileList)
+                            imageFileToResizeAList.Add(Path.GetFileName(strImgFileName));
+                    }
+                }
             }
 
-            lblDestImageFolder.Text = $"{strDestImagesFolder}";
-
-            try
-            {
-                if (lstDestImages.Items.Count > 0)
-                    lstDestImages.Items.Clear();
-
-                foreach (var strImageName in Util.SearchFileName(strDestImagesFolder, "*.jpg|*.png"))
-                    lstDestImages.Items.Add(strImageName);
-
-                if (lstDestImages.Items.Count > 0)
-                    lblErrorMessage.Text = @"Warning: there are existing images in the destination folder.";
-            }
-            catch (Exception ex)
-            {
-                lblErrorMessage.Text = $"Unable to load the destination image files. Ex: {ex.Message}";
-            }
-        }
-
-        private void btnSelectDest_Click(object sender, EventArgs e)
-        {
-            SelectDestinationFolder();
+            return imageFileToResizeAList;
         }
 
         #endregion =================== new methods

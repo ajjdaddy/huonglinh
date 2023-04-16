@@ -130,7 +130,6 @@ namespace CDN_HL
             this.btnClearLogFile = new System.Windows.Forms.Button();
             this.btnLoadLogFile = new System.Windows.Forms.Button();
             this.tabMigration = new System.Windows.Forms.TabPage();
-            this.lblDestImageFolder = new System.Windows.Forms.Label();
             this.lblErrorMessage = new System.Windows.Forms.Label();
             this.btnResizeAll = new System.Windows.Forms.Button();
             this.btnResize1 = new System.Windows.Forms.Button();
@@ -141,7 +140,6 @@ namespace CDN_HL
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tblHLTableAdapter = new CDN_HL.DN_HLDataSetTableAdapters.tblHLTableAdapter();
             this.dNHLDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.btnSelectDest = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).BeginInit();
@@ -1343,8 +1341,6 @@ namespace CDN_HL
             // 
             // tabMigration
             // 
-            this.tabMigration.Controls.Add(this.btnSelectDest);
-            this.tabMigration.Controls.Add(this.lblDestImageFolder);
             this.tabMigration.Controls.Add(this.lblErrorMessage);
             this.tabMigration.Controls.Add(this.btnResizeAll);
             this.tabMigration.Controls.Add(this.btnResize1);
@@ -1358,17 +1354,6 @@ namespace CDN_HL
             this.tabMigration.Text = "    Migration     ";
             this.tabMigration.UseVisualStyleBackColor = true;
             // 
-            // lblDestImageFolder
-            // 
-            this.lblDestImageFolder.AutoSize = true;
-            this.lblDestImageFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDestImageFolder.Location = new System.Drawing.Point(741, 13);
-            this.lblDestImageFolder.Name = "lblDestImageFolder";
-            this.lblDestImageFolder.Size = new System.Drawing.Size(27, 16);
-            this.lblDestImageFolder.TabIndex = 31;
-            this.lblDestImageFolder.Text = ".....";
-            this.lblDestImageFolder.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
             // lblErrorMessage
             // 
             this.lblErrorMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -1378,9 +1363,9 @@ namespace CDN_HL
             this.lblErrorMessage.ForeColor = System.Drawing.Color.Red;
             this.lblErrorMessage.Location = new System.Drawing.Point(7, 45);
             this.lblErrorMessage.Name = "lblErrorMessage";
-            this.lblErrorMessage.Size = new System.Drawing.Size(346, 17);
+            this.lblErrorMessage.Size = new System.Drawing.Size(154, 17);
             this.lblErrorMessage.TabIndex = 30;
-            this.lblErrorMessage.Text = "Load source images / Select destination folder";
+            this.lblErrorMessage.Text = "Load source images";
             // 
             // btnResizeAll
             // 
@@ -1460,17 +1445,6 @@ namespace CDN_HL
             // 
             this.dNHLDataSetBindingSource.DataSource = this.dN_HLDataSet;
             this.dNHLDataSetBindingSource.Position = 0;
-            // 
-            // btnSelectDest
-            // 
-            this.btnSelectDest.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelectDest.Location = new System.Drawing.Point(549, 5);
-            this.btnSelectDest.Name = "btnSelectDest";
-            this.btnSelectDest.Size = new System.Drawing.Size(176, 35);
-            this.btnSelectDest.TabIndex = 33;
-            this.btnSelectDest.Text = "Select Destination Folder";
-            this.btnSelectDest.UseVisualStyleBackColor = true;
-            this.btnSelectDest.Click += new System.EventHandler(this.btnSelectDest_Click);
             // 
             // Form1
             // 
@@ -1617,9 +1591,7 @@ namespace CDN_HL
         private System.Windows.Forms.ListBox lstSourceImages;
         private System.Windows.Forms.Button btnResizeAll;
         private System.Windows.Forms.Button btnResize1;
-        private System.Windows.Forms.Label lblDestImageFolder;
         private System.Windows.Forms.Label lblErrorMessage;
-        private System.Windows.Forms.Button btnSelectDest;
     }
 }
 
