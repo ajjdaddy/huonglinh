@@ -1397,6 +1397,7 @@ namespace CDN_HL
             this.lstDestImages.Location = new System.Drawing.Point(549, 70);
             this.lstDestImages.Name = "lstDestImages";
             this.lstDestImages.ScrollAlwaysVisible = true;
+            this.lstDestImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstDestImages.Size = new System.Drawing.Size(428, 589);
             this.lstDestImages.TabIndex = 5;
             // 
@@ -1419,7 +1420,7 @@ namespace CDN_HL
             this.lstSourceImages.Location = new System.Drawing.Point(4, 70);
             this.lstSourceImages.Name = "lstSourceImages";
             this.lstSourceImages.ScrollAlwaysVisible = true;
-            this.lstSourceImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lstSourceImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstSourceImages.Size = new System.Drawing.Size(428, 589);
             this.lstSourceImages.TabIndex = 3;
             // 
