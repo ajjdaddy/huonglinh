@@ -3069,21 +3069,30 @@ namespace CDN_HL
             foreach (string strImgFileName in fileList)
             {
                 var destImgFileName = $"{_ImgFolderPath}{Path.GetFileName(strImgFileName)}";
+                if (File.Exists(destImgFileName))
+                {
+                    MessageBox.Show($"{destImgFileName} is already existed. No resizing.");
+                    continue;
+                }
                 try
                 {
                     if (Util.ResizeImageAndSave(strImgFileName, destImgFileName) == false)
                     {
-                        MessageBox.Show($"Unable to resize and save an image '{strImgFileName}'. See ErrLog.txt for details.");
-                        Util.LogAMessage(_errorFile, $"Failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
+                        //Failed to resize; use existing file as is.
+                        File.Copy(strImgFileName, destImgFileName);
+                        MessageBox.Show($"Use original image file since unable to resize and save an image '{strImgFileName}'. See error log for details.");
+                        Util.LogAMessage(_errorFile, $"Use original image file since failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
                             Environment.NewLine + $"'{strImgFileName}' may have already existed.");
                         continue;
                     }
                 }
                 catch(Exception ex)
                 {
-                    Util.LogAMessage(_errorFile, $"Failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
+                    //Failed to resize; use existing file as is.
+                    Util.LogAMessage(_errorFile, $"Use original image file since failed to resize and save image from '{strImgFileName}' to '{destImgFileName}'. " +
                         Environment.NewLine + $"'{strImgFileName}' may have already existed." +
                         Environment.NewLine + $"Exception: '{ex.Message}'.");
+                    File.Copy(strImgFileName, destImgFileName);
                     continue;
                 }
                 Util.LogAMessage(_logFile, $"Resized '{strImgFileName}' to '{destImgFileName}'.");
@@ -3359,7 +3368,7 @@ namespace CDN_HL
                 }
 
                 lstSourceImages.Items.Clear();
-                foreach (var strImageName in SearchResizeFileName(_strSourceImagesFolder, "*.jpg|*.png"))
+                foreach (var strImageName in SearchResizeFileName(_strSourceImagesFolder, "*.jpg|*.jpeg|*.png"))
                     lstSourceImages.Items.Add(strImageName);
 
                 if (lstSourceImages.Items.Count < 1)
@@ -3377,7 +3386,7 @@ namespace CDN_HL
 
                 // Load destination existing files
                 lstDestImages.Items.Clear();
-                foreach (var strImageName in SearchResizeFileName(_strDestImagesFolder, "*.jpg|*.png"))
+                foreach (var strImageName in SearchResizeFileName(_strDestImagesFolder, "*.jpg|*.jpeg|*.png"))
                     lstDestImages.Items.Add(strImageName);
 
                 if (lstDestImages.Items.Count > 0)
