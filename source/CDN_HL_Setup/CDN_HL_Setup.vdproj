@@ -45,14 +45,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A29666A7A09CAAFF3EF35AEA6A461C99"
+        "MsmKey" = "8:_E4E3FB7D8AB041FA97BFA02A7601195D"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_126E97DAA52B4388A1D548447AF3D5BA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A29666A7A09CAAFF3EF35AEA6A461C99"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -241,6 +247,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4E3FB7D8AB041FA97BFA02A7601195D"
+            {
+            "SourcePath" = "8:..\\CDN_HL\\CDN_HL.exe.config.Migration"
+            "TargetName" = "8:CDN_HL.exe.config.Migration"
+            "Tag" = "8:"
+            "Folder" = "8:_348F78F833834AF3883F720FF369D569"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -257,6 +283,72 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_1164D9A6D4794523AC064018878A3E31"
+                    {
+                    "Name" = "8:img"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_C87D8AAA2B4C4584B63198B8981B24D3"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_0C6F9DF683554769B7BD7D9BF487BAD7"
+                            {
+                            "Name" = "8:Archive"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_503968E0E3294DB08BBD8FC181A50D28"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_3F9E41C9FA9E4CEE8232AC9D90BFABA8"
+                            {
+                            "Name" = "8:SecondMove"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_877F2C5655634C099EE5F7ED16CE5370"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_A5E51857045A4F91B0DD3BC33AB5E476"
+                            {
+                            "Name" = "8:FirstMove"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_FDFB28B5C7384E388EB3ED15B0137D40"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_B3E37B016BB146C09B5DBE392556229F"
+                            {
+                            "Name" = "8:FinalMove"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_905D559D5F7C42888FDA80DDCBBFD635"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_EDC3F68C32584BBC85DA014FB44E3219"
+                            {
+                            "Name" = "8:Done"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_03E6F00C5DDC42669D2467CE3541A7FD"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_3052A3A19F10419C9EBABBE02BF92D5A"
                     {
                     "Name" = "8:Drivers"
@@ -264,6 +356,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_69E384CA0B614E37B3EBE18B776EABA9"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3374CEB9B3924F54AC2623B22CDCCA8A"
+                    {
+                    "Name" = "8:Err"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_37BB09B62659420A805E324D9C91E003"
                         "Folders"
                         {
                         }
@@ -320,7 +423,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDN_HL"
         "ProductCode" = "8:{E35380FB-5238-4E4E-AFCA-39A825D2E55C}"
-        "PackageCode" = "8:{C5A460D6-6F38-48D4-85D7-3D214F4F6F55}"
+        "PackageCode" = "8:{066A6B92-12A7-4F92-8B46-6E1179CA15ED}"
         "UpgradeCode" = "8:{1C9B9E68-E1A6-4A1F-9D43-09302EBA0436}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -869,7 +972,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_126E97DAA52B4388A1D548447AF3D5BA"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\CDN_HL\\obj\\Release\\CDN_HL.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_348F78F833834AF3883F720FF369D569"

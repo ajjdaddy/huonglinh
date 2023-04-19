@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Use this config file to migration data (i.e. resizing images) to avoid data locked up with main application -->
+<configuration>
+  <configSections>
+  </configSections>
+  <connectionStrings>
+	<add name="CDN_HL.Properties.Settings.DN_HLConnectionString" connectionString="Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\DATA_MIGRATION\DN_HL.accdb" providerName="System.Data.OleDb" />
+  </connectionStrings>
+  <appSettings>
+    <add key="ImgFolderPath" value="C:\DATA_MIGRATION\img\" />
+    <add key="ImgFolderDonePath" value="C:\DATA_MIGRATION\img\Done\" />
+    <add key="ImgFolderArchivePath" value="C:\DATA_MIGRATION\img\Archive\" />
+    <add key="ImgFolderArchivePath2" value="C:\DATA_MIGRATION\img\FirstMove\" />
+    <add key="ImgFolderArchivePath3" value="C:\DATA_MIGRATION\img\SecondMove\" />
+    <add key="ImgFolderArchivePath4" value="C:\DATA_MIGRATION\img\FinalMove\" />
+    <add key="ErrLogPath" value="C:\DATA_MIGRATION\Err\" />
+    <add key="ErrLogFile" value="ErrLog.txt" />
+    <add key="ClientSettingsProvider.ServiceUri" value="" />
+  </appSettings>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
+  </startup>
+  <system.web>
+    <membership defaultProvider="ClientAuthenticationMembershipProvider">
+      <providers>
+        <add name="ClientAuthenticationMembershipProvider" type="System.Web.ClientServices.Providers.ClientFormsAuthenticationMembershipProvider, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" serviceUri="" />
+      </providers>
+    </membership>
+    <roleManager defaultProvider="ClientRoleProvider" enabled="true">
+      <providers>
+        <add name="ClientRoleProvider" type="System.Web.ClientServices.Providers.ClientRoleProvider, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" serviceUri="" cacheTimeout="86400" />
+      </providers>
+    </roleManager>
+  </system.web>
+</configuration>

@@ -96,6 +96,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="CDN_HL.exe.config.Migration" />
     <None Include="DN_HLDataSet.xsc">
       <DependentUpon>DN_HLDataSet.xsd</DependentUpon>
     </None>

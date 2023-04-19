@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.OleDb;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -165,6 +166,7 @@ namespace CDN_HL
             datasGridViewBinding(tblHLBindingSource);
             DisplayImage();
         }
+
         private void btnsRefresh_Click(object sender, EventArgs e)
         {
             RefreshSearchTab();
@@ -2992,9 +2994,20 @@ namespace CDN_HL
                             $" Rebuild the solution in x86 platform!", "Exit Application");
                         Environment.Exit(1);
                     }
+                    catch (OleDbException oleEx)
+                    {
+                        if (oleEx.Message.Contains(@"is not a valid path"))
+                        {
+                            Application.Restart();  // Auto restart the application to enforce the updated application settings
+                            return;
+                        }
+                        
+                        MessageBox.Show($"Empty ACCDB database!", "Empty Database");
+                        return; // Nothing in the database;
+                    }
                     catch
                     {
-                        Application.Restart();  // Auto restart the application to enforce the updated application settings
+                        return;
                     }
                 }
                 else
@@ -3003,6 +3016,16 @@ namespace CDN_HL
                 }
                 tblHLBindingSource.DataSource = dN_HLDataSet.tblHL;
             }
+            catch (OleDbException oleEx)
+            {
+                if (oleEx.Message.Contains(@"is not a valid path"))
+                {
+                    Application.Restart();  // Auto restart the application to enforce the updated application settings
+                    return;
+                }
+                
+                return; // Nothing in the datbase;
+            }
             catch
             {
                 var msg = $"Unable to reload/update/refresh database. " +
@@ -3010,7 +3033,7 @@ namespace CDN_HL
                     Environment.NewLine + $"Making sure your HL's failed update info is saved for the re-update after the application is restarted!!!";
                 Util.LogAMessage(_errorFile, msg);
                 MessageBox.Show(msg, "Restart Application");
-                Application.Restart();  // Auto restart the application to enforce database reload
+                Application.Restart();  // Auto restart the application to synch data on servers
             }
         }
 
@@ -3111,14 +3134,10 @@ namespace CDN_HL
             var strNewConnectionString = string.Empty;
             var strACCDBFileName = string.Empty;
             var strImgFolderPath = string.Empty;
-            var strImgDoneFolderPath = string.Empty;
-            var strImgArchiveFolderPath = string.Empty;
             string strErrorFolder;
 
             var updateConnectionStringInAppSetting = false;
             var updateAndCreateImageFolder = false;
-            var updateAndCreateDoneImageFolder = false;
-            var updateAndCreateArchiveImageFolder = false;
 
             // find error log folder, configure if not existed
             if (!Directory.Exists(ConfigurationManager.AppSettings.Get("ErrLogPath")))
@@ -3182,22 +3201,6 @@ namespace CDN_HL
                     return false;
                 }
                 updateAndCreateImageFolder = true;
-
-                strImgDoneFolderPath = GetAFolderLocation(@"IMAGE DONE FOLDER");
-                if (string.IsNullOrWhiteSpace(strImgDoneFolderPath))
-                {
-                    Util.LogAMessage(_logFile, "User terminated. Unable to setup IMAGE DONE FOLDER.");
-                    return false;
-                }
-                updateAndCreateDoneImageFolder = true;
-
-                strImgArchiveFolderPath = GetAFolderLocation(@"IMAGE ARCHIVE FOLDER");
-                if (string.IsNullOrWhiteSpace(strImgArchiveFolderPath))
-                {
-                    Util.LogAMessage(_logFile, "User terminated. Unable to setup IMAGE ARCHIVE FOLDER.");
-                    return false;
-                }
-                updateAndCreateArchiveImageFolder = true;
             }
 
             // Time to update app.setting or create all nessessary folders
@@ -3208,24 +3211,21 @@ namespace CDN_HL
             {
                 Directory.CreateDirectory(strImgFolderPath);
                 AddUpdateAppSettings(@"ImgFolderPath", $"{strImgFolderPath}\\");
-            }
-
-            if (updateAndCreateDoneImageFolder)
-            {
+                var strImgDoneFolderPath = $"{strImgFolderPath}\\Done";
                 Directory.CreateDirectory(strImgDoneFolderPath);
                 AddUpdateAppSettings(@"ImgFolderDonePath", $"{strImgDoneFolderPath}\\");
-            }
-
-            if (updateAndCreateArchiveImageFolder)
-            {
+                var strImgArchiveFolderPath = $"{strImgFolderPath}\\Archive";
                 Directory.CreateDirectory(strImgArchiveFolderPath);
                 AddUpdateAppSettings(@"ImgFolderArchivePath", $"{strImgArchiveFolderPath}\\");
-                Directory.CreateDirectory($"{strImgArchiveFolderPath}2");
-                AddUpdateAppSettings(@"ImgFolderArchivePath2", $"{strImgArchiveFolderPath}2\\");
-                Directory.CreateDirectory($"{strImgArchiveFolderPath}3");
-                AddUpdateAppSettings(@"ImgFolderArchivePath3", $"{strImgArchiveFolderPath}3\\");
-                Directory.CreateDirectory($"{strImgArchiveFolderPath}4");
-                AddUpdateAppSettings(@"ImgFolderArchivePath4", $"{strImgArchiveFolderPath}4\\");
+                var strImgArchive2FolderPath = $"{strImgFolderPath}\\FirstMove";
+                Directory.CreateDirectory(strImgArchive2FolderPath);
+                AddUpdateAppSettings(@"ImgFolderArchivePath2", $"{strImgArchive2FolderPath}\\");
+                var strImgArchive3FolderPath = $"{strImgFolderPath}\\SecondMove";
+                Directory.CreateDirectory(strImgArchive3FolderPath);
+                AddUpdateAppSettings(@"ImgFolderArchivePath3", $"{strImgArchive3FolderPath}\\");
+                var strImgArchive4FolderPath = $"{strImgFolderPath}\\FinalMove";
+                Directory.CreateDirectory(strImgArchive4FolderPath);
+                AddUpdateAppSettings(@"ImgFolderArchivePath4", $"{strImgArchive4FolderPath}\\");
             }
 
             Util.LogAMessage(_logFile, "Verification/setting up/updating application settings completed.");
@@ -3428,6 +3428,7 @@ namespace CDN_HL
                         lblErrorMessage.Text = @"Failed. See error log for details.";
                         Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                             Environment.NewLine + $"File may have already existed in the destination folder.");
+                        MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
                         File.Copy(sourceFile, failedFile);
                         failedImagesCount++;
                         continue;
@@ -3442,6 +3443,7 @@ namespace CDN_HL
                     lblErrorMessage.Text = @"Failed. See error log for details.";
                     Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                         Environment.NewLine + $"Ex: {ex.Message}");
+                    MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
                     File.Copy(sourceFile, failedFile);
                     failedImagesCount++;
                     continue;
