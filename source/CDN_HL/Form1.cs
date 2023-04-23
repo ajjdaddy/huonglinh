@@ -2990,8 +2990,8 @@ namespace CDN_HL
                     }
                     catch (InvalidOperationException)
                     {
-                        MessageBox.Show($"Unable to access the CDN_HL database! Install the Office.AccessDB.Redistribution.32bit.exe or" +
-                            $" Rebuild the solution in x86 platform!", "Exit Application");
+                        MessageBox.Show($"Unable to access the CDN_HL database! See the 'Instruction.txt' in the installation folder for instruction!",
+                            "Exit Application");
                         Environment.Exit(1);
                     }
                     catch (OleDbException oleEx)

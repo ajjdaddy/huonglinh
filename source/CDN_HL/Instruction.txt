@@ -1,9 +1,9 @@
-If CDN_HL application has detected the driver has not installed or installed with wrong version:
------------------------------------------------------------------------------------------------
-1. Use the following link to download Microsoft Office Access Database Redistribution 
-   if https://www.microsoft.com/en-us/download/details.aspx?id=54920&irgwc=1&OCID=AID2200057_aff_7593_393170&tduid=%28ir__hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00%29%287593%29%28393170%29%28%29%28%29&irclickid=_hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00
-2. Install the download driver and Relaunch the application.
-
+If CDN_HL application has detected 'Unable to access the database', try the following:
+--------------------------------------------------------------------------------------
+Option 1: Uninstall and re-install a different CDN_HL installer version (e.g. X86 or X64)
+Option 2: Use the following link to download Microsoft Office Access Database Redistribution 
+https://www.microsoft.com/en-us/download/details.aspx?id=54920&irgwc=1&OCID=AID2200057_aff_7593_393170&tduid=%28ir__hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00%29%287593%29%28393170%29%28%29%28%29&irclickid=_hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00
+and then install the download driver and Relaunch the application.
 
 To resize all images (jpg, jpeg) on LinhTu server:
 --------------------------------------------------

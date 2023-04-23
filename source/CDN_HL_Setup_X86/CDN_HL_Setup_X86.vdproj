@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_68FFCEBACC5E4F97A1DBD9674429D707"
+        "MsmKey" = "8:_4D5A9A9244D441A7AA43BC3FF3051B9C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -150,10 +150,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68FFCEBACC5E4F97A1DBD9674429D707"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4D5A9A9244D441A7AA43BC3FF3051B9C"
             {
-            "SourcePath" = "8:..\\CDN_HL\\Readme.txt"
-            "TargetName" = "8:Readme.txt"
+            "SourcePath" = "8:..\\CDN_HL\\Instruction.txt"
+            "TargetName" = "8:Instruction.txt"
             "Tag" = "8:"
             "Folder" = "8:_348F78F833834AF3883F720FF369D569"
             "Condition" = "8:"
@@ -397,7 +397,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDN_HL"
         "ProductCode" = "8:{E35380FB-5238-4E4E-AFCA-39A825D2E55C}"
-        "PackageCode" = "8:{3C5ECD0D-8009-4750-9DAC-2B4EB8E4891E}"
+        "PackageCode" = "8:{063754F5-E992-4BBF-AF36-EB632596F37A}"
         "UpgradeCode" = "8:{1C9B9E68-E1A6-4A1F-9D43-09302EBA0436}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

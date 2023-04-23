@@ -21,13 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_68FFCEBACC5E4F97A1DBD9674429D707"
+        "MsmKey" = "8:_80FA7D60B2D040A4BF76BB36062C7553"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_80FA7D60B2D040A4BF76BB36062C7553"
+        "MsmKey" = "8:_94A6933F8687425E9A83D04B6F6773D9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -150,10 +150,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68FFCEBACC5E4F97A1DBD9674429D707"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80FA7D60B2D040A4BF76BB36062C7553"
             {
-            "SourcePath" = "8:..\\CDN_HL\\Readme.txt"
-            "TargetName" = "8:Readme.txt"
+            "SourcePath" = "8:..\\CDN_HL\\hl_logo.ico"
+            "TargetName" = "8:hl_logo.ico"
             "Tag" = "8:"
             "Folder" = "8:_348F78F833834AF3883F720FF369D569"
             "Condition" = "8:"
@@ -170,10 +170,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80FA7D60B2D040A4BF76BB36062C7553"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94A6933F8687425E9A83D04B6F6773D9"
             {
-            "SourcePath" = "8:..\\CDN_HL\\hl_logo.ico"
-            "TargetName" = "8:hl_logo.ico"
+            "SourcePath" = "8:..\\CDN_HL\\Instruction.txt"
+            "TargetName" = "8:Instruction.txt"
             "Tag" = "8:"
             "Folder" = "8:_348F78F833834AF3883F720FF369D569"
             "Condition" = "8:"
@@ -397,7 +397,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDN_HL"
         "ProductCode" = "8:{E35380FB-5238-4E4E-AFCA-39A825D2E55C}"
-        "PackageCode" = "8:{C163C264-36E7-40A9-8B46-C69A40B8FB67}"
+        "PackageCode" = "8:{38DCC5D5-6A9C-411E-BD93-D9945DAD4A0C}"
         "UpgradeCode" = "8:{1C9B9E68-E1A6-4A1F-9D43-09302EBA0436}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

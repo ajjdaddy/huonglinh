@@ -9,7 +9,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CDN_HL_Setup_X64", "CDN_HL_
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{28EE8B4F-88FE-4319-A103-D32F9947BE45}"
 	ProjectSection(SolutionItems) = preProject
-		CDN_HL\Readme.txt = CDN_HL\Readme.txt
+		CDN_HL\Instruction.txt = CDN_HL\Instruction.txt
 	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CDN_HL_Setup_X86", "CDN_HL_Setup_X86\CDN_HL_Setup_X86.vdproj", "{B09CEA1F-1A3C-4CB8-85CA-F968B9D692DC}"
