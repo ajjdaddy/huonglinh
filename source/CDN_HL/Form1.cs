@@ -3410,6 +3410,7 @@ namespace CDN_HL
 
             lstDestImages.Items.Clear();
             lblErrorMessage.Text = @"Resizing image(s).....";
+            var alertFailedFolderNotClear = true;
 
             var timer = new Stopwatch();
             timer.Start();
@@ -3428,7 +3429,11 @@ namespace CDN_HL
                         lblErrorMessage.Text = @"Failed. See error log for details.";
                         Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                             Environment.NewLine + $"File may have already existed in the destination folder.");
-                        //MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
+                        if (alertFailedFolderNotClear)
+                        {
+                            MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
+                            alertFailedFolderNotClear = false;
+                        }
                         File.Copy(sourceFile, failedFile);
                         failedImagesCount++;
                         continue;
@@ -3443,7 +3448,11 @@ namespace CDN_HL
                     lblErrorMessage.Text = @"Failed. See error log for details.";
                     Util.LogAMessage(_errorFile, $"Failed to resize '{sourceFile}' to '{destFile}'." +
                         Environment.NewLine + $"Ex: {ex.Message}");
-                    //MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
+                    if (alertFailedFolderNotClear)
+                    {
+                        MessageBox.Show($"Please CLEAR '{_strFailedImagesFolder}' for new failed resizing images!", @"CLEAR FOLDER");
+                        alertFailedFolderNotClear = false;
+                    }
                     File.Copy(sourceFile, failedFile);
                     failedImagesCount++;
                     continue;

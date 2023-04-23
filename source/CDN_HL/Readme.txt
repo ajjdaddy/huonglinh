@@ -1,0 +1,37 @@
+If CDN_HL application has detected the driver has not installed or installed with wrong version:
+-----------------------------------------------------------------------------------------------
+1. Use the following link to download Microsoft Office Access Database Redistribution 
+   if https://www.microsoft.com/en-us/download/details.aspx?id=54920&irgwc=1&OCID=AID2200057_aff_7593_393170&tduid=%28ir__hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00%29%287593%29%28393170%29%28%29%28%29&irclickid=_hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00
+2. Install the download driver and Relaunch the application.
+
+
+To resize all images (jpg, jpeg) on LinhTu server:
+--------------------------------------------------
+1. Install the CDN_HL app
+2. Making sure the application is installed in D:\LinhTu_HL
+3. Configure the CDN_HL app always run as 'Administrator'
+4. Delete all *.bmp in D:\LinhTu\img\Done
+5. Resize all images (jpg, jpeg) in D:\LinhTu\img\Done
+	Note: The resized images are in D:\LinhTu\img\Done\Resized 
+		and failed images are in D:\LinhTu\img\Done\Failed
+	Note: May take serveral times to resized all images due to memory.
+	Note: Clear D:\LinhTu\img\Done\Failed before a failed resized operation.
+6. Close CDN_HL running app 
+
+Running CDN_HL app with existing database and resized images on LinhTu server:
+---------------------------------------	
+1. Move all resized images in D:\LinhTu\img\Done\Resized to D:\LinhTu_HL\img\Done
+2. Rename D:\LinhTu_HL\DB\DN_HL.accdb to D:\LinhTu_HL\DB\DN_HL.accdb.bak
+3. Copy D:\LinhTu\DB\DN_HL.accdb to D:\LinhTu_HL\DB\DN_HL.accdb
+4. Launch CDN_HL app
+
+Install/Running CDN_HL app with existing LinhTu's server database from other servers in the local network:
+---------------------------------------	
+1. Install the CDN_HL app
+2. Making sure the application is installed in C:\LinhTu_HL
+3. Configure the CDN_HL app always run as 'Administrator'
+4. Launch CDN_HL app
+5. Select the error folder as C:\LinhTu_HL\Err
+6. Select the existing LinhTu's server database (e.g. \\DIEUNGU-D02\LinhTu_HL\DB\DN_HL.accdb)
+7. Select the existing LinhTu's server image folder (e.g. \\DIEUNGU-D02\LinhTu_HL\img
+	Note: The CDN_HL app will refresh once to reload the application setting corectly.
