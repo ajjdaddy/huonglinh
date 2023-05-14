@@ -249,7 +249,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_348F78F833834AF3883F720FF369D569"
             {
-            "DefaultLocation" = "8:C:\\CDN"
+            "DefaultLocation" = "8:C:\\LinhTu_HL"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
@@ -397,7 +397,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDN_HL"
         "ProductCode" = "8:{E35380FB-5238-4E4E-AFCA-39A825D2E55C}"
-        "PackageCode" = "8:{38DCC5D5-6A9C-411E-BD93-D9945DAD4A0C}"
+        "PackageCode" = "8:{F68E2579-4BB2-4387-AF03-8F60DEDCEA20}"
         "UpgradeCode" = "8:{1C9B9E68-E1A6-4A1F-9D43-09302EBA0436}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

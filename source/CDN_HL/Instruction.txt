@@ -1,37 +1,57 @@
-If CDN_HL application has detected 'Unable to access the database', try the following:
+If CDN_HL installer detects/reports 'Unable to access the database', try the following:
 --------------------------------------------------------------------------------------
 Option 1: Uninstall and re-install a different CDN_HL installer version (e.g. X86 or X64)
 Option 2: Use the following link to download Microsoft Office Access Database Redistribution 
 https://www.microsoft.com/en-us/download/details.aspx?id=54920&irgwc=1&OCID=AID2200057_aff_7593_393170&tduid=%28ir__hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00%29%287593%29%28393170%29%28%29%28%29&irclickid=_hdedbpaxugkfbyd9e9vpbohddu2x6uvytxtbseph00
-and then install the download driver and Relaunch the application.
+install the download driver and re-install CDN_HL installer.
 
-To resize all images (jpg, jpeg) on LinhTu server:
---------------------------------------------------
-1. Install the CDN_HL app
-2. Making sure the application is installed in D:\LinhTu_HL
+Section A - Install the CDN_HL application on a main server (e.g. DIEUNGU-D02):
+-----------------------------------------------------------------------
+1. Install the CDN_HL app via (E.g. CDN_HL_Setup_X64\Release\CDN_HL_Setup_X64.msi)
+2. Select C:\LinhTu_HL (default folder) as a destination folder for CDN_HL application
 3. Configure the CDN_HL app always run as 'Administrator'
-4. Delete all *.bmp in D:\LinhTu\img\Done
-5. Resize all images (jpg, jpeg) in D:\LinhTu\img\Done
-	Note: The resized images are in D:\LinhTu\img\Done\Resized 
-		and failed images are in D:\LinhTu\img\Done\Failed
-	Note: May take serveral times to resized all images due to memory.
-	Note: Clear D:\LinhTu\img\Done\Failed before a failed resized operation.
-6. Close CDN_HL running app 
 
-Running CDN_HL app with existing database and resized images on LinhTu server:
----------------------------------------	
-1. Move all resized images in D:\LinhTu\img\Done\Resized to D:\LinhTu_HL\img\Done
-2. Rename D:\LinhTu_HL\DB\DN_HL.accdb to D:\LinhTu_HL\DB\DN_HL.accdb.bak
-3. Copy D:\LinhTu\DB\DN_HL.accdb to D:\LinhTu_HL\DB\DN_HL.accdb
+Session B - To resize all images (jpg, jpeg) on an existing server (e.g. C:\LinhTu_HL):
+---------------------------------------------------------------------------
+1. Install the CDN_HL application on an existing server (use Section A instruction above)
+2. Delete all unused images (e.g. *.bmp) of the existing application img\Done folder (e.g. C:\LinhTu\img\Done)
+3. Launch the new CDN_HL application
+4. Select 'Migration' tab
+5. Click 'Load Source Image' button and select the existing application img\Done folder (e.g. C:\LinhTu\img\Done)
+6. Click 'Resize all images' to resize existing images (jpg, jpeg) in the existing application img\Done folder (e.g. C:\LinhTu\img\Done)
+	Note: New resized images will be in 'Resized' folder of the existing application img\Done folder (e.g. C:\LinhTu\img\Done\Resized)
+		and failed images will be in 'Failed' folder of the existing application img\Done folder (e.g. C:\LinhTu\img\Done\Failed)
+7. If there are images failed to resize due memory issue,
+	a. Clear the 'Failed' folder (e.g. C:\LinhTu\img\Done\Failed)
+	b. Repeat step 6
+	Note: Be patient, it may need to repeat multiple times to completely resize all images.
+8. Close CDN_HL running app 
+
+Session C - Running CDN_HL app with existing database and resized images:
+-------------------------------------------------------------------------	
+1. Move all resized images in the application img\Done folder (e.g. moving C:\LinhTu\img\Done\Resized to C:\LinhTu_HL\img\Done)
+2. Replace the access database in the application 'DB' folder (e.g. C:\LinhTu_HL\DB)
+	a. Rename the existing DN_HL.accdb file (e.g. C:\LinhTu_HL\DB\DN_HL.accdb to C:\LinhTu_HL\DB\DN_HL.accdb.bak)
+	b. Copy the running access database 'DN_HL.accdb' into the application 'DB' folder (e.g. C:\LinhTu_HL\DB\DN_HL.accdb)
 4. Launch CDN_HL app
 
-Install/Running CDN_HL app with existing LinhTu's server database from other servers in the local network:
----------------------------------------	
-1. Install the CDN_HL app
-2. Making sure the application is installed in C:\LinhTu_HL
-3. Configure the CDN_HL app always run as 'Administrator'
-4. Launch CDN_HL app
-5. Select the error folder as C:\LinhTu_HL\Err
-6. Select the existing LinhTu's server database (e.g. \\DIEUNGU-D02\LinhTu_HL\DB\DN_HL.accdb)
-7. Select the existing LinhTu's server image folder (e.g. \\DIEUNGU-D02\LinhTu_HL\img
-	Note: The CDN_HL app will refresh once to reload the application setting corectly.
+Session D - Share the main server CDN_HL application folder (e.g. C:\LinhTu_HL) 
+            to run the CDN_HL application on multiple servers
+-------------------------------------------------------------------------------
+1. On the main server, right-click on the main server CDN_HL application folder (e.g. C:\LinhTu_HL) 
+	via a Windows Explorer and select 'Properties'
+2. Click 'Advanced Sharing...' in the 'Sharing' tab
+3. Check 'Share this folder'
+4. Enter 'LinhTu_HL' in the 'Share name:' box
+5. Click 'Permission'
+6. Select 'Everyone' and check 'Full Control' in the 'Permission for Everyone' box
+
+Session E - Install/Running CDN_HL app on a secondary server 
+			using the main server (e.g. DIEUNGU-D02) CDN_HL application setting:
+--------------------------------------------------------------------------------	
+1. Install the CDN_HL app on a secondary server (use Section A instruction above)
+2. Redirect all of the CDN_HL application folders setting to the main server (e.g. DIEUNGU-D02)
+	a. Back up the CDN_HL.exe.Config file
+	b. Modify the CDN_HL.exe.Config file by replace all 'C:' to '\\DIEUNGU-D02\' in the file
+3. Delete DB, img, err folders of the CDN_HL app on a secondary server
+4. Launch CDN_HL app on a secondary server
