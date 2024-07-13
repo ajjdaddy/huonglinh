@@ -140,6 +140,7 @@ namespace CDN_HL
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tblHLTableAdapter = new CDN_HL.DN_HLDataSetTableAdapters.tblHLTableAdapter();
             this.dNHLDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lblsOrigID = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblHLBindingSource)).BeginInit();
@@ -166,15 +167,17 @@ namespace CDN_HL
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(994, 698);
+            this.tabControl1.Size = new System.Drawing.Size(1325, 859);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
             this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
             // 
             // tabSearch
             // 
+            this.tabSearch.Controls.Add(this.lblsOrigID);
             this.tabSearch.Controls.Add(this.lblsFullPhapDanh);
             this.tabSearch.Controls.Add(this.lblsFullname);
             this.tabSearch.Controls.Add(this.lblsOrigTuAl);
@@ -221,10 +224,11 @@ namespace CDN_HL
             this.tabSearch.Controls.Add(this.picsBoxHL);
             this.tabSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabSearch.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tabSearch.Location = new System.Drawing.Point(4, 22);
+            this.tabSearch.Location = new System.Drawing.Point(4, 25);
+            this.tabSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabSearch.Name = "tabSearch";
-            this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(986, 672);
+            this.tabSearch.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabSearch.Size = new System.Drawing.Size(1317, 830);
             this.tabSearch.TabIndex = 0;
             this.tabSearch.Text = "     Search/Update     ";
             this.tabSearch.UseVisualStyleBackColor = true;
@@ -236,9 +240,10 @@ namespace CDN_HL
             this.lblsFullPhapDanh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "FullPhapDanh", true));
             this.lblsFullPhapDanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsFullPhapDanh.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsFullPhapDanh.Location = new System.Drawing.Point(922, 77);
+            this.lblsFullPhapDanh.Location = new System.Drawing.Point(1229, 95);
+            this.lblsFullPhapDanh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsFullPhapDanh.Name = "lblsFullPhapDanh";
-            this.lblsFullPhapDanh.Size = new System.Drawing.Size(121, 15);
+            this.lblsFullPhapDanh.Size = new System.Drawing.Size(138, 18);
             this.lblsFullPhapDanh.TabIndex = 36;
             this.lblsFullPhapDanh.Text = "lblsFullPhapDanh";
             // 
@@ -259,9 +264,10 @@ namespace CDN_HL
             this.lblsFullname.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "Fullname", true));
             this.lblsFullname.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsFullname.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsFullname.Location = new System.Drawing.Point(922, 47);
+            this.lblsFullname.Location = new System.Drawing.Point(1229, 58);
+            this.lblsFullname.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsFullname.Name = "lblsFullname";
-            this.lblsFullname.Size = new System.Drawing.Size(90, 15);
+            this.lblsFullname.Size = new System.Drawing.Size(102, 18);
             this.lblsFullname.TabIndex = 34;
             this.lblsFullname.Text = "lblsFullname";
             // 
@@ -272,9 +278,10 @@ namespace CDN_HL
             this.lblsOrigTuAl.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "MatNgay_AL", true));
             this.lblsOrigTuAl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigTuAl.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigTuAl.Location = new System.Drawing.Point(923, 137);
+            this.lblsOrigTuAl.Location = new System.Drawing.Point(1231, 169);
+            this.lblsOrigTuAl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigTuAl.Name = "lblsOrigTuAl";
-            this.lblsOrigTuAl.Size = new System.Drawing.Size(85, 15);
+            this.lblsOrigTuAl.Size = new System.Drawing.Size(99, 18);
             this.lblsOrigTuAl.TabIndex = 40;
             this.lblsOrigTuAl.Text = "lblsOrigTuAl";
             // 
@@ -285,9 +292,10 @@ namespace CDN_HL
             this.lblsOrigTu.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "MatNgay_DL", true));
             this.lblsOrigTu.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigTu.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigTu.Location = new System.Drawing.Point(922, 122);
+            this.lblsOrigTu.Location = new System.Drawing.Point(1229, 150);
+            this.lblsOrigTu.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigTu.Name = "lblsOrigTu";
-            this.lblsOrigTu.Size = new System.Drawing.Size(73, 15);
+            this.lblsOrigTu.Size = new System.Drawing.Size(85, 18);
             this.lblsOrigTu.TabIndex = 39;
             this.lblsOrigTu.Text = "lblsOrigTu";
             // 
@@ -298,9 +306,10 @@ namespace CDN_HL
             this.lblsOrigSinh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "SinhNgay_DL", true));
             this.lblsOrigSinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigSinh.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigSinh.Location = new System.Drawing.Point(922, 107);
+            this.lblsOrigSinh.Location = new System.Drawing.Point(1229, 132);
+            this.lblsOrigSinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigSinh.Name = "lblsOrigSinh";
-            this.lblsOrigSinh.Size = new System.Drawing.Size(86, 15);
+            this.lblsOrigSinh.Size = new System.Drawing.Size(99, 18);
             this.lblsOrigSinh.TabIndex = 38;
             this.lblsOrigSinh.Text = "lblsOrigSinh";
             // 
@@ -311,9 +320,10 @@ namespace CDN_HL
             this.lblsOrigViTriCot.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "ViTriCot", true));
             this.lblsOrigViTriCot.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigViTriCot.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigViTriCot.Location = new System.Drawing.Point(923, 37);
+            this.lblsOrigViTriCot.Location = new System.Drawing.Point(1231, 46);
+            this.lblsOrigViTriCot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigViTriCot.Name = "lblsOrigViTriCot";
-            this.lblsOrigViTriCot.Size = new System.Drawing.Size(57, 9);
+            this.lblsOrigViTriCot.Size = new System.Drawing.Size(72, 13);
             this.lblsOrigViTriCot.TabIndex = 33;
             this.lblsOrigViTriCot.Text = "Trụ B/Hộc 8";
             // 
@@ -324,10 +334,10 @@ namespace CDN_HL
             this.btnsRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnsRefresh.ForeColor = System.Drawing.Color.Black;
             this.btnsRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnsRefresh.Image")));
-            this.btnsRefresh.Location = new System.Drawing.Point(482, 32);
+            this.btnsRefresh.Location = new System.Drawing.Point(643, 39);
             this.btnsRefresh.Margin = new System.Windows.Forms.Padding(0);
             this.btnsRefresh.Name = "btnsRefresh";
-            this.btnsRefresh.Size = new System.Drawing.Size(35, 34);
+            this.btnsRefresh.Size = new System.Drawing.Size(47, 42);
             this.btnsRefresh.TabIndex = 2;
             this.btnsRefresh.UseVisualStyleBackColor = false;
             this.btnsRefresh.Click += new System.EventHandler(this.btnsRefresh_Click);
@@ -339,9 +349,10 @@ namespace CDN_HL
             this.lblsOrigFileNumber.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "FileNumber", true));
             this.lblsOrigFileNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigFileNumber.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigFileNumber.Location = new System.Drawing.Point(923, 152);
+            this.lblsOrigFileNumber.Location = new System.Drawing.Point(1231, 187);
+            this.lblsOrigFileNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigFileNumber.Name = "lblsOrigFileNumber";
-            this.lblsOrigFileNumber.Size = new System.Drawing.Size(132, 15);
+            this.lblsOrigFileNumber.Size = new System.Drawing.Size(152, 18);
             this.lblsOrigFileNumber.TabIndex = 41;
             this.lblsOrigFileNumber.Text = "lblsOrigFileNumber";
             // 
@@ -352,9 +363,10 @@ namespace CDN_HL
             this.lblsOrigFilename.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "HinhFileNamePath", true));
             this.lblsOrigFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigFilename.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigFilename.Location = new System.Drawing.Point(928, 167);
+            this.lblsOrigFilename.Location = new System.Drawing.Point(1237, 206);
+            this.lblsOrigFilename.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigFilename.Name = "lblsOrigFilename";
-            this.lblsOrigFilename.Size = new System.Drawing.Size(80, 9);
+            this.lblsOrigFilename.Size = new System.Drawing.Size(99, 13);
             this.lblsOrigFilename.TabIndex = 42;
             this.lblsOrigFilename.Text = "lblsOrigFilename";
             this.lblsOrigFilename.TextChanged += new System.EventHandler(this.lblsOrigFilename_TextChanged);
@@ -365,9 +377,10 @@ namespace CDN_HL
             this.lblsDisplayViTriCot.AutoSize = true;
             this.lblsDisplayViTriCot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsDisplayViTriCot.ForeColor = System.Drawing.Color.Silver;
-            this.lblsDisplayViTriCot.Location = new System.Drawing.Point(834, 240);
+            this.lblsDisplayViTriCot.Location = new System.Drawing.Point(1112, 295);
+            this.lblsDisplayViTriCot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsDisplayViTriCot.Name = "lblsDisplayViTriCot";
-            this.lblsDisplayViTriCot.Size = new System.Drawing.Size(95, 17);
+            this.lblsDisplayViTriCot.Size = new System.Drawing.Size(112, 20);
             this.lblsDisplayViTriCot.TabIndex = 30;
             this.lblsDisplayViTriCot.Text = "Trụ B/Hộc 8";
             // 
@@ -376,12 +389,12 @@ namespace CDN_HL
             this.txtsNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsNote.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "Note", true));
             this.txtsNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtsNote.Location = new System.Drawing.Point(639, 553);
-            this.txtsNote.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsNote.Location = new System.Drawing.Point(852, 681);
+            this.txtsNote.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsNote.Multiline = true;
             this.txtsNote.Name = "txtsNote";
             this.txtsNote.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtsNote.Size = new System.Drawing.Size(343, 99);
+            this.txtsNote.Size = new System.Drawing.Size(456, 121);
             this.txtsNote.TabIndex = 26;
             // 
             // lblsNote
@@ -389,9 +402,10 @@ namespace CDN_HL
             this.lblsNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsNote.AutoSize = true;
             this.lblsNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblsNote.Location = new System.Drawing.Point(584, 556);
+            this.lblsNote.Location = new System.Drawing.Point(779, 684);
+            this.lblsNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsNote.Name = "lblsNote";
-            this.lblsNote.Size = new System.Drawing.Size(52, 20);
+            this.lblsNote.Size = new System.Drawing.Size(64, 25);
             this.lblsNote.TabIndex = 25;
             this.lblsNote.Text = "Note:";
             // 
@@ -402,9 +416,10 @@ namespace CDN_HL
             this.lblsOrigPhapDanh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "PhapDanh", true));
             this.lblsOrigPhapDanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigPhapDanh.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigPhapDanh.Location = new System.Drawing.Point(922, 92);
+            this.lblsOrigPhapDanh.Location = new System.Drawing.Point(1229, 113);
+            this.lblsOrigPhapDanh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigPhapDanh.Name = "lblsOrigPhapDanh";
-            this.lblsOrigPhapDanh.Size = new System.Drawing.Size(124, 15);
+            this.lblsOrigPhapDanh.Size = new System.Drawing.Size(143, 18);
             this.lblsOrigPhapDanh.TabIndex = 37;
             this.lblsOrigPhapDanh.Text = "lblsOrigPhapDanh";
             // 
@@ -415,9 +430,10 @@ namespace CDN_HL
             this.lblsOrigHoTen.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "HoTen", true));
             this.lblsOrigHoTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigHoTen.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigHoTen.Location = new System.Drawing.Point(922, 62);
+            this.lblsOrigHoTen.Location = new System.Drawing.Point(1229, 76);
+            this.lblsOrigHoTen.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigHoTen.Name = "lblsOrigHoTen";
-            this.lblsOrigHoTen.Size = new System.Drawing.Size(99, 15);
+            this.lblsOrigHoTen.Size = new System.Drawing.Size(116, 18);
             this.lblsOrigHoTen.TabIndex = 35;
             this.lblsOrigHoTen.Text = "lblsOrigHoTen";
             // 
@@ -426,9 +442,10 @@ namespace CDN_HL
             this.lblsFilename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsFilename.AutoSize = true;
             this.lblsFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblsFilename.Location = new System.Drawing.Point(542, 498);
+            this.lblsFilename.Location = new System.Drawing.Point(723, 613);
+            this.lblsFilename.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsFilename.Name = "lblsFilename";
-            this.lblsFilename.Size = new System.Drawing.Size(94, 20);
+            this.lblsFilename.Size = new System.Drawing.Size(116, 25);
             this.lblsFilename.TabIndex = 23;
             this.lblsFilename.Text = "File Name:";
             // 
@@ -439,9 +456,10 @@ namespace CDN_HL
             this.txtsViTriCot.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "ViTriCot", true));
             this.txtsViTriCot.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtsViTriCot.ForeColor = System.Drawing.Color.Red;
-            this.txtsViTriCot.Location = new System.Drawing.Point(834, 261);
+            this.txtsViTriCot.Location = new System.Drawing.Point(1112, 321);
+            this.txtsViTriCot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtsViTriCot.Name = "txtsViTriCot";
-            this.txtsViTriCot.Size = new System.Drawing.Size(148, 29);
+            this.txtsViTriCot.Size = new System.Drawing.Size(196, 34);
             this.txtsViTriCot.TabIndex = 10;
             this.txtsViTriCot.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsViTriCot_KeyPress);
             // 
@@ -449,9 +467,10 @@ namespace CDN_HL
             // 
             this.lblsViTriCot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsViTriCot.AutoSize = true;
-            this.lblsViTriCot.Location = new System.Drawing.Point(745, 266);
+            this.lblsViTriCot.Location = new System.Drawing.Point(993, 327);
+            this.lblsViTriCot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsViTriCot.Name = "lblsViTriCot";
-            this.lblsViTriCot.Size = new System.Drawing.Size(88, 20);
+            this.lblsViTriCot.Size = new System.Drawing.Size(111, 25);
             this.lblsViTriCot.TabIndex = 9;
             this.lblsViTriCot.Text = "Vị Trí Cốt:";
             // 
@@ -459,10 +478,10 @@ namespace CDN_HL
             // 
             this.txtsTuAL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsTuAL.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "MatNgay_AL", true));
-            this.txtsTuAL.Location = new System.Drawing.Point(639, 429);
-            this.txtsTuAL.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsTuAL.Location = new System.Drawing.Point(852, 528);
+            this.txtsTuAL.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsTuAL.Name = "txtsTuAL";
-            this.txtsTuAL.Size = new System.Drawing.Size(343, 26);
+            this.txtsTuAL.Size = new System.Drawing.Size(456, 30);
             this.txtsTuAL.TabIndex = 20;
             this.txtsTuAL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsTuAL_KeyPress);
             // 
@@ -470,9 +489,10 @@ namespace CDN_HL
             // 
             this.lblsTuAL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsTuAL.AutoSize = true;
-            this.lblsTuAL.Location = new System.Drawing.Point(530, 432);
+            this.lblsTuAL.Location = new System.Drawing.Point(707, 532);
+            this.lblsTuAL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsTuAL.Name = "lblsTuAL";
-            this.lblsTuAL.Size = new System.Drawing.Size(106, 20);
+            this.lblsTuAL.Size = new System.Drawing.Size(134, 25);
             this.lblsTuAL.TabIndex = 19;
             this.lblsTuAL.Text = "Ngày Tử AL:";
             // 
@@ -480,10 +500,10 @@ namespace CDN_HL
             // 
             this.txtsTu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsTu.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "MatNgay_DL", true));
-            this.txtsTu.Location = new System.Drawing.Point(639, 396);
-            this.txtsTu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsTu.Location = new System.Drawing.Point(852, 487);
+            this.txtsTu.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsTu.Name = "txtsTu";
-            this.txtsTu.Size = new System.Drawing.Size(343, 26);
+            this.txtsTu.Size = new System.Drawing.Size(456, 30);
             this.txtsTu.TabIndex = 18;
             this.txtsTu.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsTu_KeyPress);
             // 
@@ -491,9 +511,10 @@ namespace CDN_HL
             // 
             this.lblsTu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsTu.AutoSize = true;
-            this.lblsTu.Location = new System.Drawing.Point(529, 399);
+            this.lblsTu.Location = new System.Drawing.Point(705, 491);
+            this.lblsTu.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsTu.Name = "lblsTu";
-            this.lblsTu.Size = new System.Drawing.Size(107, 20);
+            this.lblsTu.Size = new System.Drawing.Size(134, 25);
             this.lblsTu.TabIndex = 17;
             this.lblsTu.Text = "Ngày Tử DL:";
             // 
@@ -504,10 +525,10 @@ namespace CDN_HL
             this.txtsDtUpdate.Enabled = false;
             this.txtsDtUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtsDtUpdate.ForeColor = System.Drawing.Color.Gray;
-            this.txtsDtUpdate.Location = new System.Drawing.Point(821, 465);
-            this.txtsDtUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsDtUpdate.Location = new System.Drawing.Point(1095, 572);
+            this.txtsDtUpdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsDtUpdate.Name = "txtsDtUpdate";
-            this.txtsDtUpdate.Size = new System.Drawing.Size(161, 20);
+            this.txtsDtUpdate.Size = new System.Drawing.Size(213, 23);
             this.txtsDtUpdate.TabIndex = 28;
             this.txtsDtUpdate.Text = "txtsDtUpdate";
             // 
@@ -518,9 +539,10 @@ namespace CDN_HL
             this.lblsOrigViTriHinh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "ViTriHinh", true));
             this.lblsOrigViTriHinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsOrigViTriHinh.ForeColor = System.Drawing.Color.Transparent;
-            this.lblsOrigViTriHinh.Location = new System.Drawing.Point(923, 28);
+            this.lblsOrigViTriHinh.Location = new System.Drawing.Point(1231, 34);
+            this.lblsOrigViTriHinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsOrigViTriHinh.Name = "lblsOrigViTriHinh";
-            this.lblsOrigViTriHinh.Size = new System.Drawing.Size(32, 9);
+            this.lblsOrigViTriHinh.Size = new System.Drawing.Size(44, 13);
             this.lblsOrigViTriHinh.TabIndex = 32;
             this.lblsOrigViTriHinh.Text = "A 1/80";
             // 
@@ -528,9 +550,10 @@ namespace CDN_HL
             // 
             this.lblsFileNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsFileNumber.AutoSize = true;
-            this.lblsFileNumber.Location = new System.Drawing.Point(526, 465);
+            this.lblsFileNumber.Location = new System.Drawing.Point(701, 572);
+            this.lblsFileNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsFileNumber.Name = "lblsFileNumber";
-            this.lblsFileNumber.Size = new System.Drawing.Size(110, 20);
+            this.lblsFileNumber.Size = new System.Drawing.Size(135, 25);
             this.lblsFileNumber.TabIndex = 21;
             this.lblsFileNumber.Text = "File Number:";
             // 
@@ -540,9 +563,10 @@ namespace CDN_HL
             this.lblsDisplayViTri.AutoSize = true;
             this.lblsDisplayViTri.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsDisplayViTri.ForeColor = System.Drawing.Color.Silver;
-            this.lblsDisplayViTri.Location = new System.Drawing.Point(637, 241);
+            this.lblsDisplayViTri.Location = new System.Drawing.Point(849, 297);
+            this.lblsDisplayViTri.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsDisplayViTri.Name = "lblsDisplayViTri";
-            this.lblsDisplayViTri.Size = new System.Drawing.Size(146, 17);
+            this.lblsDisplayViTri.Size = new System.Drawing.Size(170, 20);
             this.lblsDisplayViTri.TabIndex = 29;
             this.lblsDisplayViTri.Text = "Hàng/Cột   A 12/80";
             // 
@@ -551,12 +575,12 @@ namespace CDN_HL
             this.txtsFilename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsFilename.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "HinhFileNamePath", true));
             this.txtsFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtsFilename.Location = new System.Drawing.Point(639, 495);
-            this.txtsFilename.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsFilename.Location = new System.Drawing.Point(852, 609);
+            this.txtsFilename.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsFilename.Multiline = true;
             this.txtsFilename.Name = "txtsFilename";
             this.txtsFilename.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtsFilename.Size = new System.Drawing.Size(343, 50);
+            this.txtsFilename.Size = new System.Drawing.Size(456, 61);
             this.txtsFilename.TabIndex = 24;
             this.txtsFilename.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsFilename_KeyPress);
             // 
@@ -566,10 +590,10 @@ namespace CDN_HL
             this.txtsFileNumber.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "FileNumber", true));
             this.txtsFileNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtsFileNumber.ForeColor = System.Drawing.Color.Black;
-            this.txtsFileNumber.Location = new System.Drawing.Point(639, 462);
-            this.txtsFileNumber.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsFileNumber.Location = new System.Drawing.Point(852, 569);
+            this.txtsFileNumber.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsFileNumber.Name = "txtsFileNumber";
-            this.txtsFileNumber.Size = new System.Drawing.Size(84, 26);
+            this.txtsFileNumber.Size = new System.Drawing.Size(111, 30);
             this.txtsFileNumber.TabIndex = 22;
             // 
             // btnsSave
@@ -578,10 +602,10 @@ namespace CDN_HL
             this.btnsSave.BackColor = System.Drawing.Color.Yellow;
             this.btnsSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnsSave.ForeColor = System.Drawing.Color.Red;
-            this.btnsSave.Location = new System.Drawing.Point(729, 460);
-            this.btnsSave.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnsSave.Location = new System.Drawing.Point(972, 566);
+            this.btnsSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnsSave.Name = "btnsSave";
-            this.btnsSave.Size = new System.Drawing.Size(84, 30);
+            this.btnsSave.Size = new System.Drawing.Size(112, 37);
             this.btnsSave.TabIndex = 27;
             this.btnsSave.Text = "Save";
             this.btnsSave.UseVisualStyleBackColor = false;
@@ -591,10 +615,10 @@ namespace CDN_HL
             // 
             this.txtsSinh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsSinh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "SinhNgay_DL", true));
-            this.txtsSinh.Location = new System.Drawing.Point(639, 363);
-            this.txtsSinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsSinh.Location = new System.Drawing.Point(852, 447);
+            this.txtsSinh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsSinh.Name = "txtsSinh";
-            this.txtsSinh.Size = new System.Drawing.Size(343, 26);
+            this.txtsSinh.Size = new System.Drawing.Size(456, 30);
             this.txtsSinh.TabIndex = 16;
             this.txtsSinh.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsSinh_KeyPress);
             // 
@@ -602,9 +626,10 @@ namespace CDN_HL
             // 
             this.lblsSinh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsSinh.AutoSize = true;
-            this.lblsSinh.Location = new System.Drawing.Point(541, 366);
+            this.lblsSinh.Location = new System.Drawing.Point(721, 450);
+            this.lblsSinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsSinh.Name = "lblsSinh";
-            this.lblsSinh.Size = new System.Drawing.Size(95, 20);
+            this.lblsSinh.Size = new System.Drawing.Size(119, 25);
             this.lblsSinh.TabIndex = 15;
             this.lblsSinh.Text = "Ngày Sinh:";
             // 
@@ -613,10 +638,10 @@ namespace CDN_HL
             this.txtsPhapDanh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsPhapDanh.CausesValidation = false;
             this.txtsPhapDanh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "PhapDanh", true));
-            this.txtsPhapDanh.Location = new System.Drawing.Point(639, 330);
-            this.txtsPhapDanh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsPhapDanh.Location = new System.Drawing.Point(852, 406);
+            this.txtsPhapDanh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsPhapDanh.Name = "txtsPhapDanh";
-            this.txtsPhapDanh.Size = new System.Drawing.Size(343, 26);
+            this.txtsPhapDanh.Size = new System.Drawing.Size(456, 30);
             this.txtsPhapDanh.TabIndex = 14;
             this.txtsPhapDanh.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsPhapDanh_KeyPress);
             // 
@@ -624,10 +649,10 @@ namespace CDN_HL
             // 
             this.txtsHoTen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtsHoTen.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "HoTen", true));
-            this.txtsHoTen.Location = new System.Drawing.Point(639, 297);
-            this.txtsHoTen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsHoTen.Location = new System.Drawing.Point(852, 366);
+            this.txtsHoTen.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsHoTen.Name = "txtsHoTen";
-            this.txtsHoTen.Size = new System.Drawing.Size(343, 26);
+            this.txtsHoTen.Size = new System.Drawing.Size(456, 30);
             this.txtsHoTen.TabIndex = 12;
             this.txtsHoTen.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsHoTen_KeyPress);
             // 
@@ -635,9 +660,10 @@ namespace CDN_HL
             // 
             this.lblsPhapDanh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsPhapDanh.AutoSize = true;
-            this.lblsPhapDanh.Location = new System.Drawing.Point(533, 333);
+            this.lblsPhapDanh.Location = new System.Drawing.Point(711, 410);
+            this.lblsPhapDanh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsPhapDanh.Name = "lblsPhapDanh";
-            this.lblsPhapDanh.Size = new System.Drawing.Size(103, 20);
+            this.lblsPhapDanh.Size = new System.Drawing.Size(126, 25);
             this.lblsPhapDanh.TabIndex = 13;
             this.lblsPhapDanh.Text = "Pháp Danh:";
             // 
@@ -645,9 +671,10 @@ namespace CDN_HL
             // 
             this.lblsViTriHinh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsViTriHinh.AutoSize = true;
-            this.lblsViTriHinh.Location = new System.Drawing.Point(539, 269);
+            this.lblsViTriHinh.Location = new System.Drawing.Point(719, 331);
+            this.lblsViTriHinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsViTriHinh.Name = "lblsViTriHinh";
-            this.lblsViTriHinh.Size = new System.Drawing.Size(97, 20);
+            this.lblsViTriHinh.Size = new System.Drawing.Size(121, 25);
             this.lblsViTriHinh.TabIndex = 7;
             this.lblsViTriHinh.Text = "Vị Trí Hình:";
             // 
@@ -658,10 +685,10 @@ namespace CDN_HL
             this.txtsViTriHinh.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "ViTriHinh", true));
             this.txtsViTriHinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtsViTriHinh.ForeColor = System.Drawing.Color.Red;
-            this.txtsViTriHinh.Location = new System.Drawing.Point(639, 261);
-            this.txtsViTriHinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsViTriHinh.Location = new System.Drawing.Point(852, 321);
+            this.txtsViTriHinh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsViTriHinh.Name = "txtsViTriHinh";
-            this.txtsViTriHinh.Size = new System.Drawing.Size(95, 29);
+            this.txtsViTriHinh.Size = new System.Drawing.Size(125, 34);
             this.txtsViTriHinh.TabIndex = 8;
             this.txtsViTriHinh.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtsViTriHinh_KeyPress);
             // 
@@ -669,9 +696,10 @@ namespace CDN_HL
             // 
             this.lblsHoTen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsHoTen.AutoSize = true;
-            this.lblsHoTen.Location = new System.Drawing.Point(564, 300);
+            this.lblsHoTen.Location = new System.Drawing.Point(752, 369);
+            this.lblsHoTen.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsHoTen.Name = "lblsHoTen";
-            this.lblsHoTen.Size = new System.Drawing.Size(72, 20);
+            this.lblsHoTen.Size = new System.Drawing.Size(90, 25);
             this.lblsHoTen.TabIndex = 11;
             this.lblsHoTen.Text = "Họ Tên:";
             // 
@@ -694,12 +722,12 @@ namespace CDN_HL
             this.Note,
             this.HinhFileNamePath});
             this.datasGridView.DataSource = this.tblHLBindingSource;
-            this.datasGridView.Location = new System.Drawing.Point(7, 67);
-            this.datasGridView.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.datasGridView.Location = new System.Drawing.Point(9, 82);
+            this.datasGridView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.datasGridView.MultiSelect = false;
             this.datasGridView.Name = "datasGridView";
             this.datasGridView.RowHeadersWidth = 51;
-            this.datasGridView.Size = new System.Drawing.Size(510, 586);
+            this.datasGridView.Size = new System.Drawing.Size(680, 721);
             this.datasGridView.TabIndex = 6;
             this.datasGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.datasGridView_CellClick);
             this.datasGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.datasGridView_CellMouseClick);
@@ -784,10 +812,10 @@ namespace CDN_HL
             // 
             this.txtsSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtsSearch.Location = new System.Drawing.Point(8, 36);
-            this.txtsSearch.Margin = new System.Windows.Forms.Padding(7, 10, 7, 10);
+            this.txtsSearch.Location = new System.Drawing.Point(11, 44);
+            this.txtsSearch.Margin = new System.Windows.Forms.Padding(9, 12, 9, 12);
             this.txtsSearch.Name = "txtsSearch";
-            this.txtsSearch.Size = new System.Drawing.Size(371, 26);
+            this.txtsSearch.Size = new System.Drawing.Size(493, 30);
             this.txtsSearch.TabIndex = 0;
             this.txtsSearch.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtsSearch_MouseClick);
             this.txtsSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtsSearch_KeyDown);
@@ -798,19 +826,19 @@ namespace CDN_HL
             this.lblsFileNumSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsFileNumSearch.AutoSize = true;
-            this.lblsFileNumSearch.Location = new System.Drawing.Point(133, 7);
-            this.lblsFileNumSearch.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblsFileNumSearch.Location = new System.Drawing.Point(177, 9);
+            this.lblsFileNumSearch.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblsFileNumSearch.Name = "lblsFileNumSearch";
-            this.lblsFileNumSearch.Size = new System.Drawing.Size(110, 20);
+            this.lblsFileNumSearch.Size = new System.Drawing.Size(135, 25);
             this.lblsFileNumSearch.TabIndex = 4;
             this.lblsFileNumSearch.Text = "File Number:";
             // 
             // txtsFNumbSearch
             // 
-            this.txtsFNumbSearch.Location = new System.Drawing.Point(244, 4);
-            this.txtsFNumbSearch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtsFNumbSearch.Location = new System.Drawing.Point(325, 5);
+            this.txtsFNumbSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtsFNumbSearch.Name = "txtsFNumbSearch";
-            this.txtsFNumbSearch.Size = new System.Drawing.Size(151, 26);
+            this.txtsFNumbSearch.Size = new System.Drawing.Size(200, 30);
             this.txtsFNumbSearch.TabIndex = 5;
             this.txtsFNumbSearch.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtsFNumbSearch_MouseClick);
             this.txtsFNumbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtsFNumbSearch_KeyDown);
@@ -819,10 +847,10 @@ namespace CDN_HL
             // cksPhapDanh
             // 
             this.cksPhapDanh.AutoSize = true;
-            this.cksPhapDanh.Location = new System.Drawing.Point(10, 6);
-            this.cksPhapDanh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cksPhapDanh.Location = new System.Drawing.Point(13, 7);
+            this.cksPhapDanh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cksPhapDanh.Name = "cksPhapDanh";
-            this.cksPhapDanh.Size = new System.Drawing.Size(117, 24);
+            this.cksPhapDanh.Size = new System.Drawing.Size(141, 29);
             this.cksPhapDanh.TabIndex = 3;
             this.cksPhapDanh.Text = "Phap Danh";
             this.cksPhapDanh.UseVisualStyleBackColor = true;
@@ -834,10 +862,10 @@ namespace CDN_HL
             this.btnsSearch.BackColor = System.Drawing.Color.Yellow;
             this.btnsSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnsSearch.ForeColor = System.Drawing.Color.Black;
-            this.btnsSearch.Location = new System.Drawing.Point(382, 32);
-            this.btnsSearch.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.btnsSearch.Location = new System.Drawing.Point(509, 39);
+            this.btnsSearch.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
             this.btnsSearch.Name = "btnsSearch";
-            this.btnsSearch.Size = new System.Drawing.Size(98, 34);
+            this.btnsSearch.Size = new System.Drawing.Size(131, 42);
             this.btnsSearch.TabIndex = 1;
             this.btnsSearch.Text = "Search";
             this.btnsSearch.UseVisualStyleBackColor = false;
@@ -849,9 +877,10 @@ namespace CDN_HL
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblsErrorMsg.AutoSize = true;
             this.lblsErrorMsg.ForeColor = System.Drawing.Color.Red;
-            this.lblsErrorMsg.Location = new System.Drawing.Point(411, 7);
+            this.lblsErrorMsg.Location = new System.Drawing.Point(548, 9);
+            this.lblsErrorMsg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblsErrorMsg.Name = "lblsErrorMsg";
-            this.lblsErrorMsg.Size = new System.Drawing.Size(82, 20);
+            this.lblsErrorMsg.Size = new System.Drawing.Size(100, 25);
             this.lblsErrorMsg.TabIndex = 31;
             this.lblsErrorMsg.Text = "ErrorMsg";
             // 
@@ -859,10 +888,10 @@ namespace CDN_HL
             // 
             this.picsBoxHL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picsBoxHL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picsBoxHL.Location = new System.Drawing.Point(712, 28);
-            this.picsBoxHL.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.picsBoxHL.Location = new System.Drawing.Point(949, 34);
+            this.picsBoxHL.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.picsBoxHL.Name = "picsBoxHL";
-            this.picsBoxHL.Size = new System.Drawing.Size(170, 200);
+            this.picsBoxHL.Size = new System.Drawing.Size(226, 246);
             this.picsBoxHL.TabIndex = 9;
             this.picsBoxHL.TabStop = false;
             // 
@@ -901,10 +930,11 @@ namespace CDN_HL
             this.tabInsert.Controls.Add(this.piciBoxHL);
             this.tabInsert.Controls.Add(this.lstiBoxHLImg);
             this.tabInsert.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabInsert.Location = new System.Drawing.Point(4, 22);
+            this.tabInsert.Location = new System.Drawing.Point(4, 25);
+            this.tabInsert.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabInsert.Name = "tabInsert";
-            this.tabInsert.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInsert.Size = new System.Drawing.Size(986, 672);
+            this.tabInsert.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabInsert.Size = new System.Drawing.Size(1317, 830);
             this.tabInsert.TabIndex = 1;
             this.tabInsert.Text = "     Insert     ";
             this.tabInsert.UseVisualStyleBackColor = true;
@@ -913,18 +943,20 @@ namespace CDN_HL
             // 
             this.txtiNote.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiNote.Location = new System.Drawing.Point(510, 539);
+            this.txtiNote.Location = new System.Drawing.Point(680, 663);
+            this.txtiNote.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiNote.Multiline = true;
             this.txtiNote.Name = "txtiNote";
             this.txtiNote.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtiNote.Size = new System.Drawing.Size(466, 86);
+            this.txtiNote.Size = new System.Drawing.Size(620, 105);
             this.txtiNote.TabIndex = 19;
             // 
             // btnSelectInsertFiles
             // 
-            this.btnSelectInsertFiles.Location = new System.Drawing.Point(2, 7);
+            this.btnSelectInsertFiles.Location = new System.Drawing.Point(3, 9);
+            this.btnSelectInsertFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSelectInsertFiles.Name = "btnSelectInsertFiles";
-            this.btnSelectInsertFiles.Size = new System.Drawing.Size(130, 35);
+            this.btnSelectInsertFiles.Size = new System.Drawing.Size(173, 43);
             this.btnSelectInsertFiles.TabIndex = 0;
             this.btnSelectInsertFiles.Text = "Select File(s)";
             this.btnSelectInsertFiles.UseVisualStyleBackColor = true;
@@ -935,9 +967,10 @@ namespace CDN_HL
             this.txtiDupImgFilename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtiDupImgFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtiDupImgFilename.Location = new System.Drawing.Point(3, 238);
+            this.txtiDupImgFilename.Location = new System.Drawing.Point(4, 293);
+            this.txtiDupImgFilename.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiDupImgFilename.Name = "txtiDupImgFilename";
-            this.txtiDupImgFilename.Size = new System.Drawing.Size(973, 21);
+            this.txtiDupImgFilename.Size = new System.Drawing.Size(1296, 24);
             this.txtiDupImgFilename.TabIndex = 27;
             this.txtiDupImgFilename.Text = "txtiDupImgFilename";
             this.txtiDupImgFilename.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -948,9 +981,10 @@ namespace CDN_HL
             this.lbliFullPhapDanh.BackColor = System.Drawing.Color.Transparent;
             this.lbliFullPhapDanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbliFullPhapDanh.ForeColor = System.Drawing.Color.White;
-            this.lbliFullPhapDanh.Location = new System.Drawing.Point(380, 608);
+            this.lbliFullPhapDanh.Location = new System.Drawing.Point(507, 748);
+            this.lbliFullPhapDanh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliFullPhapDanh.Name = "lbliFullPhapDanh";
-            this.lbliFullPhapDanh.Size = new System.Drawing.Size(118, 15);
+            this.lbliFullPhapDanh.Size = new System.Drawing.Size(133, 18);
             this.lbliFullPhapDanh.TabIndex = 24;
             this.lbliFullPhapDanh.Text = "lbliFullPhapDanh";
             // 
@@ -960,9 +994,10 @@ namespace CDN_HL
             this.lbliFullname.BackColor = System.Drawing.Color.Transparent;
             this.lbliFullname.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbliFullname.ForeColor = System.Drawing.Color.White;
-            this.lbliFullname.Location = new System.Drawing.Point(380, 593);
+            this.lbliFullname.Location = new System.Drawing.Point(507, 730);
+            this.lbliFullname.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliFullname.Name = "lbliFullname";
-            this.lbliFullname.Size = new System.Drawing.Size(87, 15);
+            this.lbliFullname.Size = new System.Drawing.Size(97, 18);
             this.lbliFullname.TabIndex = 25;
             this.lbliFullname.Text = "lbliFullname";
             // 
@@ -972,9 +1007,10 @@ namespace CDN_HL
             this.lbliOrigFilename.BackColor = System.Drawing.Color.Transparent;
             this.lbliOrigFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbliOrigFilename.ForeColor = System.Drawing.Color.White;
-            this.lbliOrigFilename.Location = new System.Drawing.Point(380, 578);
+            this.lbliOrigFilename.Location = new System.Drawing.Point(507, 711);
+            this.lbliOrigFilename.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliOrigFilename.Name = "lbliOrigFilename";
-            this.lbliOrigFilename.Size = new System.Drawing.Size(114, 15);
+            this.lbliOrigFilename.Size = new System.Drawing.Size(129, 18);
             this.lbliOrigFilename.TabIndex = 26;
             this.lbliOrigFilename.Text = "lbliOrigFilename";
             // 
@@ -983,18 +1019,20 @@ namespace CDN_HL
             this.lbliDisplayViTriCot.AutoSize = true;
             this.lbliDisplayViTriCot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbliDisplayViTriCot.ForeColor = System.Drawing.Color.Silver;
-            this.lbliDisplayViTriCot.Location = new System.Drawing.Point(778, 270);
+            this.lbliDisplayViTriCot.Location = new System.Drawing.Point(1037, 332);
+            this.lbliDisplayViTriCot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliDisplayViTriCot.Name = "lbliDisplayViTriCot";
-            this.lbliDisplayViTriCot.Size = new System.Drawing.Size(95, 17);
+            this.lbliDisplayViTriCot.Size = new System.Drawing.Size(112, 20);
             this.lbliDisplayViTriCot.TabIndex = 22;
             this.lbliDisplayViTriCot.Text = "Trụ B/Hộc 8";
             // 
             // lbliNote
             // 
             this.lbliNote.AutoSize = true;
-            this.lbliNote.Location = new System.Drawing.Point(455, 542);
+            this.lbliNote.Location = new System.Drawing.Point(607, 667);
+            this.lbliNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliNote.Name = "lbliNote";
-            this.lbliNote.Size = new System.Drawing.Size(52, 20);
+            this.lbliNote.Size = new System.Drawing.Size(64, 25);
             this.lbliNote.TabIndex = 18;
             this.lbliNote.Text = "Note:";
             // 
@@ -1003,17 +1041,19 @@ namespace CDN_HL
             this.txtiViTriCot.BackColor = System.Drawing.Color.Yellow;
             this.txtiViTriCot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtiViTriCot.ForeColor = System.Drawing.Color.Red;
-            this.txtiViTriCot.Location = new System.Drawing.Point(781, 294);
+            this.txtiViTriCot.Location = new System.Drawing.Point(1041, 362);
+            this.txtiViTriCot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiViTriCot.Name = "txtiViTriCot";
-            this.txtiViTriCot.Size = new System.Drawing.Size(195, 26);
+            this.txtiViTriCot.Size = new System.Drawing.Size(259, 30);
             this.txtiViTriCot.TabIndex = 5;
             // 
             // lbliViTriCot
             // 
             this.lbliViTriCot.AutoSize = true;
-            this.lbliViTriCot.Location = new System.Drawing.Point(690, 297);
+            this.lbliViTriCot.Location = new System.Drawing.Point(920, 366);
+            this.lbliViTriCot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliViTriCot.Name = "lbliViTriCot";
-            this.lbliViTriCot.Size = new System.Drawing.Size(88, 20);
+            this.lbliViTriCot.Size = new System.Drawing.Size(111, 25);
             this.lbliViTriCot.TabIndex = 4;
             this.lbliViTriCot.Text = "Vị Trí Cốt:";
             // 
@@ -1021,17 +1061,19 @@ namespace CDN_HL
             // 
             this.txtiTuAL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiTuAL.Location = new System.Drawing.Point(510, 504);
+            this.txtiTuAL.Location = new System.Drawing.Point(680, 620);
+            this.txtiTuAL.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiTuAL.Name = "txtiTuAL";
-            this.txtiTuAL.Size = new System.Drawing.Size(466, 26);
+            this.txtiTuAL.Size = new System.Drawing.Size(620, 30);
             this.txtiTuAL.TabIndex = 17;
             // 
             // lbliTuAL
             // 
             this.lbliTuAL.AutoSize = true;
-            this.lbliTuAL.Location = new System.Drawing.Point(402, 507);
+            this.lbliTuAL.Location = new System.Drawing.Point(536, 624);
+            this.lbliTuAL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliTuAL.Name = "lbliTuAL";
-            this.lbliTuAL.Size = new System.Drawing.Size(106, 20);
+            this.lbliTuAL.Size = new System.Drawing.Size(134, 25);
             this.lbliTuAL.TabIndex = 16;
             this.lbliTuAL.Text = "Ngày Tử AL:";
             // 
@@ -1039,17 +1081,19 @@ namespace CDN_HL
             // 
             this.txtiTu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiTu.Location = new System.Drawing.Point(510, 469);
+            this.txtiTu.Location = new System.Drawing.Point(680, 577);
+            this.txtiTu.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiTu.Name = "txtiTu";
-            this.txtiTu.Size = new System.Drawing.Size(466, 26);
+            this.txtiTu.Size = new System.Drawing.Size(620, 30);
             this.txtiTu.TabIndex = 15;
             // 
             // lbliTu
             // 
             this.lbliTu.AutoSize = true;
-            this.lbliTu.Location = new System.Drawing.Point(401, 472);
+            this.lbliTu.Location = new System.Drawing.Point(535, 581);
+            this.lbliTu.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliTu.Name = "lbliTu";
-            this.lbliTu.Size = new System.Drawing.Size(107, 20);
+            this.lbliTu.Size = new System.Drawing.Size(134, 25);
             this.lbliTu.TabIndex = 14;
             this.lbliTu.Text = "Ngày Tử DL:";
             // 
@@ -1057,18 +1101,20 @@ namespace CDN_HL
             // 
             this.txtiSinh.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiSinh.Location = new System.Drawing.Point(510, 434);
+            this.txtiSinh.Location = new System.Drawing.Point(680, 534);
+            this.txtiSinh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiSinh.Name = "txtiSinh";
-            this.txtiSinh.Size = new System.Drawing.Size(466, 26);
+            this.txtiSinh.Size = new System.Drawing.Size(620, 30);
             this.txtiSinh.TabIndex = 13;
             // 
             // lbliErrorMsg
             // 
             this.lbliErrorMsg.AutoSize = true;
             this.lbliErrorMsg.ForeColor = System.Drawing.Color.Red;
-            this.lbliErrorMsg.Location = new System.Drawing.Point(141, 16);
+            this.lbliErrorMsg.Location = new System.Drawing.Point(188, 20);
+            this.lbliErrorMsg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliErrorMsg.Name = "lbliErrorMsg";
-            this.lbliErrorMsg.Size = new System.Drawing.Size(126, 20);
+            this.lbliErrorMsg.Size = new System.Drawing.Size(153, 25);
             this.lbliErrorMsg.TabIndex = 29;
             this.lbliErrorMsg.Text = "Error Message";
             // 
@@ -1076,17 +1122,19 @@ namespace CDN_HL
             // 
             this.txtiFileNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtiFileNumber.ForeColor = System.Drawing.Color.Black;
-            this.txtiFileNumber.Location = new System.Drawing.Point(510, 329);
+            this.txtiFileNumber.Location = new System.Drawing.Point(680, 405);
+            this.txtiFileNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiFileNumber.Name = "txtiFileNumber";
-            this.txtiFileNumber.Size = new System.Drawing.Size(174, 26);
+            this.txtiFileNumber.Size = new System.Drawing.Size(231, 30);
             this.txtiFileNumber.TabIndex = 7;
             // 
             // lbliSinh
             // 
             this.lbliSinh.AutoSize = true;
-            this.lbliSinh.Location = new System.Drawing.Point(413, 437);
+            this.lbliSinh.Location = new System.Drawing.Point(551, 538);
+            this.lbliSinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliSinh.Name = "lbliSinh";
-            this.lbliSinh.Size = new System.Drawing.Size(95, 20);
+            this.lbliSinh.Size = new System.Drawing.Size(119, 25);
             this.lbliSinh.TabIndex = 12;
             this.lbliSinh.Text = "Ngày Sinh:";
             // 
@@ -1094,17 +1142,19 @@ namespace CDN_HL
             // 
             this.txtiPhapDanh.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiPhapDanh.Location = new System.Drawing.Point(510, 399);
+            this.txtiPhapDanh.Location = new System.Drawing.Point(680, 491);
+            this.txtiPhapDanh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiPhapDanh.Name = "txtiPhapDanh";
-            this.txtiPhapDanh.Size = new System.Drawing.Size(466, 26);
+            this.txtiPhapDanh.Size = new System.Drawing.Size(620, 30);
             this.txtiPhapDanh.TabIndex = 11;
             // 
             // lbliPhapDanh
             // 
             this.lbliPhapDanh.AutoSize = true;
-            this.lbliPhapDanh.Location = new System.Drawing.Point(404, 402);
+            this.lbliPhapDanh.Location = new System.Drawing.Point(539, 495);
+            this.lbliPhapDanh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliPhapDanh.Name = "lbliPhapDanh";
-            this.lbliPhapDanh.Size = new System.Drawing.Size(103, 20);
+            this.lbliPhapDanh.Size = new System.Drawing.Size(126, 25);
             this.lbliPhapDanh.TabIndex = 10;
             this.lbliPhapDanh.Text = "Pháp Danh:";
             // 
@@ -1112,26 +1162,29 @@ namespace CDN_HL
             // 
             this.txtiHoTen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiHoTen.Location = new System.Drawing.Point(510, 364);
+            this.txtiHoTen.Location = new System.Drawing.Point(680, 448);
+            this.txtiHoTen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiHoTen.Name = "txtiHoTen";
-            this.txtiHoTen.Size = new System.Drawing.Size(466, 26);
+            this.txtiHoTen.Size = new System.Drawing.Size(620, 30);
             this.txtiHoTen.TabIndex = 9;
             // 
             // lbliHoTen
             // 
             this.lbliHoTen.AutoSize = true;
-            this.lbliHoTen.Location = new System.Drawing.Point(436, 367);
+            this.lbliHoTen.Location = new System.Drawing.Point(581, 452);
+            this.lbliHoTen.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliHoTen.Name = "lbliHoTen";
-            this.lbliHoTen.Size = new System.Drawing.Size(72, 20);
+            this.lbliHoTen.Size = new System.Drawing.Size(90, 25);
             this.lbliHoTen.TabIndex = 8;
             this.lbliHoTen.Text = "Họ Tên:";
             // 
             // lbliFileNumber
             // 
             this.lbliFileNumber.AutoSize = true;
-            this.lbliFileNumber.Location = new System.Drawing.Point(398, 332);
+            this.lbliFileNumber.Location = new System.Drawing.Point(531, 409);
+            this.lbliFileNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliFileNumber.Name = "lbliFileNumber";
-            this.lbliFileNumber.Size = new System.Drawing.Size(110, 20);
+            this.lbliFileNumber.Size = new System.Drawing.Size(135, 25);
             this.lbliFileNumber.TabIndex = 6;
             this.lbliFileNumber.Text = "File Number:";
             // 
@@ -1140,9 +1193,10 @@ namespace CDN_HL
             this.lbliDisplayViTri.AutoSize = true;
             this.lbliDisplayViTri.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbliDisplayViTri.ForeColor = System.Drawing.Color.Silver;
-            this.lbliDisplayViTri.Location = new System.Drawing.Point(507, 270);
+            this.lbliDisplayViTri.Location = new System.Drawing.Point(676, 332);
+            this.lbliDisplayViTri.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliDisplayViTri.Name = "lbliDisplayViTri";
-            this.lbliDisplayViTri.Size = new System.Drawing.Size(146, 17);
+            this.lbliDisplayViTri.Size = new System.Drawing.Size(170, 20);
             this.lbliDisplayViTri.TabIndex = 21;
             this.lbliDisplayViTri.Text = "Hàng/Cột   A 12/80";
             // 
@@ -1151,17 +1205,19 @@ namespace CDN_HL
             this.txtiViTriHinh.BackColor = System.Drawing.Color.Yellow;
             this.txtiViTriHinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtiViTriHinh.ForeColor = System.Drawing.Color.Red;
-            this.txtiViTriHinh.Location = new System.Drawing.Point(510, 294);
+            this.txtiViTriHinh.Location = new System.Drawing.Point(680, 362);
+            this.txtiViTriHinh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiViTriHinh.Name = "txtiViTriHinh";
-            this.txtiViTriHinh.Size = new System.Drawing.Size(174, 26);
+            this.txtiViTriHinh.Size = new System.Drawing.Size(231, 30);
             this.txtiViTriHinh.TabIndex = 3;
             // 
             // lbliViTriHinh
             // 
             this.lbliViTriHinh.AutoSize = true;
-            this.lbliViTriHinh.Location = new System.Drawing.Point(410, 297);
+            this.lbliViTriHinh.Location = new System.Drawing.Point(547, 366);
+            this.lbliViTriHinh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbliViTriHinh.Name = "lbliViTriHinh";
-            this.lbliViTriHinh.Size = new System.Drawing.Size(97, 20);
+            this.lbliViTriHinh.Size = new System.Drawing.Size(121, 25);
             this.lbliViTriHinh.TabIndex = 2;
             this.lbliViTriHinh.Text = "Vị Trí Hình:";
             // 
@@ -1169,9 +1225,10 @@ namespace CDN_HL
             // 
             this.piciBoxHLDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.piciBoxHLDup.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.piciBoxHLDup.Location = new System.Drawing.Point(794, 47);
+            this.piciBoxHLDup.Location = new System.Drawing.Point(1059, 58);
+            this.piciBoxHLDup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.piciBoxHLDup.Name = "piciBoxHLDup";
-            this.piciBoxHLDup.Size = new System.Drawing.Size(182, 185);
+            this.piciBoxHLDup.Size = new System.Drawing.Size(242, 227);
             this.piciBoxHLDup.TabIndex = 32;
             this.piciBoxHLDup.TabStop = false;
             // 
@@ -1179,9 +1236,10 @@ namespace CDN_HL
             // 
             this.txtiFilename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiFilename.Location = new System.Drawing.Point(3, 635);
+            this.txtiFilename.Location = new System.Drawing.Point(4, 782);
+            this.txtiFilename.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiFilename.Name = "txtiFilename";
-            this.txtiFilename.Size = new System.Drawing.Size(975, 26);
+            this.txtiFilename.Size = new System.Drawing.Size(1299, 30);
             this.txtiFilename.TabIndex = 23;
             this.txtiFilename.Text = "txtiFilename";
             // 
@@ -1190,9 +1248,10 @@ namespace CDN_HL
             this.btniSave.BackColor = System.Drawing.Color.Yellow;
             this.btniSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btniSave.ForeColor = System.Drawing.Color.Red;
-            this.btniSave.Location = new System.Drawing.Point(781, 327);
+            this.btniSave.Location = new System.Drawing.Point(1041, 402);
+            this.btniSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btniSave.Name = "btniSave";
-            this.btniSave.Size = new System.Drawing.Size(195, 27);
+            this.btniSave.Size = new System.Drawing.Size(260, 33);
             this.btniSave.TabIndex = 20;
             this.btniSave.Text = "Save";
             this.btniSave.UseVisualStyleBackColor = false;
@@ -1202,18 +1261,20 @@ namespace CDN_HL
             // 
             this.txtiFilenameParsing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtiFilenameParsing.Location = new System.Drawing.Point(459, 12);
+            this.txtiFilenameParsing.Location = new System.Drawing.Point(612, 15);
+            this.txtiFilenameParsing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtiFilenameParsing.Name = "txtiFilenameParsing";
-            this.txtiFilenameParsing.Size = new System.Drawing.Size(517, 26);
+            this.txtiFilenameParsing.Size = new System.Drawing.Size(688, 30);
             this.txtiFilenameParsing.TabIndex = 28;
             this.txtiFilenameParsing.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtiFilenameParsing_MouseDown);
             // 
             // piciBoxHL
             // 
             this.piciBoxHL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.piciBoxHL.Location = new System.Drawing.Point(48, 264);
+            this.piciBoxHL.Location = new System.Drawing.Point(64, 325);
+            this.piciBoxHL.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.piciBoxHL.Name = "piciBoxHL";
-            this.piciBoxHL.Size = new System.Drawing.Size(300, 360);
+            this.piciBoxHL.Size = new System.Drawing.Size(399, 443);
             this.piciBoxHL.TabIndex = 48;
             this.piciBoxHL.TabStop = false;
             // 
@@ -1222,11 +1283,12 @@ namespace CDN_HL
             this.lstiBoxHLImg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstiBoxHLImg.FormattingEnabled = true;
-            this.lstiBoxHLImg.ItemHeight = 20;
-            this.lstiBoxHLImg.Location = new System.Drawing.Point(3, 48);
+            this.lstiBoxHLImg.ItemHeight = 25;
+            this.lstiBoxHLImg.Location = new System.Drawing.Point(4, 59);
+            this.lstiBoxHLImg.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstiBoxHLImg.Name = "lstiBoxHLImg";
             this.lstiBoxHLImg.ScrollAlwaysVisible = true;
-            this.lstiBoxHLImg.Size = new System.Drawing.Size(785, 184);
+            this.lstiBoxHLImg.Size = new System.Drawing.Size(1045, 204);
             this.lstiBoxHLImg.TabIndex = 1;
             this.lstiBoxHLImg.SelectedIndexChanged += new System.EventHandler(this.lstiBoxHLImg_SelectedIndexChanged);
             // 
@@ -1234,10 +1296,11 @@ namespace CDN_HL
             // 
             this.tabDiagnostic.Controls.Add(this.gboxLogFile);
             this.tabDiagnostic.Controls.Add(this.gboxLoadLogFile);
-            this.tabDiagnostic.Location = new System.Drawing.Point(4, 22);
+            this.tabDiagnostic.Location = new System.Drawing.Point(4, 25);
+            this.tabDiagnostic.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabDiagnostic.Name = "tabDiagnostic";
-            this.tabDiagnostic.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDiagnostic.Size = new System.Drawing.Size(986, 672);
+            this.tabDiagnostic.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabDiagnostic.Size = new System.Drawing.Size(1317, 830);
             this.tabDiagnostic.TabIndex = 2;
             this.tabDiagnostic.Text = "     Diagnostic     ";
             this.tabDiagnostic.UseVisualStyleBackColor = true;
@@ -1249,9 +1312,11 @@ namespace CDN_HL
             this.gboxLogFile.Controls.Add(this.txtLogFileText);
             this.gboxLogFile.Controls.Add(this.lblLogFileName);
             this.gboxLogFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gboxLogFile.Location = new System.Drawing.Point(3, 50);
+            this.gboxLogFile.Location = new System.Drawing.Point(4, 62);
+            this.gboxLogFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gboxLogFile.Name = "gboxLogFile";
-            this.gboxLogFile.Size = new System.Drawing.Size(980, 619);
+            this.gboxLogFile.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxLogFile.Size = new System.Drawing.Size(1309, 764);
             this.gboxLogFile.TabIndex = 1;
             this.gboxLogFile.TabStop = false;
             // 
@@ -1261,12 +1326,13 @@ namespace CDN_HL
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtErrorFileText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtErrorFileText.Location = new System.Drawing.Point(3, 329);
+            this.txtErrorFileText.Location = new System.Drawing.Point(4, 405);
+            this.txtErrorFileText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtErrorFileText.MaxLength = 64000;
             this.txtErrorFileText.Multiline = true;
             this.txtErrorFileText.Name = "txtErrorFileText";
             this.txtErrorFileText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtErrorFileText.Size = new System.Drawing.Size(974, 284);
+            this.txtErrorFileText.Size = new System.Drawing.Size(1299, 351);
             this.txtErrorFileText.TabIndex = 2;
             this.txtErrorFileText.Text = "Log data....";
             // 
@@ -1274,9 +1340,10 @@ namespace CDN_HL
             // 
             this.lblErrorFileName.AutoSize = true;
             this.lblErrorFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblErrorFileName.Location = new System.Drawing.Point(6, 310);
+            this.lblErrorFileName.Location = new System.Drawing.Point(8, 382);
+            this.lblErrorFileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblErrorFileName.Name = "lblErrorFileName";
-            this.lblErrorFileName.Size = new System.Drawing.Size(60, 16);
+            this.lblErrorFileName.Size = new System.Drawing.Size(74, 20);
             this.lblErrorFileName.TabIndex = 3;
             this.lblErrorFileName.Text = "Error.txt";
             this.lblErrorFileName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -1286,12 +1353,13 @@ namespace CDN_HL
             this.txtLogFileText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLogFileText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogFileText.Location = new System.Drawing.Point(3, 30);
+            this.txtLogFileText.Location = new System.Drawing.Point(4, 37);
+            this.txtLogFileText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtLogFileText.MaxLength = 64000;
             this.txtLogFileText.Multiline = true;
             this.txtLogFileText.Name = "txtLogFileText";
             this.txtLogFileText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLogFileText.Size = new System.Drawing.Size(974, 269);
+            this.txtLogFileText.Size = new System.Drawing.Size(1299, 330);
             this.txtLogFileText.TabIndex = 0;
             this.txtLogFileText.Text = "Log data....";
             // 
@@ -1299,9 +1367,10 @@ namespace CDN_HL
             // 
             this.lblLogFileName.AutoSize = true;
             this.lblLogFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogFileName.Location = new System.Drawing.Point(6, 11);
+            this.lblLogFileName.Location = new System.Drawing.Point(8, 14);
+            this.lblLogFileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLogFileName.Name = "lblLogFileName";
-            this.lblLogFileName.Size = new System.Drawing.Size(52, 16);
+            this.lblLogFileName.Size = new System.Drawing.Size(64, 20);
             this.lblLogFileName.TabIndex = 1;
             this.lblLogFileName.Text = "Log.txt";
             this.lblLogFileName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -1311,18 +1380,21 @@ namespace CDN_HL
             this.gboxLoadLogFile.Controls.Add(this.btnClearLogFile);
             this.gboxLoadLogFile.Controls.Add(this.btnLoadLogFile);
             this.gboxLoadLogFile.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gboxLoadLogFile.Location = new System.Drawing.Point(3, 3);
+            this.gboxLoadLogFile.Location = new System.Drawing.Point(4, 4);
+            this.gboxLoadLogFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gboxLoadLogFile.Name = "gboxLoadLogFile";
-            this.gboxLoadLogFile.Size = new System.Drawing.Size(980, 47);
+            this.gboxLoadLogFile.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxLoadLogFile.Size = new System.Drawing.Size(1309, 58);
             this.gboxLoadLogFile.TabIndex = 0;
             this.gboxLoadLogFile.TabStop = false;
             // 
             // btnClearLogFile
             // 
             this.btnClearLogFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearLogFile.Location = new System.Drawing.Point(135, 14);
+            this.btnClearLogFile.Location = new System.Drawing.Point(180, 17);
+            this.btnClearLogFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnClearLogFile.Name = "btnClearLogFile";
-            this.btnClearLogFile.Size = new System.Drawing.Size(141, 27);
+            this.btnClearLogFile.Size = new System.Drawing.Size(188, 33);
             this.btnClearLogFile.TabIndex = 0;
             this.btnClearLogFile.Text = "Clear Log Files";
             this.btnClearLogFile.UseVisualStyleBackColor = true;
@@ -1331,9 +1403,10 @@ namespace CDN_HL
             // btnLoadLogFile
             // 
             this.btnLoadLogFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadLogFile.Location = new System.Drawing.Point(3, 14);
+            this.btnLoadLogFile.Location = new System.Drawing.Point(4, 17);
+            this.btnLoadLogFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnLoadLogFile.Name = "btnLoadLogFile";
-            this.btnLoadLogFile.Size = new System.Drawing.Size(126, 27);
+            this.btnLoadLogFile.Size = new System.Drawing.Size(168, 33);
             this.btnLoadLogFile.TabIndex = 2;
             this.btnLoadLogFile.Text = "Load Log Files";
             this.btnLoadLogFile.UseVisualStyleBackColor = true;
@@ -1347,9 +1420,10 @@ namespace CDN_HL
             this.tabMigration.Controls.Add(this.lstDestImages);
             this.tabMigration.Controls.Add(this.btnSourceFolder);
             this.tabMigration.Controls.Add(this.lstSourceImages);
-            this.tabMigration.Location = new System.Drawing.Point(4, 22);
+            this.tabMigration.Location = new System.Drawing.Point(4, 25);
+            this.tabMigration.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabMigration.Name = "tabMigration";
-            this.tabMigration.Size = new System.Drawing.Size(986, 672);
+            this.tabMigration.Size = new System.Drawing.Size(1317, 830);
             this.tabMigration.TabIndex = 3;
             this.tabMigration.Text = "    Migration     ";
             this.tabMigration.UseVisualStyleBackColor = true;
@@ -1361,18 +1435,20 @@ namespace CDN_HL
             this.lblErrorMessage.AutoSize = true;
             this.lblErrorMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblErrorMessage.ForeColor = System.Drawing.Color.Red;
-            this.lblErrorMessage.Location = new System.Drawing.Point(7, 45);
+            this.lblErrorMessage.Location = new System.Drawing.Point(9, 55);
+            this.lblErrorMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblErrorMessage.Name = "lblErrorMessage";
-            this.lblErrorMessage.Size = new System.Drawing.Size(154, 17);
+            this.lblErrorMessage.Size = new System.Drawing.Size(179, 20);
             this.lblErrorMessage.TabIndex = 30;
             this.lblErrorMessage.Text = "Load source images";
             // 
             // btnResizeAll
             // 
             this.btnResizeAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnResizeAll.Location = new System.Drawing.Point(453, 251);
+            this.btnResizeAll.Location = new System.Drawing.Point(604, 309);
+            this.btnResizeAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnResizeAll.Name = "btnResizeAll";
-            this.btnResizeAll.Size = new System.Drawing.Size(70, 69);
+            this.btnResizeAll.Size = new System.Drawing.Size(93, 85);
             this.btnResizeAll.TabIndex = 7;
             this.btnResizeAll.Text = "Resize All Images";
             this.btnResizeAll.UseVisualStyleBackColor = true;
@@ -1381,9 +1457,10 @@ namespace CDN_HL
             // btnResize1
             // 
             this.btnResize1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnResize1.Location = new System.Drawing.Point(453, 159);
+            this.btnResize1.Location = new System.Drawing.Point(604, 196);
+            this.btnResize1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnResize1.Name = "btnResize1";
-            this.btnResize1.Size = new System.Drawing.Size(70, 69);
+            this.btnResize1.Size = new System.Drawing.Size(93, 85);
             this.btnResize1.TabIndex = 6;
             this.btnResize1.Text = "Resize Select Images";
             this.btnResize1.UseVisualStyleBackColor = true;
@@ -1394,19 +1471,22 @@ namespace CDN_HL
             this.lstDestImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstDestImages.FormattingEnabled = true;
-            this.lstDestImages.Location = new System.Drawing.Point(549, 70);
+            this.lstDestImages.ItemHeight = 16;
+            this.lstDestImages.Location = new System.Drawing.Point(732, 86);
+            this.lstDestImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstDestImages.Name = "lstDestImages";
             this.lstDestImages.ScrollAlwaysVisible = true;
             this.lstDestImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstDestImages.Size = new System.Drawing.Size(428, 589);
+            this.lstDestImages.Size = new System.Drawing.Size(569, 724);
             this.lstDestImages.TabIndex = 5;
             // 
             // btnSourceFolder
             // 
             this.btnSourceFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSourceFolder.Location = new System.Drawing.Point(3, 3);
+            this.btnSourceFolder.Location = new System.Drawing.Point(4, 4);
+            this.btnSourceFolder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSourceFolder.Name = "btnSourceFolder";
-            this.btnSourceFolder.Size = new System.Drawing.Size(174, 35);
+            this.btnSourceFolder.Size = new System.Drawing.Size(232, 43);
             this.btnSourceFolder.TabIndex = 2;
             this.btnSourceFolder.Text = "Load Source Images";
             this.btnSourceFolder.UseVisualStyleBackColor = true;
@@ -1417,25 +1497,28 @@ namespace CDN_HL
             this.lstSourceImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstSourceImages.FormattingEnabled = true;
-            this.lstSourceImages.Location = new System.Drawing.Point(4, 70);
+            this.lstSourceImages.ItemHeight = 16;
+            this.lstSourceImages.Location = new System.Drawing.Point(5, 86);
+            this.lstSourceImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstSourceImages.Name = "lstSourceImages";
             this.lstSourceImages.ScrollAlwaysVisible = true;
             this.lstSourceImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstSourceImages.Size = new System.Drawing.Size(428, 589);
+            this.lstSourceImages.Size = new System.Drawing.Size(569, 724);
             this.lstSourceImages.TabIndex = 3;
             // 
             // dataGridMenuStrip
             // 
+            this.dataGridMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.dataGridMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemDelete});
             this.dataGridMenuStrip.Name = "dataGridMenuStrip";
-            this.dataGridMenuStrip.Size = new System.Drawing.Size(126, 26);
+            this.dataGridMenuStrip.Size = new System.Drawing.Size(145, 28);
             this.dataGridMenuStrip.Click += new System.EventHandler(this.dataGridMenuStrip_Click);
             // 
             // toolStripMenuItemDelete
             // 
             this.toolStripMenuItemDelete.Name = "toolStripMenuItemDelete";
-            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(125, 22);
+            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(144, 24);
             this.toolStripMenuItemDelete.Text = "Delete HL";
             // 
             // tblHLTableAdapter
@@ -1447,15 +1530,26 @@ namespace CDN_HL
             this.dNHLDataSetBindingSource.DataSource = this.dN_HLDataSet;
             this.dNHLDataSetBindingSource.Position = 0;
             // 
+            // lblsOrigID
+            // 
+            this.lblsOrigID.AutoSize = true;
+            this.lblsOrigID.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.tblHLBindingSource, "ID", true));
+            this.lblsOrigID.ForeColor = System.Drawing.Color.Red;
+            this.lblsOrigID.Location = new System.Drawing.Point(716, 299);
+            this.lblsOrigID.Name = "lblsOrigID";
+            this.lblsOrigID.Size = new System.Drawing.Size(0, 25);
+            this.lblsOrigID.TabIndex = 43;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(994, 687);
+            this.ClientSize = new System.Drawing.Size(1325, 846);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(3000, 2000);
-            this.MinimumSize = new System.Drawing.Size(1010, 726);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MaximumSize = new System.Drawing.Size(3994, 2451);
+            this.MinimumSize = new System.Drawing.Size(1341, 883);
             this.Name = "Form1";
             this.Text = "Chùa Điều Ngự - Hương Linh";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -1593,6 +1687,7 @@ namespace CDN_HL
         private System.Windows.Forms.Button btnResizeAll;
         private System.Windows.Forms.Button btnResize1;
         private System.Windows.Forms.Label lblErrorMessage;
+        private System.Windows.Forms.Label lblsOrigID;
     }
 }
 

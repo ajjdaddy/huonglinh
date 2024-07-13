@@ -74,42 +74,43 @@ namespace CDN_HL
         // 8. Open Access >> File >> New DB(Empty) >> import Data from excel file >> tblHL.xlsx and the TABLE as tblHL, and then SAVE the DB AS >> DN_HL.accdb
         // 9. In this application MUST: add these columns to the gridview: Fullname,FileNumber,InsertDate,UpdateDate
         // 10. And RUN THIS APPLICATION ONLY ONCE!!
-        // 11. DO NOT USE THIS APPLICATION EVER AGAIN.
-        private void ParseFilenumberAndConvert_VN_TO_ENG()
-        {
-            if (datasGridView.Rows.Count > 1)
-            {
-                //foreach (DataGridViewRow dr in dataGridView.Rows)
-                foreach (DataRow dr in dN_HLDataSet.tblHL.Rows)
-                {
-                    string strTempFilenumber = dr["HinhFileNamePath"].ToString();
-                    string[] astrFilenumber = strTempFilenumber.Split(' ');
-                    if (astrFilenumber.Count() > 1)
-                        dr["FileNumber"] = astrFilenumber[0];
+        // 11. DO NOT USE THIS FUNCTION EVER AGAIN.
 
-                    string strEnglishHoTen = Convert_VN_To_Eng(dr["HoTen"].ToString().Trim());
-                    string strEnglishPhapDanh = Convert_VN_To_Eng(dr["PhapDanh"].ToString().Trim());
+        ////private void ParseFilenumberAndConvert_VN_TO_ENG()
+        ////{
+        ////    if (datasGridView.Rows.Count > 1)
+        ////    {
+        ////        //foreach (DataGridViewRow dr in dataGridView.Rows)
+        ////        foreach (DataRow dr in dN_HLDataSet.tblHL.Rows)
+        ////        {
+        ////            string strTempFilenumber = dr["HinhFileNamePath"].ToString();
+        ////            string[] astrFilenumber = strTempFilenumber.Split(' ');
+        ////            if (astrFilenumber.Count() > 1)
+        ////                dr["FileNumber"] = astrFilenumber[0];
 
-                    ////set Fullname + PD if available by remove Vietnamese accent for searching purpose only
-                    //if (strEnglishHoTen.Length > 0 && strEnglishPhapDanh.Length > 0)
-                    //    dr["Fullname"] = strEnglishHoTen + " PD " + strEnglishPhapDanh;
-                    //else 
-                    if (strEnglishHoTen.Length > 0)
-                        dr["Fullname"] = strEnglishHoTen;
+        ////            string strEnglishHoTen = Convert_VN_To_Eng(dr["HoTen"].ToString().Trim());
+        ////            string strEnglishPhapDanh = Convert_VN_To_Eng(dr["PhapDanh"].ToString().Trim());
 
-                    if (strEnglishPhapDanh.Length > 0)
-                        dr["FullPhapDanh"] = strEnglishPhapDanh;
+        ////            ////set Fullname + PD if available by remove Vietnamese accent for searching purpose only
+        ////            //if (strEnglishHoTen.Length > 0 && strEnglishPhapDanh.Length > 0)
+        ////            //    dr["Fullname"] = strEnglishHoTen + " PD " + strEnglishPhapDanh;
+        ////            //else 
+        ////            if (strEnglishHoTen.Length > 0)
+        ////                dr["Fullname"] = strEnglishHoTen;
 
-                    //dr.Cells["Fullname"].Value = strEnglishHoTen;
+        ////            if (strEnglishPhapDanh.Length > 0)
+        ////                dr["FullPhapDanh"] = strEnglishPhapDanh;
 
-                    //dr["InsertDate"] = DateTime.Now.ToString("G");  // In order for these columns to work in this section
-                    //dr["UpdateDate"] = DateTime.Now.ToString("G");  // Must add these columns to the DataGridViewRow, for NOW, remove them
-                }
+        ////            //dr.Cells["Fullname"].Value = strEnglishHoTen;
 
-                ReloadHLData();
-            }
+        ////            //dr["InsertDate"] = DateTime.Now.ToString("G");  // In order for these columns to work in this section
+        ////            //dr["UpdateDate"] = DateTime.Now.ToString("G");  // Must add these columns to the DataGridViewRow, for NOW, remove them
+        ////        }
 
-        }
+        ////        ReloadHLData();
+        ////    }
+
+        ////}
 
         #endregion Run ONCE
 
@@ -203,7 +204,7 @@ namespace CDN_HL
                     bitImageFileOrig.Dispose(); //release the Original image file to allow this file to be deleted in this program
                     //bitImageFileCopy.Dispose();   //DO NOT >> SET bitImageFileCopy.Dispose(); << IT WILL CAUSE THE APPLICATION STOP RUNNING!!
 
-                    ResetBackGroundColorForAllFieldsOnSearchTab();
+                    ResetBackGroundColorForAllFieldsOnSearchTab(); 
                 }
                 else
                 {
@@ -2979,7 +2980,13 @@ namespace CDN_HL
             try
             {
                 tblHLBindingSource.EndEdit();
-                tblHLTableAdapter.Update(dN_HLDataSet.tblHL);  //Update the HL_DB table
+                tblHLTableAdapter.Update(dN_HLDataSet.tblHL);  //Update the HL_DB table -- AnhDao Removed on 1/8/2024
+                //tblHLTableAdapter.Insert(txtiHoTen.Text, txtiPhapDanh.Text, txtiSinh.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiTu.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtiViTriHinh.Text, txtiViTriCot.Text.Trim(), txtiFilename.Text, txtiNote.Text.Trim(), txtiFileNumber.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), lbliFullname.Text.Trim(), txtiTuAL.Text, DateTime.Now.ToString("G"), null, lbliFullPhapDanh.Text.Trim(), null);
+                //////tblHLTableAdapter.Update(txtsHoTen.Text, txtsPhapDanh.Text, txtsSinh.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtsTu.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), txtsViTriHinh.Text, 
+                //////                        txtsViTriCot.Text.Trim(), txtsFilename.Text, txtsNote.Text.Trim(), txtsFileNumber.Text.Trim(',').TrimEnd('-').TrimEnd('/').TrimEnd('.'), lblsFullname.Text.Trim(), txtsTuAL.Text, 
+                //////                        null, DateTime.Now.ToString("G"), lblsFullPhapDanh.Text.Trim(), null, Convert.ToInt32(lblsOrigID.Text), lblsOrigHoTen.Text,
+                //////                        lblsOrigPhapDanh.Text, lblsOrigSinh.Text, lblsOrigTu.Text, lblsOrigViTriHinh.Text, lblsOrigViTriCot.Text, lblsOrigFilename.Text, lblsNote.Text, lblsOrigFileNumber.Text,
+                //////                        lblsOrigHoTen.Text, lblsOrigTuAl.Text, null, null, lblsOrigPhapDanh.Text, lblsOrigSinh.Text);  //AnhDao Added on 1/8/2024
                 dN_HLDataSet.tblHL.AcceptChanges();
                 if (onStartUp)
                 {
